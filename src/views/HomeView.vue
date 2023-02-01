@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <div>
+      <router-link to="/combo-viewer">Combo Viewer</router-link>
+    </div>
   </main>
 </template>

@@ -17,6 +17,21 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/AboutView.vue"),
     },
+    {
+      path: "/combo-viewer",
+      name: "combo viewer",
+      component: () => import("../views/SelectGameView.vue"),
+    },
+    {
+      path: "/combo-viewer/:game/characters",
+      name: "characters",
+      component: () => import("../views/SelectCharacterView.vue")
+    },
+    {
+      path: "/combo-viewer/:game/characters/:character",
+      name: "combos",
+      component: () => import("../views/CreateComboView.vue")
+    }
   ],
 });
 
