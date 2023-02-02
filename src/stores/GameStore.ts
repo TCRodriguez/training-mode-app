@@ -13,7 +13,8 @@ export const useGameStore = defineStore('GameStore', {
     getters: {
         getGames(state){
             return state.games
-        }
+        },
+        getAttackButtons: (state) => state.attackButtons
     },
     actions: {
         async fetchDirectionalInputs() {
