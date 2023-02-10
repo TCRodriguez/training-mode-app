@@ -10,7 +10,9 @@ export const useComboStore = defineStore('ComboStore', {
     },
     actions: {
         async addComboInputToDisplay(comboInput) {
+            'direction' in comboInput ? comboInput.category = 'arrows' : comboInput.category = 'attack-buttons'
             this.comboDisplay.push(comboInput);
+
         },
         async eraseComboInput() {
             this.comboDisplay.pop();

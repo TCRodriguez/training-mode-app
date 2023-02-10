@@ -1,30 +1,41 @@
 <script lang="ts">
 import { useComboStore } from '@/stores/ComboStore';
+import { useGameStore } from '@/stores/GameStore';
+import { computed } from 'vue';
 export default {
     props: {
         directions: String,
         directionalInputId: String
     },
     setup() {
+        const gameStore = useGameStore();
         const comboStore = useComboStore();
-        const directions = [
-            'Up Back',
-            'Up',
-            'Up Forward',
-            'Back',
-            'Neutral',
-            'Forward',
-            'Down Back',
-            'Down',
-            'Down Forward'
-        ]
+        const directions = computed(() => gameStore.directionalInputs);
+        // const directions = [
+        //     {
+        //         direction: 'Up Back',
+        //         svgLink: 'https://dl.dropbox.com/s/bi62o50yu4tmcd4/ub.svg'
+        //     },
+        //     {
+
+        //     }
+        //     ,
+        //     'Up',
+        //     'Up Forward',
+        //     'Back',
+        //     'Neutral',
+        //     'Forward',
+        //     'Down Back',
+        //     'Down',
+        //     'Down Forward'
+        // ]
 
         const renderComboInput = (input: string) => {
-            console.log(input);
             comboStore.addComboInputToDisplay(input)
         }
 
         return {
+            gameStore,
             comboStore,
             directions,
             renderComboInput
@@ -50,11 +61,17 @@ export default {
         <p>Down Back</p>
         <p>Down</p>
         <p>Down Forward</p> -->
-        <p
+        <img
             v-for="direction in directions" 
             :key="direction.id"
             @click="renderComboInput(direction)"
-        >{{direction}}</p>
+            height="150"
+            width="150"
+            :alt="direction.direction"
+            :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/arrows%2F${direction.icon_file_name}`"
+        >
+        <!-- <img src="https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/arrows%2Fb.svg" alt=""> -->
+        
     </div>
 </template>
 <style lang="">

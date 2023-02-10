@@ -7,15 +7,12 @@ export default {
         buttons: Array
     },
     setup(props) {
-        // console.log(JSON.parse(JSON.stringify(props)));
-        console.log(props.buttons);
         const gameStore = useGameStore();
         const comboStore = useComboStore();
         // const attackButtons = ref(props.buttons);
         // const displayAccountCreationSuccess = computed(() => store.state.login.newTrainerCreated);
         const attackButtons = computed(() => gameStore.attackButtons);
         const renderComboInput = (input: string) => {
-            console.log(input);
             comboStore.addComboInputToDisplay(input)
         }
         return {
@@ -36,12 +33,16 @@ export default {
                 :key="attackButton.id"
             >{{ attackButton.name }}</li>
         </ul> -->
-        <span 
+        <img 
             v-for="attackButton in attackButtons"
             :key="attackButton.id"
-            @click="renderComboInput(attackButton.name)"
-        
-        >{{attackButton.name}}</span>
+            @click="renderComboInput(attackButton)"
+            height="75"
+            width="75"
+            :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/attack-buttons%2F${attackButton.icon_file_name}`"
+            :alt="attackButton.name"
+        >
+        <!-- <img src="" alt="" srcset=""> -->
     </div>
 </template>
 <style lang="">

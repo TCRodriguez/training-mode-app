@@ -7,7 +7,9 @@ export const useGameStore = defineStore('GameStore', {
         game: {},
         notations: [],
         attackButtons: [],
-        directionalInputs: []
+        attackButtonIconLinks: [],
+        directionalInputs: [],
+        directionalInputIconLinks: [],
 
     }),
     getters: {

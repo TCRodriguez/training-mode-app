@@ -19,7 +19,6 @@
             }
         },
         created() {
-            console.log(typeof this.route.params.game)
             this.characterStore.fetchCharacters(this.route.params.game)
             .catch(error => {
                 console.log(error);
