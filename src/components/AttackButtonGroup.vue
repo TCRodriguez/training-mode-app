@@ -3,9 +3,9 @@ import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { toRaw, ref, computed } from 'vue';
 export default {
-    props: {
-        buttons: Array
-    },
+    // props: {
+    //     buttons: Array
+    // },
     setup(props) {
         const gameStore = useGameStore();
         const comboStore = useComboStore();

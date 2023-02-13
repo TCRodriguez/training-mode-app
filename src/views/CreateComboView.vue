@@ -2,9 +2,10 @@
 import { useGameStore } from '../stores/GameStore';
 import { useCharacterStore } from '../stores/CharacterStore';
 import { useRouter, useRoute } from 'vue-router';
-import DirectionalInput from '@/components/DirectionalInput.vue';
+import DirectionalInput from '@/components/DirectionalInputGroup.vue';
 import AttackButtonGroup from '@/components/AttackButtonGroup.vue';
 import ComboInputDisplay from '@/components/ComboInputDisplay.vue';
+import CharacterComboInputGroup from '@/components/CharacterComboInputGroup.vue';
 import { ref, reactive, toRaw } from 'vue';
 
 export default {
@@ -45,40 +46,21 @@ export default {
     components: {
         DirectionalInput,
         AttackButtonGroup,
+        CharacterComboInputGroup,
         ComboInputDisplay
     }
 }
 </script>
 <template lang="">
-
     <section>
         <h2>Input a combo for {{characterStore.character.name}}</h2>
         <div>
             <ComboInputDisplay />
         </div>
         <div class="flex flex-row justify-center">
-            <!-- <div class="border">
-                
-            </div> -->
-            <!-- <div class="bg-blue-500"> -->
-                <!-- <ul>
-                    <li
-                        v-for="directionalInput in gameStore.directionalInputs"
-                        :key="directionalInput.id"
-                        @click="addComboInput(directionalInput.direction)"
-                    ><DirectionalInput :direction="directionalInput.direction" /></li>
-                </ul> -->
-                <DirectionalInput :directions="gameStore.directionalInputs" />
-            <!-- </div> -->
-            <!-- <div class=""> -->
-                <!-- <ul>
-                    <li
-                        v-for="attackButton in gameStore.attackButtons"
-                        :key="attackButton.id"
-                    >{{ attackButton.name }}</li>
-                </ul> -->
-                <AttackButtonGroup :buttons="buttons" />
-            <!-- </div> -->
+                <DirectionalInput />
+                <AttackButtonGroup />
+                <CharacterComboInputGroup />
         </div>
     </section>
 </template>
