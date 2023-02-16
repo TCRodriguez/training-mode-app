@@ -6,6 +6,7 @@ import DirectionalInput from '@/components/DirectionalInputGroup.vue';
 import AttackButtonGroup from '@/components/AttackButtonGroup.vue';
 import ComboInputDisplay from '@/components/ComboInputDisplay.vue';
 import CharacterComboInputGroup from '@/components/CharacterComboInputGroup.vue';
+import GameNotationGroup from '@/components/GameNotationGroup.vue';
 import { ref, reactive, toRaw } from 'vue';
 
 export default {
@@ -25,10 +26,11 @@ export default {
             characterStore,
             router,
             route,
-            buttons
+            buttons,
         }
     },
     created() {
+        this.gameStore.fetchNotations(this.route.params.game);
         this.gameStore.fetchDirectionalInputs();
         this.gameStore.fetchAttackButtons(this.route.params.game)
             .then(() => {
@@ -47,7 +49,8 @@ export default {
         DirectionalInput,
         AttackButtonGroup,
         CharacterComboInputGroup,
-        ComboInputDisplay
+        ComboInputDisplay,
+        GameNotationGroup
     }
 }
 </script>
@@ -61,6 +64,7 @@ export default {
                 <DirectionalInput />
                 <AttackButtonGroup />
                 <CharacterComboInputGroup />
+                <GameNotationGroup />
         </div>
     </section>
 </template>

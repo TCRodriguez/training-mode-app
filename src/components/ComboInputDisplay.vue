@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import AttackButton from '@/components/AttackButton.vue';
 import DirectionalInput from './DirectionalInput.vue';
 import CharacterNotation from './CharacterNotation.vue';
+import GameNotation from './GameNotation.vue';
 
 export default {
     setup() {
@@ -13,33 +14,7 @@ export default {
         const enterFullScreen = () => {
             let comboDisplay = document.querySelector('#combo-display');
             comboDisplay?.requestFullscreen();
-            // comboDisplay?.scrollBy({
-            //     left: comboDisplay.
-                
-            // });
-            // setTimeout(() => {
-            //     let n = 0;
-            //     // while(n < comboDisplay?.scrollWidth){
-            //         comboDisplay?.scrollBy({
-            //             left: 100,
-            //             behavior: 'smooth'
-            //         })
-            //         n += 10;
-            //         console.log(n);
-            //     // }
-            // }, 3000);
-            // comboDisplay.scrollLeft = comboDisplay.scrollWidth;
-
-
         };
-        // const toggleAutoScroll = () => {
-        //     console.log("Auto scroll button pressed.");
-        //     window.scrollBy({
-        //         top: 0,
-        //         left: 500,
-        //         behavior: 'smooth'
-        //     })
-        // }
         addEventListener('fullscreenchange', (event) => {
             console.log("Full screen exited.")
             fullScreenActiveBool.value = !fullScreenActiveBool.value;
@@ -56,26 +31,13 @@ export default {
     components: {
         AttackButton,
         DirectionalInput,
-        CharacterNotation
+        CharacterNotation,
+        GameNotation
     }
 }
 </script>
 <template lang="">
-    <div class="border space-x-5 flex flex-row overflow-x-auto items-center" id="combo-display">
-        <!-- <span 
-            v-for="comboInput in comboDisplay"
-            :key="comboInput.id"
-            :class="{ 'text-red-500': fullScreenActiveBool }"
-        >{{ comboInput }}</span> -->
-        <!-- <button @click="toggleAutoScroll()">Test</button> -->
-        <!-- <img
-            v-for="comboInput in comboDisplay"
-            :key="comboInput.id"
-            :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/${comboInput.category}%2F${comboInput.icon_file_name}`"
-            class="h-12 w-12"
-            :class="{ 'h-96 w-96': fullScreenActiveBool}"
-
-        > -->
+    <div class="border space-x-2 flex flex-row overflow-x-auto items-center" id="combo-display">
         <div
             v-for="comboInput in comboDisplay"
             :key="comboInput.id"
@@ -90,13 +52,17 @@ export default {
                 :class="{ 'h-96 w-96': fullScreenActiveBool}"
             />
             <CharacterNotation 
-                v-else :notation="comboInput.notation"
+                v-else-if="comboInput.notations_group === 'character'" :notation="comboInput.notation"
                 :class="{ 'text-9xl': fullScreenActiveBool}"
             />
-        </div>
+            <GameNotation 
+                v-else :notation="comboInput.notation"
+                :class="{ 'text-9xl': fullScreenActiveBool}"
+                class="fill-green-400 p-2 h-10 w-10"
 
-        
-            <!-- * May add the <component> tag here to replace the <img> above -->
+                :iconFileName="comboInput.icon_file_name"
+            />
+        </div>
     </div>
     <div class="flex flex-row justify-center space-x-5">
         <button class="bg-yellow-500" @click="comboStore.eraseComboInput">Erase</button>

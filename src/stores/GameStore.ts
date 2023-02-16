@@ -5,7 +5,7 @@ export const useGameStore = defineStore('GameStore', {
     state: () => ({
         games: [],
         game: {},
-        notations: [],
+        gameNotations: [],
         attackButtons: [],
         attackButtonIconLinks: [],
         directionalInputs: [],
@@ -35,6 +35,15 @@ export const useGameStore = defineStore('GameStore', {
                 this.games = data.data;
             }
             catch(error) {
+                console.log(error);
+            }
+        },
+        async fetchNotations(gameId: string) {
+            try {
+                const data = await trainingModeAPI.get(`/games/${gameId}/game-notations`)
+                this.gameNotations = data.data.filter(notation => notation.notations_group === 'other');
+                console.log(this.gameNotations);
+            } catch (error) {
                 console.log(error);
             }
         },

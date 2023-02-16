@@ -17,7 +17,7 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async addNotationToDisplay(notation) {
             this.comboDisplay.push(notation);
-            console.log(notation);
+            console.log(this.comboDisplay);
         },
         async eraseComboInput() {
             this.comboDisplay.pop();
