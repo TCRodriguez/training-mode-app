@@ -13,7 +13,6 @@ export default {
     <img
         :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${iconFileName}`" 
         alt=""
-        class="h-12 w-12"
     >
 </template>
 <style lang="">

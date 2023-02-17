@@ -4,6 +4,7 @@ export default {
     props: {
         notation: String,
         iconFileName: String,
+        isFullScreen: Boolean
     },
     components: {
         FollowedByIcon
@@ -17,7 +18,7 @@ export default {
         
         >{{notation}}</span>
 
-        <FollowedByIcon v-else class="h-5 w-5" />
+        <FollowedByIcon v-else :class="{ 'h-40 w-40': isFullScreen, 'h-5 w-5': !isFullScreen }" />
     </div>
 
 

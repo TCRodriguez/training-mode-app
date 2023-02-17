@@ -45,20 +45,22 @@ export default {
         >
             <AttackButton 
                 v-if="comboInput.category === 'attack-buttons'" :iconFileName="comboInput.icon_file_name"
-                :class="{ 'h-96 w-96': fullScreenActiveBool}"
+                :class="{ 'h-96 w-96': fullScreenActiveBool, 'h-12 w-12': !fullScreenActiveBool}"
+
             />
             <DirectionalInput 
                 v-else-if="comboInput.category === 'directional-inputs'" :iconFileName="comboInput.icon_file_name"
-                :class="{ 'h-96 w-96': fullScreenActiveBool}"
+                :class="{ 'h-96 w-96': fullScreenActiveBool, 'h-12 w-12': !fullScreenActiveBool}"
             />
             <CharacterNotation 
                 v-else-if="comboInput.notations_group === 'character'" :notation="comboInput.notation"
-                :class="{ 'text-9xl': fullScreenActiveBool}"
+                :class="{ 'h-96 w-96': fullScreenActiveBool, 'h-12 w-12': !fullScreenActiveBool}"
             />
             <GameNotation 
                 v-else :notation="comboInput.notation"
                 :class="{ 'text-9xl': fullScreenActiveBool}"
                 class="fill-green-400 p-2 h-10 w-10"
+                :isFullScreen="fullScreenActiveBool"
 
                 :iconFileName="comboInput.icon_file_name"
             />
