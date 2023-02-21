@@ -27,8 +27,13 @@ const router = createRouter({
       name: "characters",
       component: () => import("../views/SelectCharacterView.vue")
     },
+    // {
+    //   path: "/combo-viewer/:game/characters/:character",
+    //   name: "combos",
+    //   component: () => import("../views/CreateComboView.vue")
+    // }
     {
-      path: "/combo-viewer/:game/characters/:character",
+      path: "/combo-viewer/:game/create-combo",
       name: "combos",
       component: () => import("../views/CreateComboView.vue")
     }

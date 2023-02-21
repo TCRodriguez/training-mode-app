@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useComboStore } from '@/stores/ComboStore';
+import { useCharacterStore } from '@/stores/CharacterStore';
 import { computed, ref } from 'vue';
 import AttackButton from '@/components/AttackButton.vue';
 import DirectionalInput from './DirectionalInput.vue';
@@ -9,6 +10,7 @@ import GameNotation from './GameNotation.vue';
 export default {
     setup() {
         const comboStore = useComboStore();
+        const characterStore = useCharacterStore();
         const comboDisplay = computed(() => comboStore.comboDisplay);
         let fullScreenActiveBool = ref(false);
         const enterFullScreen = () => {
@@ -20,11 +22,19 @@ export default {
             fullScreenActiveBool.value = !fullScreenActiveBool.value;
         })
 
+        const loadLastComboData = () => {
+            console.log(localStorage);
+            localStorage.setItem('character', 'test')
+            console.log(localStorage);
+        }
+
         return {
             comboStore,
+            characterStore,
             comboDisplay,
             enterFullScreen,
             fullScreenActiveBool,
+            loadLastComboData,
             // toggleAutoScroll
         }
     },
@@ -70,6 +80,7 @@ export default {
         <button class="bg-yellow-500" @click="comboStore.eraseComboInput">Erase</button>
         <button class="bg-red-500" @click="comboStore.clearComboDisplay">Clear</button>
         <button class="bg-green-500" @click="enterFullScreen()">Go Fullscreen</button>
+        <button class="bg-blue-500" @click="loadLastComboData()">Reload previous combo</button>
     </div>
 </template>
 <style lang="">

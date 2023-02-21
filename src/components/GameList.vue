@@ -7,7 +7,7 @@
             const router = useRouter();
             const goToCharacterSelect = (gameId: string) => {
                 gameStore.setGame(gameId);
-                router.push(`/combo-viewer/${gameId}/characters`)
+                router.push(`/combo-viewer/${gameId}/create-combo`)
             }
 
             return {

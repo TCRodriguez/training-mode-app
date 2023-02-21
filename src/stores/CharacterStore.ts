@@ -4,6 +4,8 @@ import axios from 'axios';
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
         characters: [],
+        characterListDisplay: [],
+        characterSearchInputValue: '',
         character: {},
         characterNotations: []
 
@@ -13,6 +15,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             try {
                 const data = await axios.get(`http://127.0.0.1:8000/api/v1/games/${gameId}/characters`)
                 this.characters = data.data;
+                this.characterListDisplay = data.data
                 console.log(this.characters)
 
             }
@@ -20,7 +23,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 console.log(error);
             }
         },
-        async setCharacter(characterId: string) {
+        async setCharacter(characterId: any) {
             this.character = this.characters.find(character => character.id === characterId)
             // * Add a controller action to get notations along with character
             // ? Perhaps this is a new query that hits the /games/{game}/game-notations endpoint?
@@ -41,6 +44,20 @@ export const useCharacterStore = defineStore('CharacterStore', {
             // ]
             this.characterNotations = this.character.notations;
             console.log(this.characterNotations);
+            this.characterSearchInputValue = '';
+        },
+        async updateCharacterSearchCriteria(input: string) {
+            this.characterSearchInputValue = input;
+            console.log(this.characterSearchInputValue);
+        },
+
+        async updateCharacterListDisplay() {
+            console.log(this.characterSearchInputValue);
+            if(this.characterSearchInputValue.length === 0) {
+                this.characterListDisplay = [...this.characters];
+            } else {
+                this.characterListDisplay = this.characters.filter(character => character.name.toLowerCase().includes(this.characterSearchInputValue))
+            }
         }
         
     }
