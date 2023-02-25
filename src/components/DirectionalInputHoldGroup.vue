@@ -42,7 +42,7 @@ export default {
             :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${direction.icon_file_name}`"
         > -->
         <div
-            v-for="direction in gameStore.getDirectionalInputTaps" 
+            v-for="direction in gameStore.getDirectionalInputHolds" 
             :key="direction.id"
             @click="renderComboInput(direction)"
         >

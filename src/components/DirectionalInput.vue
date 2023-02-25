@@ -11,7 +11,7 @@ export default {
         
     </div> -->
     <img
-        :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${iconFileName}`" 
+        :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2Ftekken-7%2F${iconFileName}`" 
         alt=""
     >
 </template>

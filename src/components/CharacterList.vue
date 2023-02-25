@@ -12,6 +12,7 @@
                 characterStore.setCharacter(characterId);
                 console.log(characterSearchInput.value);
                 characterSearchInput.value = '';
+                
             }
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);

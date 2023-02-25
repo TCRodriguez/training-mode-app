@@ -12,7 +12,7 @@ export const useComboStore = defineStore('ComboStore', {
         async addComboInputToDisplay(comboInput) {
             'direction' in comboInput ? comboInput.category = 'directional-inputs' : comboInput.category = 'attack-buttons'
             this.comboDisplay.push(comboInput);
-            console.log(comboInput);
+            console.log(this.comboDisplay);
 
         },
         async addNotationToDisplay(notation) {

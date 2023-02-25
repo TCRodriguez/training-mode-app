@@ -2,7 +2,8 @@
 import { useGameStore } from '../stores/GameStore';
 import { useCharacterStore } from '../stores/CharacterStore';
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
-import DirectionalInput from '@/components/DirectionalInputGroup.vue';
+import DirectionalInputGroup from '@/components/DirectionalInputGroup.vue';
+import DirectionalInputHoldGroup from '@/components/DirectionalInputHoldGroup.vue';
 import AttackButtonGroup from '@/components/AttackButtonGroup.vue';
 import ComboInputDisplay from '@/components/ComboInputDisplay.vue';
 import CharacterComboInputGroup from '@/components/CharacterComboInputGroup.vue';
@@ -76,7 +77,8 @@ export default {
     //     alert('test')
     // },
     components: {
-        DirectionalInput,
+        DirectionalInputGroup,
+        DirectionalInputHoldGroup,
         AttackButtonGroup,
         CharacterComboInputGroup,
         ComboInputDisplay,
@@ -99,7 +101,8 @@ export default {
             <ComboInputDisplay />
         </div>
         <div class="flex flex-row justify-center">
-                <DirectionalInput />
+                <DirectionalInputGroup />
+                <DirectionalInputHoldGroup />
                 <AttackButtonGroup />
                 <CharacterComboInputGroup />
                 <GameNotationGroup />

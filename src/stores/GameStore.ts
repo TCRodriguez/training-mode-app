@@ -16,7 +16,18 @@ export const useGameStore = defineStore('GameStore', {
         getGames(state){
             return state.games
         },
-        getAttackButtons: (state) => state.attackButtons
+        getAttackButtons: (state) => state.attackButtons,
+        getDirectionalInputTaps(state) {
+            const inputs = state.directionalInputs.filter(input => !input.direction.includes('(hold)'));
+            console.log(inputs);
+            
+            return inputs;
+        },
+        getDirectionalInputHolds(state) {
+            const inputs = state.directionalInputs.filter(input => input.direction.includes('(hold)'));
+
+            return inputs;
+        }
     },
     actions: {
         async fetchDirectionalInputs() {
