@@ -8,7 +8,7 @@ export default {
 </script>
 <template lang="">
     <img
-        :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/attack-buttons%2F${iconFileName}`" 
+        :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/attack-buttons%2Ftekken-7%2F${iconFileName}`" 
         alt="" 
     >
 </template>

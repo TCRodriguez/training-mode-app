@@ -21,7 +21,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-2 grid-cols-3 items-center justify-center">
+    <div class="grid grid-rows-2 grid-cols-5 items-center justify-center">
         <div
             v-for="gameNotation in gameNotations"
             :key="gameNotation.id"       

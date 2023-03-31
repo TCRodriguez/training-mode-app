@@ -16,12 +16,16 @@ export default {
             comboStore.addComboInputToDisplay(input)
             // const test = gameStore.getDirectionalInputTaps;
         }
+        const renderDirectionalInput = (input) => {
+            comboStore.addDirectionalInputToDisplay(input)
+        }
 
         return {
             gameStore,
             comboStore,
             directions,
-            renderComboInput
+            renderComboInput,
+            renderDirectionalInput
         }
     },
     components: {
@@ -44,7 +48,8 @@ export default {
         <div
             v-for="direction in gameStore.getDirectionalInputTaps" 
             :key="direction.id"
-            @click="renderComboInput(direction)"
+            @click="renderDirectionalInput(direction)"
+            class="flex flex-col justify-center"
         >
             <DirectionalInput :iconFileName="direction.icons[0].icon_file_name" class="h-24 w-24"/>
         </div>

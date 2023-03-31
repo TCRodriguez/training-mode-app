@@ -8,3 +8,8 @@ export const renderComboInput = (input: string) => {
 export const renderNotationInput = (notation: object) => {
     comboStore.addNotationToDisplay(notation);
 }
+
+export const addNotationToNotationDisplay = (notation: string) => {
+    comboStore.notationsDisplay.push(notation);
+
+}

@@ -4,7 +4,8 @@ import { useCharacterStore } from '../stores/CharacterStore';
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 import DirectionalInputGroup from '@/components/DirectionalInputGroup.vue';
 import DirectionalInputHoldGroup from '@/components/DirectionalInputHoldGroup.vue';
-import AttackButtonGroup from '@/components/AttackButtonGroup.vue';
+import DirectionalInputSwitcher from '@/components/DirectionalInputSwitcher.vue';
+import AttackButtonSwitcher from '@/components/AttackButtonSwitcher.vue';
 import ComboInputDisplay from '@/components/ComboInputDisplay.vue';
 import CharacterComboInputGroup from '@/components/CharacterComboInputGroup.vue';
 import GameNotationGroup from '@/components/GameNotationGroup.vue';
@@ -33,7 +34,7 @@ export default {
     },
     created() {
         this.characterStore.fetchCharacters(this.route.params.game);
-        this.gameStore.fetchNotations(this.route.params.game);
+        this.gameStore.fetchGameNotations(this.route.params.game);
         this.gameStore.fetchDirectionalInputs();
         this.gameStore.fetchAttackButtons(this.route.params.game)
             .then(() => {
@@ -44,42 +45,12 @@ export default {
                 this.buttons = JSON.parse(JSON.stringify(this.gameStore.attackButtons))
                 console.log(this.buttons);
             });
-        // if(Object.keys(this.characterStore.character).length === 0) {
-        //     this.characterStore.fetchCharacters(this.route.params.game);
-        //     this.characterStore.setCharacter(this.route.params.character);
-        // }
-        // console.log(this.route.params.character);
-        // console.log(this.gameStore.getAttackButtons);
-        // console.log(this.buttons);
-        // window.addEventListener('beforeunload', () => {
-        //     console.log("test");
-        //     this.router.push(`/combo-viewer`)
-        // })
-        // window.addEventListener('beforeunload', function(event) {
-        //     // event.returnValue = 'Write something'
-        //     this.window.location.href = "https://www.youtube.com"
-        // })
-        // window.onbeforeunload = () => {
-        //     console.log("tessadfdsafasd");
-        //     this.router.replace('/combo-viewer')
-        // }
-        
-
     },
-    // beforeUnmount() {
-    //     console.log("test");
-    // },
-    // unmounted() {
-    //     console.log("unmounted");
-    //     this.router.push('/combo-viewer')
-    // },
-    // beforeRouteLeave (to, from, next) {
-    //     alert('test')
-    // },
     components: {
         DirectionalInputGroup,
         DirectionalInputHoldGroup,
-        AttackButtonGroup,
+        DirectionalInputSwitcher,
+        AttackButtonSwitcher,
         CharacterComboInputGroup,
         ComboInputDisplay,
         GameNotationGroup,
@@ -100,10 +71,11 @@ export default {
         <div>
             <ComboInputDisplay />
         </div>
-        <div class="flex flex-row justify-center">
-                <DirectionalInputGroup />
-                <DirectionalInputHoldGroup />
-                <AttackButtonGroup />
+        <div class="flex flex-row justify-center items-center">
+                <!-- <DirectionalInputGroup />
+                <DirectionalInputHoldGroup /> -->
+                <DirectionalInputSwitcher />
+                <AttackButtonSwitcher />
                 <CharacterComboInputGroup />
                 <GameNotationGroup />
         </div>
