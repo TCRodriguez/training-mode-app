@@ -60,11 +60,12 @@ export default {
             const notations = [...comboStore.notationsDisplay];
             const notationsArrayLength = notations.length;
             const nextNotationIndices = [];
+            console.log(notations);
 
 
             for (let i = 0; i < notations.length; i++) {
                 const notation = notations[i];
-                notation === '>' ? nextNotationIndices.push(i) : null;
+                notation.notation === '>' ? nextNotationIndices.push(i) : null;
             }
             // console.log(nextNotationIndices);
             // console.log(notationsArrayLength);
@@ -88,12 +89,13 @@ export default {
                 chunk = notations.slice(
                     k > 0 ? start : nextNotationIndices[j - index], 
                     nextNotationIndices[j]
-                ).filter(notation => notation !== '>');
+                ).filter(notation => notation.notation !== '>');
 
                 notationChunks.push(chunk);
                 k -= 1;
             }
             notationChunks.forEach(chunk => comboStore.addNotationSegments(chunk));
+            console.log(comboStore.notationSegments);
         }
 
         const presentComboVertically = () => {
@@ -104,6 +106,12 @@ export default {
             comboDisplay?.requestFullscreen();
             // console.log(fullScreenActiveVerticalBool.value);
         }
+
+        const testGetInput = (notation, category) => {
+            const test = getInput(notation, category);
+            console.log(test);
+        }
+
         return {
             comboStore,
             characterStore,
@@ -113,6 +121,7 @@ export default {
             fullScreenActiveVerticalBool,
             splitComboSections,
             presentComboVertically,
+            getInput
             // toggleAutoScroll
         }
     },
@@ -165,8 +174,9 @@ export default {
         id="vertical-combo-display"
     >
         <div class="flex flex-row items-center" v-for="segment in comboStore.notationSegments" :key="segment.id">
-            <div class="shrink-0" v-for="notation in segment">
+            <div class="shrink-0" v-for="notation in segment" @click="getInput(notation.notation, notation.category)">
                 <!-- {{comboStore.comboDisplay[]}} -->
+                <!-- {{getInput(notation.notation, notation.category)}} -->
                 <!-- <p>{{notation.notation}}</p> -->
                 <!-- <p>{{notation.notation}}</p> -->
                 <!-- <p>{{notation.category}}</p> -->
@@ -193,6 +203,7 @@ export default {
 
                     :iconFileName="notation.icon_file_name"
                 />
+
             </div>
         </div>
     </div>
