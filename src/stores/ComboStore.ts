@@ -48,6 +48,11 @@ export const useComboStore = defineStore('ComboStore', {
 
         // },
         async addNotationToDisplay(notation) {
+            if(notation.character_id !== null) {
+                notation.category = 'character-notations';
+            } else {
+                notation.category = 'notations'
+            }
             this.comboDisplay.push(notation);
             console.log(this.comboDisplay);
 
@@ -73,6 +78,21 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async clearNotationSegments() {
             this.notationSegments = [];
+        },
+        async saveCharacterCombo(gameId: string, characterId: string, comboInputs: object) {
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/character-combos`, {
+                    game_id: gameId,
+                    character_id: characterId,
+                    inputs: comboInputs
+                    //hits
+                })
+                .then(response => {
+                    console.log(response);
+                })
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 });

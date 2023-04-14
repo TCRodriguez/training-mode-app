@@ -15,6 +15,9 @@ export const useGameStore = defineStore('GameStore', {
 
     }),
     getters: {
+        getGame(state): object | undefined {
+            return state.game;
+        },
         getGames(state){
             return state.games
         },

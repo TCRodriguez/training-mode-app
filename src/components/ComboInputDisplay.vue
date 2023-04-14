@@ -107,6 +107,23 @@ export default {
             // console.log(fullScreenActiveVerticalBool.value);
         }
 
+        const saveCharacterCombo = () => {
+            console.log(characterStore.character);
+            if(Object.keys(characterStore.character).length === 0) {
+                console.log('character not set');
+                alert('Please select a character first.')
+                return;
+            }
+            console.log(comboStore.comboDisplay);
+
+            const game = gameStore.getGame;
+            const character = characterStore.getCharacter;
+            console.log(game?.id);
+            console.log(character?.id);
+            console.log(characterStore.character);
+            comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboDisplay);
+        }
+
         const testGetInput = (notation, category) => {
             const test = getInput(notation, category);
             console.log(test);
@@ -121,7 +138,8 @@ export default {
             fullScreenActiveVerticalBool,
             splitComboSections,
             presentComboVertically,
-            getInput
+            getInput,
+            saveCharacterCombo
             // toggleAutoScroll
         }
     },
@@ -213,6 +231,7 @@ export default {
         <button class="bg-green-500" @click="enterFullScreen()">Go Fullscreen</button>
         <button class="bg-green-500" @click="splitComboSections()">Split combo sections</button>
         <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
+        <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button>
     </div>
 </template>
 <style lang="">

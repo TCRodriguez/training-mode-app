@@ -10,6 +10,11 @@ export const useCharacterStore = defineStore('CharacterStore', {
         characterNotations: []
 
     }),
+    getters: {
+        getCharacter(state) {
+            return state.character;
+        }
+    },
     actions: {
         async fetchCharacters(gameId: any) {
             try {
