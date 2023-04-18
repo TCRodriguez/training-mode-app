@@ -21,7 +21,7 @@ export default {
        <button
             v-for="notation in character.notations"
             :key="notation.id"
-            class="border bg-red-500 p-2"
+            class="border bg-red p-2"
             @click="renderNotationInput(notation)"
        >{{notation.notation}}</button> 
     </div>

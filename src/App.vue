@@ -4,6 +4,12 @@ import NavBar from './components/NavBar.vue';
 </script>
 
 <template>
+    <main class="flex justify-center">
+      <div class="bg-gray w-1/2 p-2">
+        <NavBar></NavBar>
+        <RouterView />
+      </div>
+    </main>
   <!-- <header>
     <img
       alt="Vue logo"
@@ -22,8 +28,6 @@ import NavBar from './components/NavBar.vue';
       </nav>
     </div>
   </header> -->
-  <NavBar></NavBar>
-  <RouterView />
 </template>
 
 <style scoped>

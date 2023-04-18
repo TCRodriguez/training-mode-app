@@ -35,7 +35,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-3 grid-cols-3 bg-blue-500">
+    <div class="grid grid-rows-3 grid-cols-3 bg-blue">
         <!-- <img
             v-for="direction in directions" 
             :key="direction.id"

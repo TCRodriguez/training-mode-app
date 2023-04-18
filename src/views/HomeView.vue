@@ -1,10 +1,16 @@
-<script setup lang="ts">
+<script lang="ts">
+  import SelectGameView from './SelectGameView.vue';
+
+  export default {
+    components: {
+      SelectGameView
+    }
+  }
 </script>
 
 <template>
-  <main>
     <div>
-      <router-link to="/combo-viewer">Combo Viewer</router-link>
+      <!-- <router-link to="/combo-viewer">Combo Viewer</router-link> -->
+      <SelectGameView />
     </div>
-  </main>
 </template>

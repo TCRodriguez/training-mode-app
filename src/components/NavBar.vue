@@ -1,7 +1,7 @@
 <template lang="">
     <div>
         <nav>
-            <router-link to="/">TrainingMode</router-link>
+            <router-link to="/" class="font-bold text-4xl">TrainingMode</router-link>
         </nav>
     </div>
 </template>

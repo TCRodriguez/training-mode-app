@@ -25,7 +25,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-2 grid-cols-2 h-full bg-red-500">
+    <div class="grid grid-rows-2 grid-cols-2 h-full bg-red">
         <div
             v-for="attackButton in gameStore.getAttackButtonDoubles"
             :key="attackButton.id"

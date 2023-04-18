@@ -226,10 +226,10 @@ export default {
         </div>
     </div>
     <div class="flex flex-row justify-center space-x-5">
-        <button class="bg-yellow-500" @click="comboStore.eraseComboInput">Erase</button>
-        <button class="bg-red-500" @click="comboStore.clearComboDisplay">Clear</button>
-        <button class="bg-green-500" @click="enterFullScreen()">Go Fullscreen</button>
-        <button class="bg-green-500" @click="splitComboSections()">Split combo sections</button>
+        <button class="bg-yellow" @click="comboStore.eraseComboInput">Erase</button>
+        <button class="bg-red" @click="comboStore.clearComboDisplay">Clear</button>
+        <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
+        <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
         <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
         <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button>
     </div>
