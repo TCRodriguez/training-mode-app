@@ -35,7 +35,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-3 grid-cols-3 bg-blue">
+    <div class="grid grid-rows-3 grid-cols-3">
         <!-- <img
             v-for="direction in directions" 
             :key="direction.id"
@@ -49,9 +49,9 @@ export default {
             v-for="direction in gameStore.getDirectionalInputTaps" 
             :key="direction.id"
             @click="renderDirectionalInput(direction)"
-            class="flex flex-col justify-center"
+            class="flex flex-col"
         >
-            <DirectionalInput :iconFileName="direction.icons[0].icon_file_name" class="h-24 w-24"/>
+            <DirectionalInput :iconFileName="direction.icons[0].icon_file_name" class="h-20 w-20"/>
         </div>
     </div>
 </template>

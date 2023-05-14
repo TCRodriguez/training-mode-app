@@ -12,11 +12,17 @@ export const useGameStore = defineStore('GameStore', {
         attackButtonIconLinks: [],
         directionalInputs: [],
         directionalInputIconLinks: [],
+        tags: [],
+        tagsListDisplay: [],
+        tagSearchCriteria: '',
 
     }),
     getters: {
         getGame(state): object | undefined {
             return state.game;
+        },
+        getGameTitle(state): string {
+            return state.game.title;
         },
         getGames(state){
             return state.games
@@ -171,8 +177,34 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
+        async fetchTags(gameId: string) {
+            try {
+                const data = await trainingModeAPI.get(`/games/${gameId}/tags`)
+                // .then(() => {
+                //     this.tags = data.data;
+                //     console.log(this.tags);
+                // })
+                this.tags = data.data;
+                console.log(this.tags);
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async setGame(gameId: string) {
             this.game = this.games.find(game => game.id === gameId);
+            this.game.bread_crumb_type = 'game';
+            console.log(this.game);
+        },
+        async updateTagsListDisplay() {
+            this.tagsListDisplay = this.tags.filter(tag => {
+                // console.log(tag.name);
+                return tag.name.includes(this.tagSearchCriteria);
+            })
+            console.log(this.tagsListDisplay);
+        },
+        async updateTagSearchCriteria(input: string) {
+            this.tagSearchCriteria = input;
+            console.log(this.tagSearchCriteria);
         }
     }
 });

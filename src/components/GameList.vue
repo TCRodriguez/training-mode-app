@@ -1,18 +1,31 @@
 <script lang="ts">
     import { useGameStore } from '../stores/GameStore';
+    import { useNavigationStore } from '@/stores/NavigationStore';
     import { useRouter } from 'vue-router';
     import GameBanner from './GameBanner.vue';
+    import MagnifyingGlass from './icons/MagnifyingGlass.vue';
     export default {
         setup() {
             const gameStore = useGameStore();
+            const navigationStore = useNavigationStore();
             const router = useRouter();
             const goToCharacterSelect = (gameId: string) => {
                 gameStore.setGame(gameId);
-                router.push(`/combo-viewer/${gameId}/create-combo`)
+
+                const navItem = {
+                    name: gameStore.getGameTitle,
+                    link: `/games/${gameId}/characters`,
+                    type: 'game'
+                };
+                // router.push(`/games/${gameId}/create-combo`)
+                router.push(navItem.link)
+
+                navigationStore.addNavigationItem(navItem)
             }
 
             return {
                 gameStore,
+                navigationStore,
                 router,
                 goToCharacterSelect
             }
@@ -24,7 +37,8 @@
             })
         },
         components: {
-            GameBanner
+            GameBanner,
+            MagnifyingGlass
         }
     }
 </script>
@@ -32,6 +46,14 @@
 <template lang="">
     <div>
         <!-- <p>Game List</p> -->
+        <div class="flex flex-row w-full items-center">
+            <MagnifyingGlass class="h-10 w-10" />
+            <input 
+                class="my-8"
+                type="text" 
+                placeholder="Search Games"
+            >
+        </div>
         <ul>
             <li 
                 v-for="game in gameStore.games"

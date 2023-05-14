@@ -14,7 +14,7 @@ export default {
         const comboStore = useComboStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
-        const comboDisplay = computed(() => comboStore.comboDisplay);
+        const createComboDisplay = computed(() => comboStore.createComboDisplay);
         const { getInput } = storeToRefs(gameStore);
         let fullScreenActiveHorizontalBool = ref(false);
         let fullScreenActiveVerticalBool = ref(false);
@@ -102,27 +102,27 @@ export default {
             splitComboSections();
 
             // fullScreenActiveVerticalBool.value = !fullScreenActiveVerticalBool.value;
-            let comboDisplay = document.querySelector('#vertical-combo-display');
-            comboDisplay?.requestFullscreen();
+            let createComboDisplay = document.querySelector('#vertical-combo-display');
+            createComboDisplay?.requestFullscreen();
             // console.log(fullScreenActiveVerticalBool.value);
         }
 
-        const saveCharacterCombo = () => {
-            console.log(characterStore.character);
-            if(Object.keys(characterStore.character).length === 0) {
-                console.log('character not set');
-                alert('Please select a character first.')
-                return;
-            }
-            console.log(comboStore.comboDisplay);
+        // const saveCharacterCombo = () => {
+        //     console.log(characterStore.character);
+        //     if(Object.keys(characterStore.character).length === 0) {
+        //         console.log('character not set');
+        //         alert('Please select a character first.')
+        //         return;
+        //     }
+        //     console.log(comboStore.comboDisplay);
 
-            const game = gameStore.getGame;
-            const character = characterStore.getCharacter;
-            console.log(game?.id);
-            console.log(character?.id);
-            console.log(characterStore.character);
-            comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboDisplay);
-        }
+        //     const game = gameStore.getGame;
+        //     const character = characterStore.getCharacter;
+        //     console.log(game?.id);
+        //     console.log(character?.id);
+        //     console.log(characterStore.character);
+        //     comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboDisplay);
+        // }
 
         const testGetInput = (notation, category) => {
             const test = getInput(notation, category);
@@ -132,14 +132,14 @@ export default {
         return {
             comboStore,
             characterStore,
-            comboDisplay,
+            createComboDisplay,
             enterFullScreen,
             fullScreenActiveHorizontalBool,
             fullScreenActiveVerticalBool,
             splitComboSections,
             presentComboVertically,
             getInput,
-            saveCharacterCombo
+            // saveCharacterCombo
             // toggleAutoScroll
         }
     },
@@ -156,11 +156,11 @@ export default {
 </script>
 <template lang="">
     <div
-        class="border space-x-2 flex flex-row overflow-x-auto overflow-y-auto items-center" 
+        class="border space-x-2 flex flex-row overflow-x-auto overflow-y-auto items-center h-14 bg-blue" 
         id="horizontal-combo-display"
     >
         <div
-            v-for="comboInput in comboDisplay"
+            v-for="comboInput in createComboDisplay"
             :key="comboInput.id"
             class="shrink-0"
         >
@@ -228,10 +228,10 @@ export default {
     <div class="flex flex-row justify-center space-x-5">
         <button class="bg-yellow" @click="comboStore.eraseComboInput">Erase</button>
         <button class="bg-red" @click="comboStore.clearComboDisplay">Clear</button>
-        <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
+        <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
         <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
         <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
-        <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button>
+        <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
     </div>
 </template>
 <style lang="">

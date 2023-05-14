@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import SelectGameViewVue from "../views/SelectGameView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,25 +8,38 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: SelectGameViewVue,
     },
+    // {
+    //   path: "/about",
+    //   name: "about",
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import("../views/AboutView.vue"),
+    // },
     {
-      path: "/about",
-      name: "about",
+      path: "/select-character",
+      name: "select character",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/AboutView.vue"),
     },
     {
-      path: "/combo-viewer",
-      name: "combo viewer",
+      path: "/games",
+      name: "games",
       component: () => import("../views/SelectGameView.vue"),
     },
     {
-      path: "/combo-viewer/:game/characters",
+      path: "/games/:game/characters",
       name: "characters",
       component: () => import("../views/SelectCharacterView.vue")
+    },
+    {
+      path: "/games/:game/characters/:character",
+      name: "character",
+      component: () => import("../views/CharacterView.vue")
     },
     // {
     //   path: "/combo-viewer/:game/characters/:character",
@@ -33,7 +47,7 @@ const router = createRouter({
     //   component: () => import("../views/CreateComboView.vue")
     // }
     {
-      path: "/combo-viewer/:game/create-combo",
+      path: "/games/:game/create-combo",
       name: "combos",
       component: () => import("../views/CreateComboView.vue")
     }

@@ -8,10 +8,12 @@ module.exports = {
     colors: {
       'blue': '#023E6F',
       'gray': '#A3A39A',
+      // 'gray': '#A3A49B',
       'green': '#37981F',
       'yellow': '#F8AF04',
       'red': '#E30000',
-      'black': '#0B0B0A'
+      'black': '#0B0B0A',
+      'white': '#FFFFFC'
     },
     extend: {},
   },

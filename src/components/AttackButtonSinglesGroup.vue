@@ -30,7 +30,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-2 grid-cols-2 h-full bg-red">
+    <div class="grid grid-rows-2 grid-cols-2">
         <div
             v-for="attackButton in gameStore.getAttackButtonSingles"
             :key="attackButton.id"

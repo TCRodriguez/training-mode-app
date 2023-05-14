@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+input {
+    @apply p-8;
+    @apply bg-gray;
+    @apply border;
+    @apply rounded;
+    @apply p-2;
+    @apply placeholder:text-black;
+    @apply placeholder:font-bold;
+    @apply placeholder:text-lg;
+    @apply placeholder:opacity-50;
+    @apply w-full;
+    @apply my-2;
+}

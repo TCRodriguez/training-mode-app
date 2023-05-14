@@ -4,11 +4,12 @@ import NavBar from './components/NavBar.vue';
 </script>
 
 <template>
-    <main class="flex justify-center">
-      <div class="bg-gray w-1/2 p-2">
+    <main class="flex justify-center h-screen">
+      <div class="bg-gray w-full h-full fixed lg:w-1/2 p-2 relative">
         <NavBar></NavBar>
         <RouterView />
       </div>
+      <!-- <div class="bg-black fixed opacity-80 w-full h-screen mt-24">test</div> -->
     </main>
   <!-- <header>
     <img

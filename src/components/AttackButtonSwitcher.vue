@@ -18,7 +18,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="flex flex-col">
+    <div class="flex flex-col items-center">
        <div>
             <AttackButtonSinglesGroup v-if = "attackButtonGroupSelection === 'singles'" />
        </div> 
@@ -28,10 +28,10 @@ export default {
        <div>
             <AttackButtonTriplesGroup v-if = "attackButtonGroupSelection === 'triples'" />
        </div>
-       <div class="flex flex-row">
-            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'singles'">Singles</button>
-            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'doubles'">Doubles</button>
-            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'triples'">Triples</button>
+       <div class="flex flex-row text-yellow space-x-2">
+            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'singles'">1</button>
+            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'doubles'">2</button>
+            <button class="border rounded p-2" @click="attackButtonGroupSelection = 'triples'">3</button>
         </div>
     </div>
 </template>
