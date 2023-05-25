@@ -4,6 +4,11 @@ import trainingModeAPI from '../axios-http';
 export const useGameStore = defineStore('GameStore', {
     state: () => ({
         games: [],
+        comingSoonList: [
+            'Street Fighter 6',
+            'King of Fighters XV',
+            'Guilty Gear Strive'
+        ],
         game: {},
         gameNotations: [],
         directionalInputNotations: [],
@@ -29,11 +34,16 @@ export const useGameStore = defineStore('GameStore', {
         },
         getAttackButtons: (state) => state.attackButtons,
         getAttackButtonSingles: (state) => {
+            // ! Need to remove this hardcoded list here
             const attackButtonSinglesNotations = ['1', '2', '3', '4']
             const attackButtonSinglesArray: any[] = [];
 
             state.attackButtons.forEach(attackButton => {
-                if(attackButton.notations[0] !== undefined && attackButtonSinglesNotations.includes(attackButton.notations[0].notation)) {
+                console.log(attackButton);
+                // if(attackButton.notations[0] !== undefined && attackButtonSinglesNotations.includes(attackButton.notations[0].notation)) {
+                //     attackButtonSinglesArray.push(attackButton)
+                // }
+                if(attackButton.button_count === "1") {
                     attackButtonSinglesArray.push(attackButton)
                 }
             });
@@ -141,6 +151,13 @@ export const useGameStore = defineStore('GameStore', {
                 // this.directionalInputs.forEach(input => {
                 //     input.notation = this.directionalInputNotations.find(notation => )
                 // })
+                this.directionalInputs.forEach(input => {
+                    input.icons.forEach(icon => {
+                        if(icon.game_id === this.game.id) {
+                            input.icon_file_name = icon.icon_file_name;
+                        }
+                    })
+                })
                 console.log(data.data);
             } catch (error) {
                 console.log(error);
@@ -169,6 +186,7 @@ export const useGameStore = defineStore('GameStore', {
             }
         },
         async fetchAttackButtons(gameId: string) {
+            console.log(gameId);
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
                 this.attackButtons = data.data

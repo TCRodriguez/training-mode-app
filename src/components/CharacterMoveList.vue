@@ -13,7 +13,7 @@ export default {
         const gameStore = useGameStore();
         const route = useRoute();
         const router = useRouter();
-        // const addTagActive = ref(false);
+        const addTagActive = ref(false);
         const searchMoves = ref(null);
         const searchOptionsModalActive = ref(false);
         const searchByOptionSelection = ref('tags');
@@ -29,10 +29,10 @@ export default {
         const searchByTagsInput = ref('');
 
 
-        const openAddTagInput = () => {
-            // alert('test');
-            addTagActive.value = !addTagActive.value;
-        }
+        // const openAddTagInput = () => {
+        //     // alert('test');
+        //     addTagActive.value = !addTagActive.value;
+        // }
 
         const addTagToMove = (newTag, moveId) => {
             // alert(moveId);
@@ -155,8 +155,8 @@ export default {
             gameStore,
             route,
             router,
-            // addTagActive,
-            openAddTagInput,
+            addTagActive,
+            // openAddTagInput,
             addTagToMove,
             searchMoves,
             searchCharacterMoveInputValue,
@@ -244,7 +244,6 @@ export default {
                 >
                     <div>
                         <CharacterMove 
-                            @add-tag-pressed="openAddTagInput"
                             @save-tag="addTagToMove"
                             @trigger-remove-tag="removeTagFromCharacterMove"
                             :addTagInputActive="addTagActive"

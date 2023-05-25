@@ -14,7 +14,7 @@ export default {
         const comboStore = useComboStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
-        const createComboDisplay = computed(() => comboStore.createComboDisplay);
+        const comboInputs = computed(() => comboStore.comboInputsDisplay);
         const { getInput } = storeToRefs(gameStore);
         let fullScreenActiveHorizontalBool = ref(false);
         let fullScreenActiveVerticalBool = ref(false);
@@ -52,7 +52,7 @@ export default {
         })
         watch(() => characterStore.character, () => {
             console.log('character has changed');
-            comboStore.comboDisplay = [];
+            comboStore.comboInputsDisplay = [];
         });
 
         const splitComboSections = () => {
@@ -102,8 +102,8 @@ export default {
             splitComboSections();
 
             // fullScreenActiveVerticalBool.value = !fullScreenActiveVerticalBool.value;
-            let createComboDisplay = document.querySelector('#vertical-combo-display');
-            createComboDisplay?.requestFullscreen();
+            let inputComboDisplay = document.querySelector('#vertical-combo-display');
+            inputComboDisplay?.requestFullscreen();
             // console.log(fullScreenActiveVerticalBool.value);
         }
 
@@ -130,9 +130,10 @@ export default {
         }
 
         return {
+            gameStore,
             comboStore,
             characterStore,
-            createComboDisplay,
+            comboInputs,
             enterFullScreen,
             fullScreenActiveHorizontalBool,
             fullScreenActiveVerticalBool,
@@ -142,6 +143,9 @@ export default {
             // saveCharacterCombo
             // toggleAutoScroll
         }
+    },
+    props: {
+        inputs: Array
     },
     components: {
         AttackButton,
@@ -160,21 +164,30 @@ export default {
         id="horizontal-combo-display"
     >
         <div
-            v-for="comboInput in createComboDisplay"
+            v-for="comboInput in comboStore.comboInputsDisplay"
             :key="comboInput.id"
             class="shrink-0"
         >
             <AttackButton 
-                v-if="comboInput.category === 'attack-buttons'" :iconFileName="comboInput.icon_file_name"
+                v-if="comboInput.category === 'attack-buttons'" 
+                :iconFileName="comboInput.icon_file_name"
+                :game="gameStore.game.abbreviation"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
 
             />
-            <DirectionalInput 
+            <!-- <DirectionalInput 
                 v-else-if="comboInput.category === 'directional-inputs'" :iconFileName="comboInput.icons[0].icon_file_name"
+                :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
+            /> -->
+            <DirectionalInput 
+                v-else-if="comboInput.category === 'directional-inputs'" 
+                :iconFileName="comboInput.icon_file_name"
+                :game="gameStore.game.abbreviation"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
             />
             <CharacterNotation 
-                v-else-if="comboInput.notations_group === 'character'" :notation="comboInput.notation"
+                v-else-if="comboInput.notations_group === 'character'" 
+                :notation="comboInput.notation"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
             />
             <GameNotation 
@@ -227,7 +240,7 @@ export default {
     </div>
     <div class="flex flex-row justify-center space-x-5">
         <button class="bg-yellow" @click="comboStore.eraseComboInput">Erase</button>
-        <button class="bg-red" @click="comboStore.clearComboDisplay">Clear</button>
+        <button class="bg-red" @click="comboStore.clearComboInputsDisplay">Clear</button>
         <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
         <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
         <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>

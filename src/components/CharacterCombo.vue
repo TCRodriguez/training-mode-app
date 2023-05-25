@@ -2,16 +2,19 @@
 import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
 import CloseIcon from './icons/CloseIcon.vue';
+import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 export default {
     setup() {
+        const gameStore = useGameStore();
         const comboStore = useComboStore();
         const { getCharacterComboTags } = storeToRefs(comboStore);
         const addTagInput = ref(null);
 
         return {
+            gameStore,
             comboStore,
             getCharacterComboTags,
             addTagInput
@@ -40,12 +43,16 @@ export default {
                     alt="" 
                 > -->
                 <DirectionalInput 
-                    v-if="input.img_category === 'directional-inputs'" :iconFileName="input.icon_file_name"
+                    v-if="input.img_category === 'directional-inputs'" 
+                    :iconFileName="input.icon_file_name"
+                    :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
                 />               
 
                 <AttackButton 
-                    v-if="input.img_category === 'attack-buttons'" :iconFileName="input.icon_file_name"
+                    v-if="input.img_category === 'attack-buttons'"
+                    :iconFileName="input.icon_file_name"
+                    :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
                 />
             </div>

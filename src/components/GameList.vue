@@ -44,7 +44,7 @@
 </script>
 
 <template lang="">
-    <div>
+    <div class="flex flex-col">
         <!-- <p>Game List</p> -->
         <div class="flex flex-row w-full items-center">
             <MagnifyingGlass class="h-10 w-10" />
@@ -54,7 +54,7 @@
                 placeholder="Search Games"
             >
         </div>
-        <ul>
+        <ul class="space-y-4 h-96 overflow-y-auto">
             <li 
                 v-for="game in gameStore.games"
                 :key="game.id"
@@ -62,7 +62,12 @@
             >
                 <!-- {{ game.title }} -->
                 <!-- <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${game.title}-banner.png`" alt="" srcset=""> -->
-                <GameBanner class="" :bannerImg="`${game.title}`"/>
+                <div class="relative">
+                    <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
+                        <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
+                    </div>
+                    <GameBanner :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
+                </div>
             </li>
             <!-- <li>
                 <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${gameStore.game.title}-banner.png`" alt="" srcset="">

@@ -51,7 +51,7 @@ export default {
             @click="renderDirectionalInput(direction)"
             class="flex flex-col"
         >
-            <DirectionalInput :iconFileName="direction.icons[0].icon_file_name" class="h-20 w-20"/>
+            <DirectionalInput :iconFileName="direction.icon_file_name" :game="gameStore.game.abbreviation" class="h-20 w-20"/>
         </div>
     </div>
 </template>

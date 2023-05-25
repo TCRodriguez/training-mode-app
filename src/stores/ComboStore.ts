@@ -7,7 +7,7 @@ export const useComboStore = defineStore('ComboStore', {
     state: () => ({
         combos: [],
         characterComboListDisplay: [],
-        createComboDisplay: [],
+        comboInputsDisplay: [],
         notationsDisplay: [],
         notationSegments: [],
         searchByTagsList: [],
@@ -29,9 +29,10 @@ export const useComboStore = defineStore('ComboStore', {
     actions: {
         async addDirectionalInputToDisplay(directionalInput: object) {
             directionalInput.category = 'directional-inputs';
-            this.createComboDisplay.push(directionalInput)
+            this.comboInputsDisplay.push(directionalInput)
+            console.log(directionalInput);
             // this.notationsDisplay.push(directionalInput.)
-            console.log(this.createComboDisplay);
+            console.log(this.comboInputsDisplay);
 
             // this.notationsDisplay.push(directionalInput.notations[0].notation)
             this.notationsDisplay.push({
@@ -46,7 +47,7 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async addAttackButtonInputToDisplay(attackButtonInput: object) {
             attackButtonInput.category = 'attack-buttons';
-            this.createComboDisplay.push(attackButtonInput);
+            this.comboInputsDisplay.push(attackButtonInput);
 
             // this.notationsDisplay.push(attackButtonInput.notations[0].notation)
             this.notationsDisplay.push({
@@ -68,8 +69,8 @@ export const useComboStore = defineStore('ComboStore', {
             } else {
                 notation.category = 'notations'
             }
-            this.createComboDisplay.push(notation);
-            console.log(this.createComboDisplay);
+            this.comboInputsDisplay.push(notation);
+            console.log(this.comboInputsDisplay);
 
             // this.notationsDisplay.push(notation.notation)
             this.notationsDisplay.push({
@@ -84,11 +85,12 @@ export const useComboStore = defineStore('ComboStore', {
             console.log(this.notationSegments);
         },
         async eraseComboInput() {
-            this.createComboDisplay.pop();
+            this.comboInputsDisplay.pop();
             this.notationsDisplay.pop();
         },
-        async clearCreateComboDisplay() {
-            this.createComboDisplay = [];
+        async clearComboInputsDisplay() {
+            console.log('objectestt');
+            this.comboInputsDisplay = [];
             this.notationsDisplay = [];
         },
         async clearNotationSegments() {
@@ -97,6 +99,22 @@ export const useComboStore = defineStore('ComboStore', {
         async saveCharacterCombo(gameId: string, characterId: string, comboInputs: object) {
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/character-combos`, {
+                    game_id: gameId,
+                    character_id: characterId,
+                    inputs: comboInputs
+                    //hits
+                })
+                .then(response => {
+                    console.log(response);
+                    this.fetchCharacterCombos(gameId, characterId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updateCharacterCombo(gameId: string, characterId: string, comboId: string, comboInputs: object) {
+            try {
+                await trainingModeAPI.put(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
@@ -146,11 +164,11 @@ export const useComboStore = defineStore('ComboStore', {
                             return directionalInput.direction === input.direction;
                         });
                         // console.log(directionalInputModel);
-                        const iconFileName = directionalInputModel?.icons[0].icon_file_name;
+                        const iconFileName = directionalInputModel?.icon_file_name;
     
                         const directionalInputObject = {
                             ...input,
-                            input_category: "directions",
+                            category: "directional-inputs",
                             img_category: "directional-inputs",
                             icon_file_name: iconFileName,
                             
@@ -169,7 +187,7 @@ export const useComboStore = defineStore('ComboStore', {
                         const iconFileName = attackButtonModel?.icon_file_name;
                         const attackButtonObject = {
                             ...input,
-                            input_category: "attacks",
+                            category: "attack-buttons",
                             img_category: "attack-buttons",
                             icon_file_name: iconFileName,
                             
@@ -266,6 +284,10 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async resetCharacterComboListDisplay() {
             this.characterComboListDisplay = [...this.combos];
+        },
+        async populateComboInputsDisplay(inputs: object[]) {
+            console.log(inputs);
+            this.comboInputsDisplay = [...inputs];
         }
     }
 });

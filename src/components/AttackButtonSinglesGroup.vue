@@ -36,7 +36,7 @@ export default {
             :key="attackButton.id"
             @click="renderAttackInput(attackButton)"
         >
-            <AttackButton :iconFileName="attackButton.icon_file_name" class="h-20 w-20" />
+            <AttackButton :iconFileName="attackButton.icon_file_name" :game="gameStore.game.abbreviation" class="h-20 w-20" />
         </div>
     </div>
 </template>
