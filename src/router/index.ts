@@ -1,14 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import SelectGameViewVue from "../views/SelectGameView.vue";
+import LoginView from "../views/LoginView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // {
+    //   path: "/",
+    //   name: "home",
+    //   component: SelectGameViewVue,
+    // },
     {
       path: "/",
       name: "home",
-      component: SelectGameViewVue,
+      component: () => import("../views/LoginView.vue"),
     },
     // {
     //   path: "/about",

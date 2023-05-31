@@ -2,6 +2,7 @@
 import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
 import AddIconOutline from './icons/AddIconOutline.vue';
+import { useGameStore } from '@/stores/GameStore';
 import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
 // import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
@@ -10,6 +11,7 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 export default {
     setup(props) {
+        const gameStore = useGameStore();
         const characterMoveStore = useCharacterMoveStore();
         const addTagInput = ref(null);
         // const tagsList = ref([]);
@@ -27,6 +29,7 @@ export default {
         const { getCharacterMoveTags } = storeToRefs(characterMoveStore);
 
         return {
+            gameStore,
             characterMoveStore,
             getCharacterMoveTags,
             addTagInput,
@@ -64,12 +67,16 @@ export default {
                     alt="" 
                 > -->
                 <DirectionalInput 
-                    v-if="input.img_category === 'directional-inputs'" :iconFileName="input.icon_file_name"
+                    v-if="input.img_category === 'directional-inputs'" 
+                    :iconFileName="input.icon_file_name"
+                    :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
                 />               
 
                 <AttackButton 
-                    v-if="input.img_category === 'attack-buttons'" :iconFileName="input.icon_file_name"
+                    v-if="input.img_category === 'attack-buttons'" 
+                    :iconFileName="input.icon_file_name"
+                    :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
                 />
             </div>

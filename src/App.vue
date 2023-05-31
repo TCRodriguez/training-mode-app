@@ -1,12 +1,30 @@
-<script setup lang="ts">
+<script lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import NavBar from './components/NavBar.vue';
+import { useAuthStore } from "./stores/AuthStore";
+
+export default {
+  setup() {
+    const loginStore = useAuthStore();
+
+
+
+
+    return {
+      loginStore,
+    }
+  },
+  components: {
+    NavBar,
+    RouterView
+  }
+}
 </script>
 
 <template>
     <main class="flex justify-center h-screen">
       <div class="bg-gray w-full h-full fixed lg:w-1/2 p-2 relative">
-        <NavBar></NavBar>
+        <NavBar v-if="loginStore.loggedInUser !== null"></NavBar>
         <RouterView />
       </div>
       <!-- <div class="bg-black fixed opacity-80 w-full h-screen mt-24">test</div> -->

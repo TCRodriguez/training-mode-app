@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useComboStore } from '@/stores/ComboStore';
+import Notes from '@/components/CharacterNoteList.vue';
 import Moves from '@/components/CharacterMoveList.vue';
 import Combos from '@/components/CharacterComboList.vue';
 import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
@@ -13,11 +14,11 @@ export default {
         const comboStore = useComboStore();
         const route = useRoute();
         const router = useRouter();
-        // const characterMoveList = ref(CharacterMoveList);
 
         const currentTab = ref('Moves');
 
         const tabs = {
+            Notes,
             Moves,
             Combos,
         }
@@ -29,7 +30,6 @@ export default {
             comboStore,
             route,
             router,
-            // characterMoveList
             currentTab,
             tabs,
         }

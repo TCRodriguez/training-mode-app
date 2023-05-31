@@ -88,11 +88,8 @@
                 type="text" 
                 placeholder="Enter character name" 
                 v-model="characterSearchInput" 
-                @focus="showCharacterList()" 
-                @blur="hideCharacterList()"
                 class="my-8"
             >
-
         </div>
         <!-- <p v-if="Object.keys(characterStore.character).length !== 0">Input combo for: {{characterStore.character.name}}</p> -->
         <!-- <ul v-if="inputHasFocusBool === true">
