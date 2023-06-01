@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useGameStore } from './GameStore';
+import { useAuthStore } from './AuthStore';
 import trainingModeApi from '../axios-http';
 
 export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
@@ -24,9 +25,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
     },
     actions: {
         async fetchCharacterMoves(gameId: string, characterId: string) {
+            const authStore = useAuthStore();
             const gameStore = useGameStore();
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/moves`)
+                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/moves`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                });
                 this.characterMoves = data.data;
 
                 // this.characterMoveListDisplay = data.data;
@@ -111,9 +117,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             console.log(this.characterMoves);
         },
         async addTagToCharacterMove(gameId: string, characterId:string, characterMoveId:string, newTag: string) {
+            const authStore = useAuthStore();
             try {
                 await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
                 })
                 .then(response => {
                     console.log(response);
@@ -178,8 +189,13 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         },
 
         async removeTagFromCharacterMove(gameId: string, characterId: string, moveId: string, tagId: string) {
+            const authStore = useAuthStore();
             try {
-                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/moves/${moveId}/tags/${tagId}`)
+                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/moves/${moveId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 .then(response => {
                     console.log(response);
                     this.fetchCharacterMoves(gameId, characterId);

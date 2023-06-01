@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useGameStore } from './GameStore';
+import { useAuthStore } from './AuthStore';
 // import { addNotationToNotationDisplay } from '@/common/helpers';
 import trainingModeAPI from '../axios-http';
 
@@ -97,12 +98,17 @@ export const useComboStore = defineStore('ComboStore', {
             this.notationSegments = [];
         },
         async saveCharacterCombo(gameId: string, characterId: string, comboInputs: object) {
+            const authStore = useAuthStore();
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/character-combos`, {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
                     //hits
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
                 })
                 .then(response => {
                     console.log(response);
@@ -113,12 +119,17 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
         async updateCharacterCombo(gameId: string, characterId: string, comboId: string, comboInputs: object) {
+            const authStore = useAuthStore();
             try {
                 await trainingModeAPI.put(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
                     //hits
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
                 })
                 .then(response => {
                     console.log(response);
@@ -129,8 +140,13 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
         async deleteCharacterCombo(gameId: string, characterId: string, comboId: number,) {
+            const authStore = useAuthStore();
             try {
-                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`)
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 .then(response => {
                     console.log(response);
                     this.fetchCharacterCombos(gameId, characterId);
@@ -140,9 +156,14 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
         async fetchCharacterCombos(gameId: string, characterId: string) {
+            const authStore = useAuthStore();
             const gameStore = useGameStore();
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`)
+                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                });
                 // .then(response => {
                 //     this.combos = response.data;
                 //     // console.log(response.data);
@@ -225,12 +246,19 @@ export const useComboStore = defineStore('ComboStore', {
             console.log(this.combos);
         },
         async addTagToCharacterCombo(gameId: string, characterId:string, characterComboId:string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/combos/${characterComboId}/tags`, {
                     tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
                 })
                 .then(response => {
                     console.log(response);
+                    gameStore.fetchTags(gameId);
                     this.fetchCharacterCombos(gameId, characterId);
                 })
 
@@ -239,8 +267,13 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
         async removeTagFromCharacterCombo(gameId: string, characterId: string, comboId: string, tagId: string) {
+            const authStore = useAuthStore();
             try {
-                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/combos/${comboId}/tags/${tagId}`)
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/combos/${comboId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 .then(response => {
                     console.log(response);
                     this.fetchCharacterCombos(gameId, characterId);

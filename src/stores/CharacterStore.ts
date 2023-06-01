@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useAuthStore } from './AuthStore';
 import trainingModeApi from '../axios-http';
 
 export const useCharacterStore = defineStore('CharacterStore', {
@@ -22,8 +23,13 @@ export const useCharacterStore = defineStore('CharacterStore', {
     },
     actions: {
         async fetchCharacters(gameId: any) {
+            const authStore = useAuthStore();
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters`)
+                const data = await trainingModeApi.get(`/games/${gameId}/characters`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 this.characters = data.data;
                 this.characterListDisplay = data.data;
                 this.updateCharacterNoteListDisplay();
@@ -77,7 +83,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async updateCharacterNoteListDisplay() {
-            this.setCharacter(this.character.id);
+            // this.setCharacter(this.character.id);
             if(this.characterNoteSearchInputValue.length === 0) {
                 this.characterNoteListDisplay = [...this.character.notes];
             } else {
@@ -86,11 +92,16 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async saveCharacterNote(gameId: string, characterId: string, note: object) {
+            const authStore = useAuthStore();
             try {
                 await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/notes`, {
                     'title': note.title,
                     'body': note.body
-                })
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${authStore.token}`
+                        }
+                    })
                 .then(response => {
                     console.log(response);
                     this.fetchCharacters(gameId);
@@ -101,11 +112,16 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async updateCharacterNote(gameId: string, characterId: string, note: object) {
+            const authStore = useAuthStore();
             console.log(note);
             try {
                 await trainingModeApi.put(`games/${gameId}/characters/${characterId}/notes/${note.id}`, {
                     'title': note.title,
                     'body': note.body
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
                 })
                 .then(response => {
                     console.log(response);
@@ -116,8 +132,13 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async deleteCharacterNote(gameId: string, characterId: string, noteId: string) {
+            const authStore = useAuthStore();
             try {
-                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/notes/${noteId}`)
+                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/notes/${noteId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 .then(response => {
                     this.fetchCharacters(gameId);
                     console.log(response);

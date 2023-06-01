@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useAuthStore } from './AuthStore';
 import trainingModeAPI from '../axios-http';
 
 export const useGameStore = defineStore('GameStore', {
@@ -196,8 +197,13 @@ export const useGameStore = defineStore('GameStore', {
             }
         },
         async fetchTags(gameId: string) {
+            const authStore = useAuthStore();
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/tags`)
+                const data = await trainingModeAPI.get(`/games/${gameId}/tags`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
                 // .then(() => {
                 //     this.tags = data.data;
                 //     console.log(this.tags);
