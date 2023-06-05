@@ -10,7 +10,8 @@ export const useCharacterStore = defineStore('CharacterStore', {
         characterSearchInputValue: '',
         characterNoteSearchInputValue: '',
         character: {},
-        characterNotations: []
+        characterNotations: [],
+        characterNotes: [],
 
     }),
     getters: {
@@ -32,7 +33,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 })
                 this.characters = data.data;
                 this.characterListDisplay = data.data;
-                this.updateCharacterNoteListDisplay();
+                // this.updateCharacterNoteListDisplay();
                 console.log(this.characters)
 
             }
@@ -64,6 +65,25 @@ export const useCharacterStore = defineStore('CharacterStore', {
             this.characterNotations = this.character.notations;
             console.log(this.characterNotations);
             this.characterSearchInputValue = '';
+        },
+        async fetchCharacterNotes(gameId: string, characterId: string) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/notes`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.characterNotes = response.data
+                    // this.characterNoteListDisplay = response.data;
+                    // this.setCharacter(characterId);
+                    this.updateCharacterNoteListDisplay();
+                })
+            } catch (error) {
+                console.log(error);
+            }
         },
         async updateCharacterSearchCriteria(input: string) {
             this.characterSearchInputValue = input;
@@ -104,7 +124,9 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     })
                 .then(response => {
                     console.log(response);
-                    this.fetchCharacters(gameId);
+                    this.fetchCharacterNotes(gameId, characterId);
+                    // this.fetchCharacters(gameId);
+
                     // this.characterNoteListDisplay = [...this.character.notes]
                 })
             } catch (error) {

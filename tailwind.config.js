@@ -15,7 +15,11 @@ module.exports = {
       'black': '#0B0B0A',
       'white': '#FFFFFC'
     },
-    extend: {},
+    extend: {
+      screens: {
+        'xs': '375px'
+      }
+    },
   },
   plugins: [],
 }

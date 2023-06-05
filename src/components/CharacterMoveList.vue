@@ -235,8 +235,8 @@ export default {
                 <CloseIcon v-if="searchOptionsModalActive === true" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
             </div> -->
         </div>
-        <div class="">
-            <ul class="space-y-2 overflow-y-auto">
+        <div class="overflow-scroll">
+            <ul class="space-y-2 xs:h-96 lg:h-[32rem]">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
@@ -252,7 +252,7 @@ export default {
                             :inputs="move.inputs" 
                             :tags="move.tags"
                             :editTagsActive="characterMoveEditTagsActive"
-                            class="border rounded p-2"
+                            class="border rounded p-2 overflow-x-auto"
                         />
                     </div>
                     <div class="flex flex-row justify-end">

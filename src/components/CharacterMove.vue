@@ -1,6 +1,7 @@
 <script lang="ts">
 import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
+import GameNotation from './GameNotation.vue';
 import AddIconOutline from './icons/AddIconOutline.vue';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
@@ -50,7 +51,8 @@ export default {
         AttackButton,
         AddIconOutline,
         // EllipsisIcon
-        CloseIcon
+        CloseIcon,
+        GameNotation
     }
 }
 </script>
@@ -60,12 +62,7 @@ export default {
             {{ moveName }}
         </div>
         <div class="flex flex-row">
-            <div v-for="(input, index) in inputs" :key="index" class="flex flex-col my-2">
-                <!-- {{input.icon_file_name}} -->
-                <!-- <img
-                    :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/${input.img_category}%2Ftekken-7%2F${input.icon_file_name}`" 
-                    alt="" 
-                > -->
+            <div v-for="(input, index) in inputs" :key="index" class="flex flex-col my-2 shrink-0">
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
                     :iconFileName="input.icon_file_name"
@@ -78,6 +75,12 @@ export default {
                     :iconFileName="input.icon_file_name"
                     :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
+                />
+                <GameNotation
+                    v-if="input.img_category === 'notations'"
+                    class="h-12 w-12"
+                    :notation="input.notation"
+                
                 />
             </div>
         </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
-import FollowedByIcon from './icons/FollowedByIcon.vue'
+import FollowedByIcon from './icons/FollowedByIcon.vue';
+import AddIconOutline from './icons/AddIconOutline.vue';
 export default {
     props: {
         notation: String,
@@ -7,7 +8,8 @@ export default {
         isFullScreen: Boolean
     },
     components: {
-        FollowedByIcon
+        FollowedByIcon,
+        AddIconOutline,
     }
 }
 </script>
@@ -18,7 +20,14 @@ export default {
         
         >{{notation}}</span>
 
-        <FollowedByIcon v-else :class="{ 'h-40 w-40': isFullScreen, 'h-5 w-5': !isFullScreen }" />
+        <AddIconOutline 
+            v-if="notation === '+'"
+            :class="{ 'h-40 w-40': isFullScreen, 'h-5 w-5': !isFullScreen }"
+        />
+        <FollowedByIcon
+            v-else 
+            :class="{ 'h-40 w-40': isFullScreen, 'h-5 w-5': !isFullScreen }" 
+        />
     </div>
 
 

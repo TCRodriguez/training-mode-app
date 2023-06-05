@@ -34,7 +34,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 });
                 this.characterMoves = data.data;
-
+                console.log(this.characterMoves);
                 // this.characterMoveListDisplay = data.data;
                 this.updateCharacterMovesListDisplay('tags');
 
@@ -53,12 +53,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 // const moveInputs = [];
                 // move.inputs = [];
                 move.directional_inputs.forEach(input => {
-                    console.log(input);
+                    // console.log(input);
                     const directionalInputModel = gameStore.directionalInputs.find(directionalInput => {
                         return directionalInput.direction === input.direction;
                     });
-                    console.log(directionalInputModel);
-                    const iconFileName = directionalInputModel?.icons[0].icon_file_name;
+                    // console.log(directionalInputModel);
+                    // const iconFileName = directionalInputModel?.icons.icon_file_name;
+
+                    const iconFileName = directionalInputModel?.icon_file_name;
 
                     const directionalInputObject = {
                         ...input,
@@ -93,6 +95,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
                 move.notations.forEach(input => {
                     input.input_category = "notations";
+                    input.img_category = "notations";
                     moveInputs.push(input);
                 });
 
@@ -118,6 +121,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         },
         async addTagToCharacterMove(gameId: string, characterId:string, characterMoveId:string, newTag: string) {
             const authStore = useAuthStore();
+            const gameStore = useGameStore();
             try {
                 await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
@@ -128,6 +132,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 })
                 .then(response => {
                     console.log(response);
+                    gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
                 })
 

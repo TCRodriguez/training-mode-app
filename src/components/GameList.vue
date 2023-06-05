@@ -54,25 +54,27 @@
                 placeholder="Search Games"
             >
         </div>
-        <ul class="space-y-4 h-96 overflow-y-auto">
-            <li 
-                v-for="game in gameStore.games"
-                :key="game.id"
-                @click="goToCharacterSelect(game.id)"
-            >
-                <!-- {{ game.title }} -->
-                <!-- <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${game.title}-banner.png`" alt="" srcset=""> -->
-                <div class="relative">
-                    <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
-                        <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
+        <div class="h-full overflow-scroll">
+            <ul class="space-y-4 xs:h-96 lg:h-[32rem]">
+                <li 
+                    v-for="game in gameStore.games"
+                    :key="game.id"
+                    @click="goToCharacterSelect(game.id)"
+                >
+                    <!-- {{ game.title }} -->
+                    <!-- <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${game.title}-banner.png`" alt="" srcset=""> -->
+                    <div class="relative">
+                        <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
+                            <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
+                        </div>
+                        <GameBanner :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
                     </div>
-                    <GameBanner :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
-                </div>
-            </li>
-            <!-- <li>
-                <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${gameStore.game.title}-banner.png`" alt="" srcset="">
-            </li> -->
-        </ul>
+                </li>
+                <!-- <li>
+                    <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${gameStore.game.title}-banner.png`" alt="" srcset="">
+                </li> -->
+            </ul>
+        </div>
     </div>
 </template>
 

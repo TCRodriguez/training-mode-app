@@ -153,6 +153,11 @@ export const useGameStore = defineStore('GameStore', {
                 //     input.notation = this.directionalInputNotations.find(notation => )
                 // })
                 this.directionalInputs.forEach(input => {
+                    input.notations.forEach(notation => {
+                        if(notation.game_id === this.game.id) {
+                            input.notation = notation.notation
+                        }
+                    })
                     input.icons.forEach(icon => {
                         if(icon.game_id === this.game.id) {
                             input.icon_file_name = icon.icon_file_name;
@@ -192,6 +197,19 @@ export const useGameStore = defineStore('GameStore', {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
                 this.attackButtons = data.data
                 console.log(data.data);
+                this.attackButtons.forEach(input => {
+                    input.notations.forEach(notation => {
+                        if(notation.game_id === this.game.id) {
+                            input.notation = notation.notation
+                        }
+                    })
+                    input.icons.forEach(icon => {
+                        if(icon.game_id === this.game.id) {
+                            input.icon_file_name = icon.icon_file_name;
+                        }
+                    })
+                })
+
             } catch(error) {
                 console.log(error);
             }
