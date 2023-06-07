@@ -235,24 +235,26 @@ export default {
                 <CloseIcon v-if="searchOptionsModalActive === true" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
             </div> -->
         </div>
-        <div class="overflow-scroll">
-            <ul class="space-y-2 xs:h-96 lg:h-[32rem]">
+        <div class="">
+            <ul class="space-y-2 overflow-y-scroll xs:h-96 lg:h-[32rem]">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
                     class="flex flex-col"
                 >
-                    <div>
+                    <div class="flex flex-row">
+                        <p v-for="(followUp, index) in move.follows_up">Follow up to: {{followUp.name}}</p>
                         <CharacterMove 
                             @save-tag="addTagToMove"
                             @trigger-remove-tag="removeTagFromCharacterMove"
                             :addTagInputActive="addTagActive"
                             :moveName="move.name"
+                            :moveType="move.type"
                             :moveId="move.id"
                             :inputs="move.inputs" 
                             :tags="move.tags"
                             :editTagsActive="characterMoveEditTagsActive"
-                            class="border rounded p-2 overflow-x-auto"
+                            class="border rounded p-2 overflow-x-auto w-full"
                         />
                     </div>
                     <div class="flex flex-row justify-end">

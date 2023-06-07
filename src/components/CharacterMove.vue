@@ -40,6 +40,7 @@ export default {
     },
     props: {
         moveName: String,
+        moveType: String,
         moveId: Number,
         inputs: Array,
         tags: Array,
@@ -58,8 +59,13 @@ export default {
 </script>
 <template lang="">
     <div>
-        <div class="font-bold">
-            {{ moveName }}
+        <div class="flex flex-row justify-between items-center">
+            <p class="font-bold">
+                {{ moveName }}
+            </p>
+            <p class="text-xs">
+                {{ moveType }}
+            </p>
         </div>
         <div class="flex flex-row">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col mt-2 shrink-0">
