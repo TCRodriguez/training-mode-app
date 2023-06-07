@@ -62,7 +62,7 @@ export default {
             {{ moveName }}
         </div>
         <div class="flex flex-row">
-            <div v-for="(input, index) in inputs" :key="index" class="flex flex-col my-2 shrink-0">
+            <div v-for="(input, index) in inputs" :key="index" class="flex flex-col mt-2 shrink-0">
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
                     :iconFileName="input.icon_file_name"

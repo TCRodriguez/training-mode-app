@@ -30,7 +30,7 @@ export default {
     <div class="flex flex-col items-center mt-16">
         <h1 class="font-bold text-3xl">Select Character</h1>
         <div class="flex flex-row w-full">
-            <CharacterList />
+            <CharacterList class="overflow-y-auto" />
         </div>
     </div>
 </template>

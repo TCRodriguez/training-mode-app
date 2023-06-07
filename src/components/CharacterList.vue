@@ -99,15 +99,17 @@
                 @mousedown="loadCharacterData(character.id)"
             >{{ character.name }}</li>
         </ul> -->
-        <ul class="space-y-2">
-            <li
-                v-for="character in characterStore.characterListDisplay"
-                :key="character.id"
-                @mousedown="loadCharacterData(character.id)"
-            >
-                <CharacterCard :characterName="character.name" class="font-bold text-xl"/>     
-        </li>
-        </ul>
+        <div class="xs:h-96 lg:h-[32rem] overflow-y-auto scroll-pb-24">
+            <ul class="space-y-2">
+                <li
+                    v-for="character in characterStore.characterListDisplay"
+                    :key="character.id"
+                    @mousedown="loadCharacterData(character.id)"
+                >
+                    <CharacterCard :characterName="character.name" class="font-bold text-xl"/>     
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 <style lang="">
