@@ -28,7 +28,7 @@ export default {
 </script>
 <template lang="">
     <div class="flex flex-col items-center mt-16">
-        <h1 class="font-bold text-3xl">Select Character</h1>
+        <h1 class="font-bold text-3xl">Characters</h1>
         <div class="flex flex-row w-full">
             <CharacterList class="overflow-y-auto" />
         </div>
