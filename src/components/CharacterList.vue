@@ -99,7 +99,7 @@
                 @mousedown="loadCharacterData(character.id)"
             >{{ character.name }}</li>
         </ul> -->
-        <div class="xs:h-96 lg:h-[32rem] overflow-y-auto scroll-pb-24">
+        <div class="xs:h-[16.5rem] lg:h-96 overflow-y-auto">
             <ul class="space-y-2">
                 <li
                     v-for="character in characterStore.characterListDisplay"

@@ -44,22 +44,25 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-16">
-            <nav>
-                <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
-                    <li 
-                        v-for="(_, tab) in tabs" 
-                        :key="tab"
-                        :class="{ 'border-b-2 border-b-blue': currentTab === tab }"
-                        @click="currentTab = tab"
-                    >
-                        <!-- <span v-if="tab === 'CharacterMoveList'">Moves</span>
-                        <span v-if="tab === 'CharacterComboList'">Combos</span> -->
-                            {{ tab }}
-                            <!-- {{_}} -->
-                    </li>
-                </ul>
-            </nav>
+    <div class="mt-8">
+        <div class="flex flex-row justify-center mb-4">
+            <h3 class="text-3xl font-bold">{{ characterStore.character.name }}</h3>
+        </div>
+        <nav>
+            <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
+                <li 
+                    v-for="(_, tab) in tabs" 
+                    :key="tab"
+                    :class="{ 'border-b-2 border-b-blue': currentTab === tab }"
+                    @click="currentTab = tab"
+                >
+                    <!-- <span v-if="tab === 'CharacterMoveList'">Moves</span>
+                    <span v-if="tab === 'CharacterComboList'">Combos</span> -->
+                        {{ tab }}
+                        <!-- {{_}} -->
+                </li>
+            </ul>
+        </nav>
         <component :is="tabs[currentTab]"></component>
       <!-- <CharacterMoveList /> -->
     </div>

@@ -3,7 +3,7 @@ import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import CharacterNote from './CharacterNote.vue';
+import Note from './Note.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import NoteModal from './NoteModal.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
@@ -210,7 +210,7 @@ export default {
         }
     },
     components: {
-        CharacterNote,
+        Note,
         MagnifyingGlass,
         NoteModal,
         EllipsisIcon,
@@ -235,7 +235,7 @@ export default {
             <ul class="space-y-2">
                 <li v-for="characterNote in characterNotes" :key="characterNote.id">
                     <div>
-                        <CharacterNote 
+                        <Note 
                             :note="characterNote"
                             class="border rounded p-2"
                             @click="toggleViewCharacterNote(characterNote)"

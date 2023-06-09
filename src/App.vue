@@ -23,7 +23,7 @@ export default {
 
 <template>
     <main class="flex justify-center h-screen">
-      <div class="bg-gray w-full fixed lg:w-1/2 p-2 relative">
+      <div class="bg-gray w-full lg:w-1/2 p-2">
         <NavBar v-if="loginStore.loggedInUser !== null"></NavBar>
         <RouterView />
       </div>

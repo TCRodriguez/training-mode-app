@@ -5,6 +5,7 @@ import trainingModeAPI from '../axios-http';
 export const useGameStore = defineStore('GameStore', {
     state: () => ({
         games: [],
+        gameNoteListDisplay: [],
         comingSoonList: [
             'Street Fighter 6',
             'King of Fighters XV',
@@ -235,6 +236,7 @@ export const useGameStore = defineStore('GameStore', {
         async setGame(gameId: string) {
             this.game = this.games.find(game => game.id === gameId);
             this.game.bread_crumb_type = 'game';
+            this.gameNoteListDisplay = [...this.game.notes];
             console.log(this.game);
         },
         async updateTagsListDisplay() {

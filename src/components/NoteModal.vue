@@ -1,5 +1,5 @@
 <script lang="ts">
-import CharacterNote from './CharacterNote.vue';
+import Note from './Note.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import AddIcon from './icons/AddIcon.vue';
 import CheckmarkIcon from './icons/CheckmarkIcon.vue';
@@ -15,7 +15,7 @@ export default {
         }
     },
     components: {
-        CharacterNote,
+        Note,
         MagnifyingGlass,
         AddIcon,
         CheckmarkIcon,
