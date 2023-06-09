@@ -79,7 +79,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 })
                 .then(response => {
                     console.log(response.data);
-                    this.characterNotes = response.data
+                    this.characterNotes = [...response.data]
                     // this.characterNoteListDisplay = response.data;
                     // this.setCharacter(characterId);
                     this.updateCharacterNoteListDisplay();
@@ -108,7 +108,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async updateCharacterNoteListDisplay() {
             // this.setCharacter(this.character.id);
             if(this.characterNoteSearchInputValue.length === 0) {
-                this.characterNoteListDisplay = [...this.character.notes];
+                this.characterNoteListDisplay = [...this.characterNotes];
             } else {
                 this.characterNoteListDisplay = this.character.notes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
 
@@ -150,7 +150,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 })
                 .then(response => {
                     console.log(response);
-                    this.fetchCharacters(gameId);
+                    this.fetchCharacterNotes(gameId, characterId);
                 })
             } catch (error) {
                 console.log(error);

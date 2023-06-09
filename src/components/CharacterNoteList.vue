@@ -45,8 +45,6 @@ export default {
             console.log(characterNoteOptionsActive.value);
         }
 
-
-
         const openCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
         };
@@ -71,6 +69,7 @@ export default {
             });
         };
 
+
         const updateCharacterNote = () => {
 
             const game = gameStore.game;
@@ -89,26 +88,25 @@ export default {
                 editNoteBody.value = null;
             });
         };
-
         // ! Remove?
-        const toggleEditNoteMode = (noteId: number, note: object) => {
-            // editNoteActive.value === noteId ?
-            //     characterNoteEditActive.value = 0
-            //     : characterNoteEditActive.value = noteId;
+        // const toggleEditNoteMode = (noteId: number, note: object) => {
+        //     // editNoteActive.value === noteId ?
+        //     //     characterNoteEditActive.value = 0
+        //     //     : characterNoteEditActive.value = noteId;
 
-            // editCharacterComboId.value = comboId;
-            // characterNoteEditActive.value = !characterNoteEditActive.value;
-            // inputsForEditCharacterCombo.value.push(comboInputs);
-            // if(comboInputs.length !== 0) {
-            //     comboStore.populateComboInputsDisplay(comboInputs);
-            // }
-            // console.log(comboStore.comboInputsDisplay);
-            // console.log();
-            editNoteActive.value === noteId ?
-                characterNoteEditActive.value = 0
-                : characterNoteEditActive.value = noteId;
+        //     // editCharacterComboId.value = comboId;
+        //     // characterNoteEditActive.value = !characterNoteEditActive.value;
+        //     // inputsForEditCharacterCombo.value.push(comboInputs);
+        //     // if(comboInputs.length !== 0) {
+        //     //     comboStore.populateComboInputsDisplay(comboInputs);
+        //     // }
+        //     // console.log(comboStore.comboInputsDisplay);
+        //     // console.log();
+        //     editNoteActive.value === noteId ?
+        //         characterNoteEditActive.value = 0
+        //         : characterNoteEditActive.value = noteId;
             
-        }
+        // }
 
         const openEditNoteModal = (characterNote: object) => {
             editNoteActive.value = !editNoteActive.value;
@@ -200,7 +198,7 @@ export default {
             toggleNoteOptions,
             characterNoteEditActive,
             deleteCharacterNote,
-            toggleEditNoteMode,
+            // toggleEditNoteMode,
             openEditNoteModal,
             editNoteActive,
             editNoteId,
@@ -288,7 +286,7 @@ export default {
             :noteBody="editNoteBody"
             @trigger-create-note-modal="openEditNoteModal()"
             @trigger-close-note-modal="closeEditNoteModal()"
-            @trigger-update-character-note="updateCharacterNote()"
+            @trigger-update-note="updateCharacterNote()"
             @update-edit-note-title="updateEditNoteTitle"
             @update-edit-note-body="updateEditNoteBody"
         />

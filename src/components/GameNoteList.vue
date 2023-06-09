@@ -19,14 +19,7 @@ export default {
         const gameNotes = computed(() => gameStore.gameNoteListDisplay);
 
         const gameNoteSearchInput = ref(null);
-
-        const createNoteActive = ref(false);
-        const createNoteTitle = ref('');
-        const createNoteBody = ref('');
-        
-        const viewNoteActive = ref(false);
-        const viewNoteTitle = ref(null);
-        const viewNoteBody = ref(null);
+    
 
         const editNoteActive = ref(false);
         const editNoteId = ref(0);
@@ -46,6 +39,9 @@ export default {
             console.log(gameNoteOptionsActive.value);
         }
 
+        const createNoteActive = ref(false);
+        const createNoteTitle = ref('');
+        const createNoteBody = ref('');
         const openCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
         };
@@ -81,12 +77,9 @@ export default {
             });
         };
 
-
-
-
-
-
-
+        const viewNoteActive = ref(false);
+        const viewNoteTitle = ref(null);
+        const viewNoteBody = ref(null);
         const toggleViewGameNote = (gameNote: object) => {
             console.log(gameNote);
             viewNoteActive.value = !viewNoteActive.value;
@@ -101,6 +94,45 @@ export default {
 
         };
 
+        const updateGameNote = () => {
+            const game = gameStore.game;
+            const gameNote = {
+                'id': editNoteId.value,
+                'title': editNoteTitle.value,
+                'body': editNoteBody.value
+            }
+
+            gameStore.updateGameNote(game.id, gameNote)
+            .then(() => {
+                editNoteActive.value = !editNoteActive.value
+                editNoteTitle.value = null;
+                editNoteBody.value = null;
+            });
+        };
+
+        const updateEditNoteTitle = (noteTitle: string) => {
+            // console.log(noteTitle);
+            editNoteTitle.value = noteTitle;
+            console.log(editNoteTitle.value);
+        };
+        const updateEditNoteBody = (noteBody: string) => {
+            // console.log(noteTitle);
+            editNoteBody.value = noteBody;
+            console.log(editNoteBody.value);
+        };
+        const openEditNoteModal = (gameNote: object) => {
+            editNoteActive.value = !editNoteActive.value;
+
+            if(editNoteActive.value) {
+                editNoteId.value = gameNote.id;
+                editNoteTitle.value = gameNote.title;
+                editNoteBody.value = gameNote.body;
+            }
+        };
+        const closeEditNoteModal = () => {
+            editNoteActive.value = !editNoteActive.value;
+        }
+
 
         return {
             route,
@@ -110,35 +142,35 @@ export default {
             gameNotes,
             gameNoteSearchInput,
 
+            gameNoteOptionsActive,
+            toggleNoteOptions,
+
             createNoteActive,
             createNoteTitle,
             createNoteBody,
-
-            viewNoteActive,
-            viewNoteTitle,
-            viewNoteBody,
-
-            editNoteActive,
-            editNoteId,
-            editNoteTitle,
-            editNoteBody,
-
-            gameNoteOptionsActive,
-            gameNoteEditActive,
-
-            toggleNoteOptions,
-
             openCreateNoteModal,
             closeCreateNoteModal,
             updateCreateNoteTitle,
             updateCreateNoteBody,
             saveGameNote,
 
-
-
-
-
+            viewNoteActive,
+            viewNoteTitle,
+            viewNoteBody,
             toggleViewGameNote,
+
+            editNoteActive,
+            editNoteId,
+            editNoteTitle,
+            editNoteBody,
+            gameNoteEditActive,
+            openEditNoteModal,
+            closeEditNoteModal,
+            updateEditNoteTitle,
+            updateEditNoteBody,
+            updateGameNote,
+
+
         }
     },
     components: {
@@ -214,6 +246,17 @@ export default {
             :noteBody="viewNoteBody"
             @trigger-create-note-modal="toggleViewGameNote()"
             @trigger-close-note-modal="toggleViewGameNote()"
+        />
+        <NoteModal 
+            :viewCondition="editNoteActive"
+            :mode="'edit'"
+            :noteTitle="editNoteTitle" 
+            :noteBody="editNoteBody"
+            @trigger-create-note-modal="openEditNoteModal()"
+            @trigger-close-note-modal="closeEditNoteModal()"
+            @trigger-update-note="updateGameNote()"
+            @update-edit-note-title="updateEditNoteTitle"
+            @update-edit-note-body="updateEditNoteBody"
         />
         <div>
             <AddIcon

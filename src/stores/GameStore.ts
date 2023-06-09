@@ -185,7 +185,7 @@ export const useGameStore = defineStore('GameStore', {
             try {
                 const data = await trainingModeAPI.get('/games')
                 console.log(data);
-                this.games = data.data;
+                this.games = [...data.data];
             }
             catch(error) {
                 console.log(error);
@@ -292,6 +292,28 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
+
+        async updateGameNote(gameId: string, note: object) {
+            const authStore = useAuthStore();
+            console.log(note);
+            try {
+                await trainingModeAPI.put(`games/${gameId}/notes/${note.id}`, {
+                    'title': note.title,
+                    'body': note.body
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                    this.fetchGameNotes(gameId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
         async updateGameNoteListDisplay() {
             // this.setCharacter(this.character.id);
             if(this.gameNoteSearchInputValue.length === 0) {

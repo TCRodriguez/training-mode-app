@@ -60,10 +60,10 @@ export default {
                     v-if="mode === 'edit'"
                     class="h-20 w-20 fill-green absolute bottom-4 right-4"
                     :class="{ 'hidden': viewCondition === false }"
-                    @click="$emit('triggerUpdateCharacterNote')"
+                    @click="$emit('triggerUpdateNote')"
                 />
                 <CloseIcon
-                    class="h-20 w-20 text-red absolute bottom-4 right-4"
+                    class="h-20 w-20 text-red absolute bottom-4 left-4"
                     :class="{ 'hidden': viewCondition === false }"
                     @click="$emit('triggerCloseNoteModal')"
                 />
