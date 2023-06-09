@@ -133,6 +133,15 @@ export default {
             editNoteActive.value = !editNoteActive.value;
         }
 
+        const deleteGameNote = (noteId: string) => {
+            if(window.confirm("Are you sure you want to delete this note?")) {
+                gameStore.deleteGameNote(route.params.game, noteId)
+                .then(() => {
+                    toggleNoteOptions(noteId);
+                })
+            }
+        };
+
 
         return {
             route,
@@ -170,7 +179,7 @@ export default {
             updateEditNoteBody,
             updateGameNote,
 
-
+            deleteGameNote
         }
     },
     components: {

@@ -165,7 +165,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    this.fetchCharacters(gameId);
+                    this.fetchCharacterNotes(gameId, characterId);
                     console.log(response);
                 })
             } catch (error) {

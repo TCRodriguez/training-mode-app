@@ -201,7 +201,7 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 .then(response => {
                     console.log(response.data);
-                    this.gameNotes = response.data
+                    this.gameNotes = [...response.data]
                     // this.characterNoteListDisplay = response.data;
                     // this.setCharacter(characterId);
                     this.updateGameNoteListDisplay();
@@ -313,6 +313,27 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
+
+        async deleteGameNote(gameId: string, noteId: string) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${noteId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchGameNotes(gameId);
+                    console.log(response);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+
+
+
 
         async updateGameNoteListDisplay() {
             // this.setCharacter(this.character.id);
