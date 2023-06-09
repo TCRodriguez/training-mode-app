@@ -269,7 +269,7 @@ export default {
             :noteBody="createNoteBody"
             @trigger-create-note-modal="openCreateNoteModal()"
             @trigger-close-note-modal="closeCreateNoteModal()"
-            @trigger-save-character-note="saveCharacterNote()"
+            @trigger-save-note="saveCharacterNote()"
             @update-create-note-title="updateCreateNoteTitle"
             @update-create-note-body="updateCreateNoteBody"
         />

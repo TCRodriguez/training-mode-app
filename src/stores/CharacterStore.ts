@@ -5,14 +5,17 @@ import trainingModeApi from '../axios-http';
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
         characters: [],
-        characterListDisplay: [],
-        characterNoteListDisplay: [],
-        characterSearchInputValue: '',
-        characterNoteSearchInputValue: '',
         character: {},
-        characterNotations: [],
-        characterNotes: [],
 
+        characterListDisplay: [],
+
+        characterNotes: [],
+        characterNoteListDisplay: [],
+        characterNoteSearchInputValue: '',
+
+        characterSearchInputValue: '',
+
+        characterNotations: [],
     }),
     getters: {
         getCharacter(state) {

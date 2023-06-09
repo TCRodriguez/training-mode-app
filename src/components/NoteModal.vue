@@ -31,9 +31,9 @@ export default {
 </script>
 <template lang="">
     <div>
-        <div class="bg-black opacity-95 fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': viewCondition === false }"></div>
+        <div class="bg-black opacity-[.99] fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': viewCondition === false }"></div>
         <div class="">
-            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-32 px-2" :class="{'hidden': viewCondition === false }">
+            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-16 px-4" :class="{'hidden': viewCondition === false }">
                 <div v-if="mode === 'create'" class="flex flex-col">
                     <input type="text" :value="noteTitle" @input="$emit('updateCreateNoteTitle', $event.target.value)" class="bg-white" placeholder="Enter note title...">
                     <textarea name="" :value="noteBody" @input="$emit('updateCreateNoteBody', $event.target.value)" id="" class="bg-white" cols="30" rows="10"></textarea>
@@ -54,7 +54,7 @@ export default {
                     v-if="mode === 'create'"
                     class="h-20 w-20 fill-green absolute bottom-4 right-4"
                     :class="{ 'hidden': viewCondition === false }"
-                    @click="$emit('triggerSaveCharacterNote')"
+                    @click="$emit('triggerSaveNote')"
                 />
                 <CheckmarkIcon
                     v-if="mode === 'edit'"
@@ -63,7 +63,7 @@ export default {
                     @click="$emit('triggerUpdateCharacterNote')"
                 />
                 <CloseIcon
-                    class="h-20 w-20 text-red absolute bottom-4 left-4"
+                    class="h-20 w-20 text-red absolute bottom-4 right-4"
                     :class="{ 'hidden': viewCondition === false }"
                     @click="$emit('triggerCloseNoteModal')"
                 />

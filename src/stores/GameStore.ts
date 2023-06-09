@@ -5,20 +5,25 @@ import trainingModeAPI from '../axios-http';
 export const useGameStore = defineStore('GameStore', {
     state: () => ({
         games: [],
-        gameNoteListDisplay: [],
-        comingSoonList: [
-            'Street Fighter 6',
-            'King of Fighters XV',
-            'Guilty Gear Strive'
-        ],
         game: {},
+
+        gameNotes: [],
+        gameNoteListDisplay: [],
+        gameNoteSearchInputValue: '',
+
+        comingSoonList: [
+            'Tekken 7',
+        ],
         gameNotations: [],
+
+        directionalInputs: [],
+        directionalInputIconLinks: [],
         directionalInputNotations: [],
+
         attackButtons: [],
         attackButtonNotations: [],
         attackButtonIconLinks: [],
-        directionalInputs: [],
-        directionalInputIconLinks: [],
+
         tags: [],
         tagsListDisplay: [],
         tagSearchCriteria: '',
@@ -31,8 +36,14 @@ export const useGameStore = defineStore('GameStore', {
         getGameTitle(state): string {
             return state.game.title;
         },
+        findGame: (state) => {
+            return (gameId: string) => {
+                const game = state.games.find(game => game.id == gameId);
+                return game;
+            }
+        },
         getGames(state){
-            return state.games
+            return state.games;
         },
         getAttackButtons: (state) => state.attackButtons,
         getAttackButtonSingles: (state) => {
@@ -180,6 +191,25 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
+        async fetchGameNotes(gameId: string) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.get(`/games/${gameId}/notes`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.gameNotes = response.data
+                    // this.characterNoteListDisplay = response.data;
+                    // this.setCharacter(characterId);
+                    this.updateGameNoteListDisplay();
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async fetchGameNotations(gameId: string) {
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/game-notations`)
@@ -239,6 +269,38 @@ export const useGameStore = defineStore('GameStore', {
             this.gameNoteListDisplay = [...this.game.notes];
             console.log(this.game);
         },
+        async saveGameNote(gameId: string, note: object) {
+            const authStore = useAuthStore();
+            console.log(note);
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes`, {
+                    'title': note.title,
+                    'body': note.body
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${authStore.token}`
+                        }
+                    })
+                .then(response => {
+                    console.log(response);
+                    this.fetchGameNotes(gameId);
+                    // this.fetchCharacters(gameId);
+
+                    // this.characterNoteListDisplay = [...this.character.notes]
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updateGameNoteListDisplay() {
+            // this.setCharacter(this.character.id);
+            if(this.gameNoteSearchInputValue.length === 0) {
+                this.gameNoteListDisplay = [...this.gameNotes];
+            } else {
+                this.gameNoteListDisplay = this.game.notes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchInputValue.toLowerCase()))
+
+            }
+        },        
         async updateTagsListDisplay() {
             this.tagsListDisplay = this.tags.filter(tag => {
                 // console.log(tag.name);

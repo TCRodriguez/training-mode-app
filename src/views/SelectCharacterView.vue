@@ -12,7 +12,7 @@ export default {
         const router = useRouter();
 
 
-        const currentTab = ref('Characters');
+        const currentTab = ref('Notes');
 
         const tabs = {
             Notes,
