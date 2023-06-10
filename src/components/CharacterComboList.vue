@@ -7,6 +7,7 @@ import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import DirectionalInputSwitcher from './DirectionalInputSwitcher.vue';
 import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
+import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
 import { useComboStore } from '@/stores/ComboStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
@@ -221,6 +222,7 @@ export default {
         CloseIcon,
         EllipsisIcon,
         MagnifyingGlass,
+        GameNotationGroup,
         DirectionalInputSwitcher,
         AttackButtonSwitcher,
         ComboInputDisplay,
@@ -252,7 +254,7 @@ export default {
                 </div>
             </div>
             <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
-            <ul class="space-y-2 overflow-y-auto xs:h-80 lg:h-96">
+            <ul class="space-y-2 overflow-y-auto xs:h-[18.5rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
                     :key="index"
                     class="flex flex-row"
@@ -295,13 +297,16 @@ export default {
                 
             </ul>
         </div>
-        <div class="bg-black opacity-95 fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': createComboActive === false }"></div>
-        <div class="bg-black opacity-95 fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': editCharacterComboModeActive === false }"></div>
+        <div class="bg-black opacity-[.99] fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': createComboActive === false }"></div>
+        <div class="bg-black opacity-[.99] fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': editCharacterComboModeActive === false }"></div>
         <!-- Create Combo -->
         <div>
-            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-32" :class="{'hidden': createComboActive === false }">
-                <div class="">
+            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-8" :class="{'hidden': createComboActive === false }">
+                <div class="my-2">
                     <ComboInputDisplay />
+                </div>
+                <div>
+                    <GameNotationGroup />
                 </div>
                 <div class="flex flex-row items-center">
                     <DirectionalInputSwitcher />
@@ -333,6 +338,9 @@ export default {
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-32" :class="{'hidden': editCharacterComboModeActive === false }">
                 <div class="">
                     <ComboInputDisplay :inputs="inputsForEditCharacterCombo" />
+                </div>
+                <div>
+
                 </div>
                 <div class="flex flex-row items-center">
                     <DirectionalInputSwitcher />

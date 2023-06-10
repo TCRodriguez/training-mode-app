@@ -1,6 +1,7 @@
 <script lang="ts">
 import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
+import GameNotation from './GameNotation.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -29,13 +30,14 @@ export default {
     components: {
         DirectionalInput, 
         AttackButton,
+        GameNotation,
         CloseIcon
     }
 }
 </script>
 <template lang="">
     <div>
-        <div class="flex flex-row">
+        <div class="flex flex-row overflow-x-auto space-x-2">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col shrink-0">
                 <!-- {{input.icon_file_name}} -->
                 <!-- <img
@@ -54,6 +56,14 @@ export default {
                     :iconFileName="input.icon_file_name"
                     :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
+                />
+                    <!-- {{input.notation}} -->
+                <GameNotation
+                    v-if="input.img_category === 'notations'"
+                    class=""
+                    :notation="input.notation"
+                    :iconFileName="input.icon_file_name"
+                
                 />
             </div>
         </div>

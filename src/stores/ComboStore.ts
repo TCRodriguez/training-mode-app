@@ -21,7 +21,7 @@ export const useComboStore = defineStore('ComboStore', {
             return function (comboId: string) {
                 let characterCombo = state.characterComboListDisplay.find(combo => combo.id === comboId);
                 let tags = [...characterCombo?.tags];
-                console.log(tags);
+                // console.log(tags);
                 // return state.characterMoves.
                 return tags;
             }
@@ -218,21 +218,22 @@ export const useComboStore = defineStore('ComboStore', {
                         comboInputs.push(attackButtonObject);
                     });
     
-                    // combo.notations.forEach(input => {
-                    //     input.input_category = "notations";
-                    //     comboInputs.push(input);
-                    // });
+                    combo.notations.forEach(input => {
+                        input.input_category = "notations";
+                        input.img_category = "notations"
+                        comboInputs.push(input);
+                    });
     
                     comboInputs.forEach(input => {
                         // console.log(input);
-                        input.order_in_move = input.pivot.order_in_move;
+                        input.order_in_combo = input.pivot.order_in_combo;
                     });
                         
                         
-                    //     // input.order_in_move = input.pivot.order_in_move;
+                    //     // input.order_in_combo = input.pivot.order_in_combo;
                     // });
     
-                    comboInputsSorted = comboInputs.sort((a, b) => a.order_in_move - b.order_in_move);
+                    comboInputsSorted = comboInputs.sort((a, b) => a.order_in_combo - b.order_in_combo);
     
                     console.log(comboInputsSorted);
                     

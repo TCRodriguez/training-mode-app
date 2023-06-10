@@ -24,13 +24,16 @@ export default {
         }
         
     },
+    props: {
+        buttons: String
+    },
     components: {
         AttackButton
     }
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-2 grid-cols-2">
+    <div class="grid grid-rows-2 grid-cols-2" :class="{'grid-cols-3': buttons === '6' }">
         <div
             v-for="attackButton in gameStore.getAttackButtonSingles"
             :key="attackButton.id"

@@ -52,7 +52,7 @@ export const useGameStore = defineStore('GameStore', {
             const attackButtonSinglesArray: any[] = [];
 
             state.attackButtons.forEach(attackButton => {
-                console.log(attackButton);
+                
                 // if(attackButton.notations[0] !== undefined && attackButtonSinglesNotations.includes(attackButton.notations[0].notation)) {
                 //     attackButtonSinglesArray.push(attackButton)
                 // }
@@ -61,7 +61,7 @@ export const useGameStore = defineStore('GameStore', {
                 }
             });
 
-            console.log(attackButtonSinglesArray);
+            
 
             return attackButtonSinglesArray;
         },
@@ -82,7 +82,7 @@ export const useGameStore = defineStore('GameStore', {
                 }
             });
 
-            console.log(attackButtonDoublesArray);
+            
 
             return attackButtonDoublesArray;
         },
@@ -106,13 +106,13 @@ export const useGameStore = defineStore('GameStore', {
                 }
             });
 
-            console.log(attackButtonTriplesArray);
+            
 
             return attackButtonTriplesArray;
         },
         getDirectionalInputTaps(state) {
             const inputs = state.directionalInputs.filter(input => !input.direction.includes('(hold)'));
-            console.log(inputs);
+            
             
             return inputs;
         },
@@ -128,26 +128,26 @@ export const useGameStore = defineStore('GameStore', {
         },
         getGameNotations(state) {
             const gameNotations = state.gameNotations.filter(notation => notation.notations_group === 'other');
-            console.log(gameNotations);
+            
             return gameNotations;
         },
         getInput(state) {
             // Get input that matches provided notation
             return (inputNotation: string, inputCategory: string) => {
-                console.log(inputNotation, inputCategory);
+                
                 let result;
                 switch (inputCategory) {
                     case 'directional-inputs':
                         result = state.directionalInputs.find((directionalInput) => directionalInput.notations[0].notation === inputNotation); 
-                        console.log(result);
+                        
                         break;
                     case 'attack-buttons':
                         result = state.attackButtons.find((attackButton) => attackButton.notations[0].notation === inputNotation); 
-                        console.log(result);
+                        
                         break;
                     case 'notations':
                         result = state.gameNotations.find((gameNotation) => gameNotation.notations[0].notation === inputNotation); 
-                        console.log(result);
+                        
                         break;
                     default:
                         break;
@@ -176,19 +176,19 @@ export const useGameStore = defineStore('GameStore', {
                         }
                     })
                 })
-                console.log(data.data);
+                
             } catch (error) {
-                console.log(error);
+                
             }
         },
         async fetchGames() {
             try {
                 const data = await trainingModeAPI.get('/games')
-                console.log(data);
+                
                 this.games = [...data.data];
             }
             catch(error) {
-                console.log(error);
+                
             }
         },
         async fetchGameNotes(gameId: string) {
@@ -200,14 +200,14 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response.data);
+                    
                     this.gameNotes = [...response.data]
                     // this.characterNoteListDisplay = response.data;
                     // this.setCharacter(characterId);
                     this.updateGameNoteListDisplay();
                 })
             } catch (error) {
-                console.log(error);
+                
             }
         },
         async fetchGameNotations(gameId: string) {
@@ -216,18 +216,18 @@ export const useGameStore = defineStore('GameStore', {
                 this.gameNotations = data.data.filter(notation => notation.notations_group === 'other');
                 this.directionalInputNotations = data.data.filter(notation => notation.notations_group === 'directions');
                 this.attackButtonNotations = data.data.filter(notation => notation.notations_group === 'attacks')
-                // console.log(this.gameNotations);
-                console.log(this.directionalInputNotations);
+                // 
+                
             } catch (error) {
-                console.log(error);
+                
             }
         },
         async fetchAttackButtons(gameId: string) {
-            console.log(gameId);
+            
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
                 this.attackButtons = data.data
-                console.log(data.data);
+                
                 this.attackButtons.forEach(input => {
                     input.notations.forEach(notation => {
                         if(notation.game_id === this.game.id) {
@@ -242,7 +242,7 @@ export const useGameStore = defineStore('GameStore', {
                 })
 
             } catch(error) {
-                console.log(error);
+                
             }
         },
         async fetchTags(gameId: string) {
@@ -255,23 +255,23 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 // .then(() => {
                 //     this.tags = data.data;
-                //     console.log(this.tags);
+                //     
                 // })
                 this.tags = data.data;
-                console.log(this.tags);
+                
             } catch (error) {
-                console.log(error);
+                
             }
         },
         async setGame(gameId: string) {
             this.game = this.games.find(game => game.id === gameId);
             this.game.bread_crumb_type = 'game';
             this.gameNoteListDisplay = [...this.game.notes];
-            console.log(this.game);
+            
         },
         async saveGameNote(gameId: string, note: object) {
             const authStore = useAuthStore();
-            console.log(note);
+            
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes`, {
                     'title': note.title,
@@ -282,20 +282,20 @@ export const useGameStore = defineStore('GameStore', {
                         }
                     })
                 .then(response => {
-                    console.log(response);
+                    
                     this.fetchGameNotes(gameId);
                     // this.fetchCharacters(gameId);
 
                     // this.characterNoteListDisplay = [...this.character.notes]
                 })
             } catch (error) {
-                console.log(error);
+                
             }
         },
 
         async updateGameNote(gameId: string, note: object) {
             const authStore = useAuthStore();
-            console.log(note);
+            
             try {
                 await trainingModeAPI.put(`games/${gameId}/notes/${note.id}`, {
                     'title': note.title,
@@ -306,11 +306,11 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
+                    
                     this.fetchGameNotes(gameId);
                 })
             } catch (error) {
-                console.log(error);
+                
             }
         },
 
@@ -324,10 +324,10 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 .then(response => {
                     this.fetchGameNotes(gameId);
-                    console.log(response);
+                    
                 })
             } catch (error) {
-                console.log(error);
+                
             }
         },
 
@@ -346,14 +346,14 @@ export const useGameStore = defineStore('GameStore', {
         },        
         async updateTagsListDisplay() {
             this.tagsListDisplay = this.tags.filter(tag => {
-                // console.log(tag.name);
+                // 
                 return tag.name.includes(this.tagSearchCriteria);
             })
-            console.log(this.tagsListDisplay);
+            
         },
         async updateTagSearchCriteria(input: string) {
             this.tagSearchCriteria = input;
-            console.log(this.tagSearchCriteria);
+            
         }
     }
 });

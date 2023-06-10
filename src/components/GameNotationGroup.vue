@@ -25,7 +25,7 @@ export default {
         <div
             v-for="gameNotation in gameNotations"
             :key="gameNotation.id"       
-            class="border bg-green p-2 text-center w-full h-full"
+            class="border bg-green p-1 text-center w-full h-full"
             @click="renderNotationInput(gameNotation)"
         >
             <GameNotation

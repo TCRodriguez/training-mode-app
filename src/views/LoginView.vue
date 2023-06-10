@@ -30,7 +30,11 @@ export default {
 <template lang="">
     <div class="flex justify-center h-full ">
         <div class="flex flex-col items-center justify-center space-y-4">
-            <h1 class="text-5xl">TrainingMode</h1>
+            <div class="flex flex-row">
+                <h1 class="text-5xl">TrainingMode</h1>
+                <p class="text-xs">TM</p>
+
+            </div>
             <!-- <form action="POST">
                 <input type="text" placeholder="email">
                 <input type="password" placeholder="password">

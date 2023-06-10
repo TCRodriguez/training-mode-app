@@ -229,7 +229,7 @@ export default {
                 <GameNotation 
                     v-else :notation="notation.notation"
                     :class="{ 'text-9xl': fullScreenActiveVerticalBool}"
-                    class="fill-green-400 p-2 h-10 w-10"
+                    class="fill-green-400 p-2 border rounded"
                     :isFullScreen="fullScreenActiveVerticalBool"
 
                     :iconFileName="notation.icon_file_name"
@@ -239,6 +239,8 @@ export default {
         </div>
     </div>
     <div class="flex flex-row justify-center space-x-5 mt-1">
+        <!-- <button class="bg-red p-1 rounded text-white" @click="comboStore.eraseComboInput">Cancel</button> -->
+        <!-- <button class="bg-green p-1 rounded text-white" @click="comboStore.eraseComboInput">Save</button> -->
         <button class="bg-yellow p-1 rounded" @click="comboStore.eraseComboInput">Erase</button>
         <button class="bg-red text-white p-1 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
         <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>

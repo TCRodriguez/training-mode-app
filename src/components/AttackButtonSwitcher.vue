@@ -2,11 +2,14 @@
 import AttackButtonSinglesGroup from './AttackButtonSinglesGroup.vue';
 import AttackButtonDoublesGroup from './AttackButtonDoublesGroup.vue';
 import AttackButtonTriplesGroup from './AttackButtonTriplesGroup.vue';
+import { useGameStore } from '@/stores/GameStore';
 import { ref } from 'vue';
 export default {
     setup() {
+        const gameStore = useGameStore();
         const attackButtonGroupSelection = ref('singles');
         return {
+            gameStore,
             attackButtonGroupSelection
         }
     },
@@ -20,7 +23,7 @@ export default {
 <template lang="">
     <div class="flex flex-col items-center">
        <div>
-            <AttackButtonSinglesGroup v-if = "attackButtonGroupSelection === 'singles'" />
+            <AttackButtonSinglesGroup v-if = "attackButtonGroupSelection === 'singles'" :buttons="gameStore.game.buttons" />
        </div> 
        <div>
             <AttackButtonDoublesGroup v-if = "attackButtonGroupSelection === 'doubles'" />
