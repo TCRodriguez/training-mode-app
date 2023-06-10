@@ -235,7 +235,8 @@ export default {
         <div class="flex flex-col space-y-2">
             <div v-if="comboList.length !== 0" class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
-                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)">
+                <!-- <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)"> -->
+                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput">
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
@@ -348,8 +349,8 @@ export default {
 
         <!-- Edit Combo -->
         <div>
-            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-32" :class="{'hidden': editCharacterComboModeActive === false }">
-                <div class="">
+            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2" :class="{'hidden': editCharacterComboModeActive === false }">
+                <!-- <div class="">
                     <ComboInputDisplay :inputs="inputsForEditCharacterCombo" />
                 </div>
                 <div>
@@ -358,6 +359,29 @@ export default {
                 <div class="flex flex-row items-center">
                     <DirectionalInputSwitcher />
                     <AttackButtonSwitcher />
+                </div> -->
+                <div class="my-2">
+                    <ComboInputDisplay
+                        :inputs="inputsForEditCharacterCombo"
+                    />
+                </div>
+                <div class="px-2">
+                    <GameNotationGroup />
+                </div>
+                <div class="flex flex-row items-center justify-center">
+                    <DirectionalInputSwitcher class=""/>
+                    <div class="w-0.5 h-full border rounded border-gray"></div>
+                    <AttackButtonSwitcher class="" />
+                </div>
+                <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
+                    <button class="bg-red p-2 rounded text-white" @click="closeEditCharacterComboModal()">Cancel</button>
+                    <button class="bg-green p-2 rounded text-white" @click="editCharacterCombo()">Save</button>
+                    <button class="bg-red text-white p-2 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
+                    <button class="bg-yellow p-2 rounded" @click="comboStore.eraseComboInput">Erase</button>
+                    <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
+                    <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
+                    <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
+                    <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
                 </div>
 
             </div>
@@ -367,7 +391,7 @@ export default {
                     :class="{ 'hidden': editCharacterComboModeActive === true }" 
                     @click="openCreateComboModal()" 
                 /> -->
-                <CheckmarkIcon 
+                <!-- <CheckmarkIcon 
                     class="h-20 w-20 fill-green absolute bottom-4 right-4"
                     :class="{ 'hidden': editCharacterComboModeActive === false }"
                     @click="editCharacterCombo()"
@@ -376,7 +400,7 @@ export default {
                     class="h-20 w-20 text-red absolute bottom-4 left-4"
                     :class="{ 'hidden': editCharacterComboModeActive === false }"
                     @click="closeEditCharacterComboModal()"
-                />
+                /> -->
             </div>
         </div>
     </div>

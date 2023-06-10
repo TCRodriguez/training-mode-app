@@ -120,6 +120,7 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async updateCharacterCombo(gameId: string, characterId: string, comboId: string, comboInputs: object) {
             const authStore = useAuthStore();
+            console.log(comboInputs);
             try {
                 await trainingModeAPI.put(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
                     game_id: gameId,
@@ -133,6 +134,7 @@ export const useComboStore = defineStore('ComboStore', {
                 })
                 .then(response => {
                     console.log(response);
+                    this.clearComboInputsDisplay();
                     this.fetchCharacterCombos(gameId, characterId);
                 })
             } catch (error) {
