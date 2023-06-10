@@ -301,18 +301,31 @@ export default {
         <div class="bg-black opacity-[.99] fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': editCharacterComboModeActive === false }"></div>
         <!-- Create Combo -->
         <div>
-            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-8" :class="{'hidden': createComboActive === false }">
+            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
                 <div class="my-2">
-                    <ComboInputDisplay />
+                    <ComboInputDisplay
+                        @trigger-close-create-combo-modal="closeCreateComboModal()" 
+                        @trigger-save-character-combo="saveCharacterCombo()"
+                    />
                 </div>
-                <div>
+                <div class="px-2">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center">
-                    <DirectionalInputSwitcher />
-                    <AttackButtonSwitcher />
+                <div class="flex flex-row items-center justify-center">
+                    <DirectionalInputSwitcher class=""/>
+                    <div class="w-0.5 h-full border rounded border-gray"></div>
+                    <AttackButtonSwitcher class="" />
                 </div>
-
+                <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
+                    <button class="bg-red p-2 rounded text-white" @click="closeCreateComboModal()">Cancel</button>
+                    <button class="bg-green p-2 rounded text-white" @click="saveCharacterCombo()">Save</button>
+                    <button class="bg-red text-white p-2 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
+                    <button class="bg-yellow p-2 rounded" @click="comboStore.eraseComboInput">Erase</button>
+                    <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
+                    <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
+                    <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
+                    <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
+                </div>
             </div>
             <div class="">
                 <AddIcon
@@ -320,7 +333,7 @@ export default {
                     :class="{ 'hidden': createComboActive === true }" 
                     @click="openCreateComboModal()" 
                 />
-                <CheckmarkIcon 
+                <!-- <CheckmarkIcon 
                     class="h-20 w-20 fill-green absolute bottom-4 right-4"
                     :class="{ 'hidden': createComboActive === false }"
                     @click="saveCharacterCombo()"
@@ -329,7 +342,7 @@ export default {
                     class="h-20 w-20 text-red absolute bottom-4 left-4"
                     :class="{ 'hidden': createComboActive === false }"
                     @click="closeCreateComboModal()"
-                />
+                /> -->
             </div>
         </div>
 

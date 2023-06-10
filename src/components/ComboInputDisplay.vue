@@ -107,23 +107,6 @@ export default {
             // console.log(fullScreenActiveVerticalBool.value);
         }
 
-        // const saveCharacterCombo = () => {
-        //     console.log(characterStore.character);
-        //     if(Object.keys(characterStore.character).length === 0) {
-        //         console.log('character not set');
-        //         alert('Please select a character first.')
-        //         return;
-        //     }
-        //     console.log(comboStore.comboDisplay);
-
-        //     const game = gameStore.getGame;
-        //     const character = characterStore.getCharacter;
-        //     console.log(game?.id);
-        //     console.log(character?.id);
-        //     console.log(characterStore.character);
-        //     comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboDisplay);
-        // }
-
         const testGetInput = (notation, category) => {
             const test = getInput(notation, category);
             console.log(test);
@@ -160,7 +143,7 @@ export default {
 </script>
 <template lang="">
     <div
-        class="border space-x-2 flex flex-row overflow-x-auto overflow-y-auto items-center h-14 bg-blue" 
+        class="border space-x-2 flex flex-row overflow-x-auto overflow-y-auto items-center h-20 bg-blue" 
         id="horizontal-combo-display"
     >
         <div
@@ -175,10 +158,6 @@ export default {
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
 
             />
-            <!-- <DirectionalInput 
-                v-else-if="comboInput.category === 'directional-inputs'" :iconFileName="comboInput.icons[0].icon_file_name"
-                :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
-            /> -->
             <DirectionalInput 
                 v-else-if="comboInput.category === 'directional-inputs'" 
                 :iconFileName="comboInput.icon_file_name"
@@ -193,13 +172,14 @@ export default {
             <GameNotation 
                 v-else :notation="comboInput.notation"
                 :class="{ 'text-9xl': fullScreenActiveHorizontalBool}"
-                class="fill-green-400 p-2 h-10 w-10"
+                class="text-white p-2 h-10 w-10"
                 :isFullScreen="fullScreenActiveHorizontalBool"
 
                 :iconFileName="comboInput.icon_file_name"
             />
         </div>
     </div>
+    <!-- Full screen display -->
     <div
         :class="{ 'hidden': fullScreenActiveVerticalBool === false, 'visible bg-red-500 overflow-x-auto overflow-y-auto': fullScreenActiveVerticalBool === true }" 
         id="vertical-combo-display"
@@ -238,16 +218,16 @@ export default {
             </div>
         </div>
     </div>
-    <div class="flex flex-row justify-center space-x-5 mt-1">
-        <!-- <button class="bg-red p-1 rounded text-white" @click="comboStore.eraseComboInput">Cancel</button> -->
-        <!-- <button class="bg-green p-1 rounded text-white" @click="comboStore.eraseComboInput">Save</button> -->
-        <button class="bg-yellow p-1 rounded" @click="comboStore.eraseComboInput">Erase</button>
-        <button class="bg-red text-white p-1 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
+    <!-- <div class="flex flex-row justify-center space-x-5 mt-1"> -->
+        <!-- <button class="bg-red p-1 rounded text-white" @click="$emit('triggerCloseCreateComboModal')">Cancel</button> -->
+        <!-- <button class="bg-green p-1 rounded text-white" @click="$emit('triggerSaveCharacterCombo')">Save</button> -->
+        <!-- <button class="bg-red text-white p-1 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button> -->
+        <!-- <button class="bg-yellow p-1 rounded" @click="comboStore.eraseComboInput">Erase</button> -->
         <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
         <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
         <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
         <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
-    </div>
+    <!-- </div> -->
 </template>
 <style lang="">
     

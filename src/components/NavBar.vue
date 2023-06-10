@@ -34,7 +34,7 @@ import { useRouter, useRoute, createWebHistory } from "vue-router";
                 }
                 router.back();
                 // console.log(history.state.current);
-                // console.log(history)
+                console.log(history)
                 // console.log(route.name);
 
             }
@@ -59,8 +59,9 @@ import { useRouter, useRoute, createWebHistory } from "vue-router";
     <div>
         <nav>
             <div class="flex flex-row justify-between items-center">
-                <div>
+                <div class="flex flex-row items-center">
                     <ChevronBackOutlineIcon :class="{ 'invisible': route.name === 'games'}" class="w-10 h-10" @click="goBack()"/>
+                    <!-- <p>{{ history.location }}</p> -->
                 </div>
                 <div class="flex flex-row">
                     <router-link to="/games" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
