@@ -254,7 +254,7 @@ export default {
                             :inputs="move.inputs" 
                             :tags="move.tags"
                             :editTagsActive="characterMoveEditTagsActive"
-                            class="border rounded p-2 overflow-x-auto w-full"
+                            class="border rounded p-2 w-full"
                         />
                     </div>
                     <div class="flex flex-row justify-end">
