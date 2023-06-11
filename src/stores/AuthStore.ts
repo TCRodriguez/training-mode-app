@@ -13,12 +13,16 @@ export const useAuthStore = defineStore('AuthStore', {
         // navItems: [],
         token: null,
         loggedInUser: null,
+        loginFormActive: false
 
     }),
     getters: {
 
     },
     actions: {
+        async toggleLoginModal() {
+            this.loginFormActive = !this.loginFormActive;
+        },
         async login(email: string, password: string) {
             try {
                 await trainingModeApi.post('/login', {

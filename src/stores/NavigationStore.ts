@@ -3,6 +3,17 @@ import { defineStore } from 'pinia';
 export const useNavigationStore = defineStore('NavigationStore', {
     state: () => ({
         navItems: [],
+        dashboardItems: [
+            {
+                name: 'Game Data',
+                icon: 'GameControllerIcon',
+                link: '/games'
+            },
+            // {
+            //     name: 'Articles',
+            //     icon:''
+            // }
+        ]
 
     }),
     getters: {
