@@ -236,7 +236,7 @@ export default {
 </script>
 <template lang="">
     <div class="mt-8">
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2 px-2">
             <div v-if="comboList.length !== 0" class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
                 <!-- <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)"> -->
@@ -264,7 +264,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[18.5rem] lg:h-96">
+            <ul class="space-y-2 overflow-y-auto xs:h-[15rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
                     :key="index"
                     class="flex flex-row"

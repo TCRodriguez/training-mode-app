@@ -2,6 +2,7 @@
 import BreadCrumb from "@/components/BreadCrumb.vue";
 import ExitOutlineIcon from "@/components/icons/ExitOutlineIcon.vue";
 import PersonOutlineIcon from "./icons/PersonOutlineIcon.vue";
+import LoginOutlineIcon from "./icons/LoginOutlineIcon.vue";
 import ChevronBackOutlineIcon from "./icons/ChevronBackOutlineIcon.vue";
 import LoginModal from "@/components/LoginModal.vue"
 import { useAuthStore } from "@/stores/AuthStore";
@@ -73,6 +74,7 @@ import { ref } from "vue";
             ExitOutlineIcon,
             ChevronBackOutlineIcon,
             PersonOutlineIcon,
+            LoginOutlineIcon,
             LoginModal
         }
     }
@@ -90,17 +92,19 @@ import { ref } from "vue";
                         <router-link to="/games" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
                         <p class="text-[.50rem]">TM</p>
                     </div>
-                    <div class="flex justify-center">
+                    <div class="flex justify-center items-center space-x-1">
                         <!-- TODO Show username here if logged in -->
+                        <PersonOutlineIcon class="h-5 w-5" />
                         <p v-if="authStore.loggedInUser === null">Guest</p>
-                        <p v-else>Welcome, {{ authStore.loggedInUser.username }}</p>
+                        <p v-else>{{ authStore.loggedInUser.username }}</p>
                     </div>
 
                 </div>
                 <div class="">
                 <!-- <p>Logout</p> -->
                 <!-- <ExitOutlineIcon class="h-10 w-10" @click="logout()" /> -->
-                    <PersonOutlineIcon v-if="authStore.loggedInUser === null" class="h-10 w-10" @click="toggleLoginModal()"/>
+                    <!-- <PersonOutlineIcon v-if="authStore.loggedInUser === null" class="h-10 w-10" @click="toggleLoginModal()"/> -->
+                    <LoginOutlineIcon v-if="authStore.loggedInUser === null" class="h-10 w-10" @click="toggleLoginModal()"/>
                     <ExitOutlineIcon v-else @click="logout()" class="h-10 w-10" />
                 </div>
             </div>

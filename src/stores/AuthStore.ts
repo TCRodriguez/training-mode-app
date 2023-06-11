@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('AuthStore', {
         token: null,
         loggedInUser: null,
         loginFormActive: false,
-        notLoggedInMessage: 'Must be logged in to that!'
+        // notLoggedInMessage: 'Must be logged in to that!'
 
     }),
     getters: {
@@ -25,6 +25,11 @@ export const useAuthStore = defineStore('AuthStore', {
             this.loginFormActive = !this.loginFormActive;
         },
         async login(email: string, password: string) {
+            const navigationStore = useNavigationStore();
+            const gameStore = useGameStore();
+            const characterStore = useCharacterStore();
+            const characterMoveStore = useCharacterMoveStore();
+            const comboStore = useComboStore();
             try {
                 await trainingModeApi.post('/login', {
                     email: email,
@@ -34,6 +39,11 @@ export const useAuthStore = defineStore('AuthStore', {
                     console.log(response);
                     this.token = response.data.token;
                     this.loggedInUser = response.data.user
+                    
+                    gameStore.fetchGames();
+                    gameStore.fetchGameNotes(gameStore.game.id);
+                    characterMoveStore.fetchCharacterMoves(gameStore.game.id, characterStore.character.id);
+                    comboStore.fetchCharacterCombos(gameStore.game.id, characterStore.character.id);
                     
                 })
             } catch (error) {
