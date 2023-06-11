@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import { useRouter } from 'vue-router';
 import { Form, Field } from 'vee-validate';
+import CloseIcon from './icons/CloseIcon.vue';
 export default {
     setup() {
         const authStore = useAuthStore();
@@ -24,12 +25,16 @@ export default {
     },
     components: {
         Form,
-        Field
+        Field,
+        CloseIcon
     }
 }
 </script>
 <template lang="">
     <div>
+        <div class="flex justify-end">
+            <CloseIcon class="h-10 w-10" @click="$emit('triggerToggleLoginModal')" />
+        </div>
         <Form @submit="onSubmit">
         <!-- <Form @submit="$emit('triggerLogin', values)"> -->
                 <div class="flex justify-center">
