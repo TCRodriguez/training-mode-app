@@ -89,7 +89,7 @@ import { ref } from "vue";
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="flex flex-row">
-                        <router-link to="/games" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
+                        <router-link to="/" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
                         <p class="text-[.50rem]">TM</p>
                     </div>
                     <div class="flex justify-center items-center space-x-1">

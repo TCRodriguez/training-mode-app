@@ -9,12 +9,12 @@ export default {
 }
 </script>
 <template lang="">
-    <div>
+    <div class="mt-16">
         <!-- <div>
             <NavBar />
         </div> -->
-        <div>
-            <Dashboard />
+        <div class="flex flex-row justify-center">
+            <Dashboard class="" />
         </div>
     </div>
 </template>
