@@ -1,15 +1,21 @@
 <script lang="ts">
+import CharacterPortrait from './CharacterPortrait.vue';
 export default {
     props: {
+        game: String,
         characterName: String,
-        characterProfileImgLink: String
+    },
+    components: {
+        CharacterPortrait
     }
 }
 </script>
 <template lang="">
-    <div class="border rounded p-2 flex flex-col w-full">
-        <div></div>
-        <div>
+    <div class="p-2 flex flex-row w-full items-center space-x-2">
+        <div class="w-24 h-24">
+            <CharacterPortrait :game="game" :characterName="characterName" />
+        </div>
+        <div class="text-xl">
             <p>{{ characterName }}</p>
         </div>
     </div>

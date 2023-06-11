@@ -81,7 +81,7 @@
     }
 </script>
 <template lang="">
-    <div class="w-full">
+    <div class="w-full p-2">
         <div class="flex flex-row w-full items-center">
             <MagnifyingGlass class="h-10 w-10" />
             <input 
@@ -100,13 +100,13 @@
             >{{ character.name }}</li>
         </ul> -->
         <div class="xs:h-[16.5rem] lg:h-96 overflow-y-auto">
-            <ul class="space-y-2">
+            <ul class="space-y-2 divide-y-2">
                 <li
                     v-for="character in characterStore.characterListDisplay"
                     :key="character.id"
                     @mousedown="loadCharacterData(character.id)"
                 >
-                    <CharacterCard :characterName="character.name" class="font-bold text-xl"/>     
+                    <CharacterCard :game="gameStore.game.abbreviation" :characterName="character.name" class="font-bold text-xl"/>     
                 </li>
             </ul>
         </div>

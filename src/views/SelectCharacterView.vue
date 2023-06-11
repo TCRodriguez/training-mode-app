@@ -12,7 +12,7 @@ export default {
         const router = useRouter();
 
 
-        const currentTab = ref('Notes');
+        const currentTab = ref('Characters');
 
         const tabs = {
             Notes,
@@ -43,7 +43,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="flex flex-col items-center mt-8">
+    <div class="flex flex-col items-center">
         <!-- <h3>{{ gameStore.game.title }}</h3> -->
         <GameBanner class="h-1/2 w-1/2" :game="gameStore.game.abbreviation" />
         <nav>

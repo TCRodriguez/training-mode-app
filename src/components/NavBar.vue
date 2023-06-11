@@ -56,7 +56,7 @@ import { useRouter, useRoute, createWebHistory } from "vue-router";
     }
 </script>
 <template lang="">
-    <div>
+    <div class="p-2">
         <nav>
             <div class="flex flex-row justify-between items-center">
                 <div class="flex flex-row items-center">

@@ -190,7 +190,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div>
+    <div class="px-2">
         <div class="my-2 flex flex-col space-x-2">
             <div class="flex flex-row items-center space-x-2 my-2">
                 <p>Search by:</p>
