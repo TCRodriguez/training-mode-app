@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useRoute, useRouter } from 'vue-router';
 import { ref, computed } from 'vue';
@@ -15,6 +16,7 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
+        const authStore = useAuthStore();
         const gameStore = useGameStore();
         const gameNotes = computed(() => gameStore.gameNoteListDisplay);
 
@@ -146,6 +148,7 @@ export default {
         return {
             route,
             router,
+            authStore,
             gameStore,
 
             gameNotes,
@@ -205,7 +208,13 @@ export default {
                     class="my-8"
                 >
             </div>
-            <p v-if="gameNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your game notes!</p>
+            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
+                <p class="font-bold text-xl text-center">Must be logged in to view game notes!</p>
+            </div>
+            <div v-if="authStore.loggedInUser !== null">
+                <p v-if="gameNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your game notes!</p>
+            </div>
+
             <ul class="space-y-2 overflow-auto xs:h-[15rem] lg:h-96">
                 <li v-for="gameNote in gameNotes" :key="gameNote.id">
                     <div>
@@ -267,7 +276,7 @@ export default {
             @update-edit-note-title="updateEditNoteTitle"
             @update-edit-note-body="updateEditNoteBody"
         />
-        <div>
+        <div v-if="authStore.loggedInUser !== null">
             <AddIcon
                 v-if="createNoteActive !== true"
                 class="h-20 w-20 absolute bottom-2 right-2"

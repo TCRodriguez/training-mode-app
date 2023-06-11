@@ -247,6 +247,9 @@ export const useGameStore = defineStore('GameStore', {
         },
         async fetchTags(gameId: string) {
             const authStore = useAuthStore();
+            if(authStore.loggedInUser === null) {
+                return;
+            }
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/tags`, {
                     headers: {
@@ -260,7 +263,7 @@ export const useGameStore = defineStore('GameStore', {
                 this.tags = data.data;
                 
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async setGame(gameId: string) {

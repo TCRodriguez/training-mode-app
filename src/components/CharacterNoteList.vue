@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
 import { computed, ref, watch } from 'vue';
@@ -13,6 +14,8 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
+        
+        const authStore = useAuthStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
         const characterNotes = computed(() => characterStore.characterNoteListDisplay);
@@ -176,6 +179,7 @@ export default {
 
         });
         return {
+            authStore,
             characterStore,
             characterNotes,
             characterNoteSearchInput,
@@ -229,7 +233,12 @@ export default {
                     class="my-8"
                 >
             </div>
-            <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
+            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
+                <p class="font-bold text-xl text-center">Must be logged in to view character notes!</p>
+            </div>
+            <div v-if="authStore.loggedInUser !== null">
+                <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
+            </div>
             <ul class="space-y-2">
                 <li v-for="characterNote in characterNotes" :key="characterNote.id">
                     <div>
@@ -290,7 +299,7 @@ export default {
             @update-edit-note-title="updateEditNoteTitle"
             @update-edit-note-body="updateEditNoteBody"
         />
-        <div>
+        <div v-if="authStore.loggedInUser !== null">
             <AddIcon
                 v-if="createNoteActive !== true"
                 class="h-20 w-20 absolute bottom-4 right-4"

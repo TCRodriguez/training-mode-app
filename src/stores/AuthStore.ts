@@ -13,7 +13,8 @@ export const useAuthStore = defineStore('AuthStore', {
         // navItems: [],
         token: null,
         loggedInUser: null,
-        loginFormActive: false
+        loginFormActive: false,
+        notLoggedInMessage: 'Must be logged in to that!'
 
     }),
     getters: {

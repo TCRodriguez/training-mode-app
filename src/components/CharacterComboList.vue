@@ -9,6 +9,8 @@ import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
 import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
+
+import { useAuthStore } from '@/stores/AuthStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
@@ -18,6 +20,7 @@ export default {
     setup(params) {
         const route = useRoute();
         const router = useRouter();
+        const authStore = useAuthStore();
         const comboStore = useComboStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
@@ -190,6 +193,7 @@ export default {
         return {
             route,
             router,
+            authStore,
             comboStore,
             characterStore,
             gameStore,
@@ -254,7 +258,12 @@ export default {
                     </div>
                 </div>
             </div>
-            <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
+            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
+                <p class="font-bold text-xl text-center">Must be logged in to view character combos!</p>
+            </div>
+            <div v-if="authStore.loggedInUser !== null">
+                <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
+            </div>
             <ul class="space-y-2 overflow-y-auto xs:h-[18.5rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
                     :key="index"
@@ -328,7 +337,7 @@ export default {
                     <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
                 </div>
             </div>
-            <div class="">
+            <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
                     class="h-20 w-20 absolute bottom-4 right-4"
                     :class="{ 'hidden': createComboActive === true }" 

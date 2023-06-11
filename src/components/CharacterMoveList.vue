@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed, watch } from 'vue';
@@ -9,6 +10,7 @@ import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 export default {
     setup() {
+        const authStore = useAuthStore();
         const characterMoveStore = useCharacterMoveStore();
         const gameStore = useGameStore();
         const route = useRoute();
@@ -27,6 +29,8 @@ export default {
         const searchCharacterMoveInputValue = computed(() => characterMoveStore.characterMoveNameSearchInputValue);
         const characterMoveSearchInput = ref('');
         const searchByTagsInput = ref('');
+
+        const notLoggedInMessageActive = ref(false);
 
 
         // const openAddTagInput = () => {
@@ -113,6 +117,14 @@ export default {
         }
 
         const toggleEditTagsMode = (moveId: number) => {
+            if(authStore.loggedInUser === null) {
+                // notLoggedInMessageActive.value = !notLoggedInMessageActive.value;
+                showNotLoggedInMessage();
+                setTimeout(() => {
+                    hideNotLoggedInMessage();
+                }, 3000);
+                return;
+            }
             // console.log(characterMoveEditTagsActive.value);
             // characterMoveEditTagsActive.value !== moveId 
             //     ? characterMoveEditTagsActive.value = moveId 
@@ -125,6 +137,14 @@ export default {
             }
 
             console.log(characterMoveOptionsActive.value);
+        }
+
+        const showNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = true;
+        }
+
+        const hideNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = false;
         }
 
         const removeTagFromCharacterMove = (tagId: string, moveId: string) => {
@@ -155,6 +175,9 @@ export default {
             gameStore,
             route,
             router,
+
+
+
             addTagActive,
             // openAddTagInput,
             addTagToMove,
@@ -172,6 +195,11 @@ export default {
             removeTagFromSearchList,
             toggleMoveOptions,
             toggleEditTagsMode,
+
+            notLoggedInMessageActive,
+            showNotLoggedInMessage,
+            hideNotLoggedInMessage,
+
             removeTagFromCharacterMove
 
         }
@@ -257,7 +285,8 @@ export default {
                             class="border rounded p-2 w-full"
                         />
                     </div>
-                    <div class="flex flex-row justify-end">
+                    <div class="flex flex-row justify-end items-center space-x-2">
+                        <p v-if="notLoggedInMessageActive" class="">Must be logged in!</p>
                         <button v-if="characterMoveOptionsActive.includes(move.id)" @click="toggleEditTagsMode(move.id)">
                             <span v-if="characterMoveEditTagsActive.includes(move.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                             <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>

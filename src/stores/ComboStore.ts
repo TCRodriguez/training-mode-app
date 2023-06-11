@@ -160,6 +160,10 @@ export const useComboStore = defineStore('ComboStore', {
         async fetchCharacterCombos(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+
+            if(authStore.loggedInUser === null) {
+                return;
+            }
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`, {
                     headers: {
