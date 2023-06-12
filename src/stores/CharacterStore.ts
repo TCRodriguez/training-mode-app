@@ -57,7 +57,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response.data);
                     this.characterNotes = [...response.data]
                     this.updateCharacterNoteListDisplay();
                 })

@@ -32,8 +32,17 @@ export default {
             <CloseIcon class="h-10 w-10" @click="$emit('triggerToggleLoginModal')" />
         </div>
         <Form @submit="onSubmit">
-            <div class="flex justify-center">
-                <p>Log into TrainingMode</p>
+            <div class="flex flex-row justify-center">
+                <div class="flex flex-row itens-center space-x-1">
+                    <div class="flex items-center">
+                        <p class="">Log into</p>
+
+                    </div>
+                    <p class="font-bold text-lg">TrainingMode</p>
+                </div>
+                <div>
+                    <p class="text-xs">TM</p>
+                </div>
             </div>
             <div>
                 <Field name="email" type="email" value="user@example.com" placeholder="Email" />

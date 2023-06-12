@@ -28,6 +28,7 @@ export default {
     },
     created() {
         this.gameStore.fetchGameNotations(this.route.params.game);
+        this.gameStore.fetchAttackButtons(this.route.params.game)
         this.gameStore.fetchDirectionalInputs();
         this.gameStore.fetchTags(this.route.params.game);
     },
