@@ -25,18 +25,11 @@ export default {
     <div>
         <div class="flex flex-row px-2">
             <div v-for="item in dashboardItems" :key="item" class="border rounded">
-                <!-- <DashboardItem class="border rounded"  /> -->
-                <!-- <RouterLink to="/games">Game Data</RouterLink> -->
-                <!-- <p>{{item.name}}</p> -->
                 <RouterLink :to="item.link">
                     <DashboardItem :name="item.name" :icon="item.icon" class="p-4" />
                 </RouterLink>
 
             </div>
-            <!-- <div>
-                <RouterLink>Settings</RouterLink>
-                <p>test</p>
-            </div> -->
         </div>
     </div>
 </template>

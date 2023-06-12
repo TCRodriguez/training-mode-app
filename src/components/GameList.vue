@@ -9,7 +9,6 @@
         setup() {
             const gameStore = useGameStore();
             const navigationStore = useNavigationStore();
-            const { findGame } = storeToRefs(gameStore);
             const router = useRouter();
             const goToCharacterSelect = (gameId: string) => {
                 const game = gameStore.findGame(gameId);
@@ -23,7 +22,6 @@
                     link: `/games/${gameId}/characters`,
                     type: 'game'
                 };
-                // router.push(`/games/${gameId}/create-combo`)
                 router.push(navItem.link)
 
                 navigationStore.addNavigationItem(navItem)
@@ -51,7 +49,6 @@
 
 <template lang="">
     <div class="flex flex-col">
-        <!-- <p>Game List</p> -->
         <div class="flex flex-row w-full items-center hidden">
             <MagnifyingGlass class="h-10 w-10" />
             <input 
@@ -67,8 +64,6 @@
                     :key="game.id"
                     @click="goToCharacterSelect(game.id)"
                 >
-                    <!-- {{ game.title }} -->
-                    <!-- <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${game.title}-banner.png`" alt="" srcset=""> -->
                     <div class="relative">
                         <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
                             <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
@@ -76,9 +71,6 @@
                         <GameBanner :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
                     </div>
                 </li>
-                <!-- <li>
-                    <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/banners/${gameStore.game.title}-banner.png`" alt="" srcset="">
-                </li> -->
             </ul>
         </div>
     </div>

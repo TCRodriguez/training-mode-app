@@ -10,8 +10,6 @@ import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
 import Note from './Note.vue';
 
-
-
 export default {
     setup() {
         const route = useRoute();
@@ -51,25 +49,17 @@ export default {
             createNoteActive.value = !createNoteActive.value;
         };
         const updateCreateNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             createNoteTitle.value = noteTitle;
-            console.log(createNoteTitle.value);
         };
         const updateCreateNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             createNoteBody.value = noteBody;
-            console.log(createNoteBody.value);
         };
         const saveGameNote = () => {
-
             const game = gameStore.game;
             const gameNote = {
                 'title': createNoteTitle.value,
                 'body': createNoteBody.value
             }
-
-            console.log(gameNote);
-
 
             gameStore.saveGameNote(game.id, gameNote)
             .then(() => {
@@ -90,10 +80,6 @@ export default {
                 viewNoteTitle.value = gameNote.title;
                 viewNoteBody.value = gameNote.body;
             }
-
-            console.log(viewNoteTitle.value);
-            console.log(viewNoteBody.value);
-
         };
 
         const updateGameNote = () => {
@@ -113,14 +99,10 @@ export default {
         };
 
         const updateEditNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             editNoteTitle.value = noteTitle;
-            console.log(editNoteTitle.value);
         };
         const updateEditNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             editNoteBody.value = noteBody;
-            console.log(editNoteBody.value);
         };
         const openEditNoteModal = (gameNote: object) => {
             editNoteActive.value = !editNoteActive.value;
@@ -229,10 +211,6 @@ export default {
                             <button v-if="gameNoteOptionsActive.includes(gameNote.id)" @click="deleteGameNote(gameNote.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                             </button>
-                            <!-- <button v-if="gameComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
-                                <span v-if="gameComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
-                            </button> -->
                             <button v-if="gameNoteOptionsActive.includes(gameNote.id)" @click="toggleNoteOptions(gameNote.id, $event)">
                                 <span v-if="gameNoteEditActive === gameNote.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                                 <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(gameNote)">Edit</span>

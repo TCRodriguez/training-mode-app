@@ -24,34 +24,16 @@ export default {
         };
         
         addEventListener('fullscreenchange', (event) => {
-            console.log("Full screen exited.")
-            // console.log(event);
-            // console.log(document.fullscreenElement);
-            // if(event.target.id === 'combo-display') {
-            //     fullScreenActiveHorizontalBool.value = !fullScreenActiveHorizontalBool.value;
-            // }
-            console.log(event.target.id);
             switch (event.target.id) {
                 case 'horizontal-combo-display':
                     fullScreenActiveHorizontalBool.value = !fullScreenActiveHorizontalBool.value;
                     break;
                 case 'vertical-combo-display':
                     fullScreenActiveVerticalBool.value = !fullScreenActiveVerticalBool.value;
-                    // console.log(fullScreenActiveVerticalBool.value);
-                    // comboStore.notationSegments = [];
                     break;
             }
-            console.log(fullScreenActiveVerticalBool.value);
         });
-        addEventListener('click', (event) => {
-            // console.log(event.target.innerText === 'Present combo vertically');
-            // if(event.target )
-            // if(event.target.innerText === 'Go Fullscreen') {
-            //     fullScreenActiveHorizontalBool.value = !fullScreenActiveHorizontalBool.value
-            // }
-        })
         watch(() => characterStore.character, () => {
-            console.log('character has changed');
             comboStore.comboInputsDisplay = [];
         });
 
@@ -67,11 +49,7 @@ export default {
                 const notation = notations[i];
                 notation.notation === '>' ? nextNotationIndices.push(i) : null;
             }
-            // console.log(nextNotationIndices);
-            // console.log(notationsArrayLength);
-        
-
-            // const nextNotationsIndicesLength = nextNotationIndices.length;
+            
             let notationChunks = [];
             let k = 1;
             for (let j = 0; j <= nextNotationIndices.length; j++) {
@@ -101,15 +79,8 @@ export default {
         const presentComboVertically = () => {
             splitComboSections();
 
-            // fullScreenActiveVerticalBool.value = !fullScreenActiveVerticalBool.value;
             let inputComboDisplay = document.querySelector('#vertical-combo-display');
             inputComboDisplay?.requestFullscreen();
-            // console.log(fullScreenActiveVerticalBool.value);
-        }
-
-        const testGetInput = (notation, category) => {
-            const test = getInput(notation, category);
-            console.log(test);
         }
 
         return {
@@ -123,8 +94,6 @@ export default {
             splitComboSections,
             presentComboVertically,
             getInput,
-            // saveCharacterCombo
-            // toggleAutoScroll
         }
     },
     props: {
@@ -186,13 +155,6 @@ export default {
     >
         <div class="flex flex-row items-center" v-for="segment in comboStore.notationSegments" :key="segment.id">
             <div class="shrink-0" v-for="notation in segment" @click="getInput(notation.notation, notation.category)">
-                <!-- {{comboStore.comboDisplay[]}} -->
-                <!-- {{getInput(notation.notation, notation.category)}} -->
-                <!-- <p>{{notation.notation}}</p> -->
-                <!-- <p>{{notation.notation}}</p> -->
-                <!-- <p>{{notation.category}}</p> -->
-                
-                <!-- <img :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/${notation.category}%2Ftekken-7%2F${notation.icon}`" alt=""> -->
                 <AttackButton 
                     v-if="notation.category === 'attack-buttons'" :iconFileName="notation.icon_file_name"
                     :class="{ 'h-96 w-96': fullScreenActiveVerticalBool, 'h-12 w-12': !fullScreenActiveVerticalBool}"
@@ -218,16 +180,6 @@ export default {
             </div>
         </div>
     </div>
-    <!-- <div class="flex flex-row justify-center space-x-5 mt-1"> -->
-        <!-- <button class="bg-red p-1 rounded text-white" @click="$emit('triggerCloseCreateComboModal')">Cancel</button> -->
-        <!-- <button class="bg-green p-1 rounded text-white" @click="$emit('triggerSaveCharacterCombo')">Save</button> -->
-        <!-- <button class="bg-red text-white p-1 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button> -->
-        <!-- <button class="bg-yellow p-1 rounded" @click="comboStore.eraseComboInput">Erase</button> -->
-        <!-- <button class="bg-green" @click="enterFullScreen()">Go Fullscreen</button>
-        <button class="bg-green" @click="splitComboSections()">Split combo sections</button>
-        <button class="bg-cyan-500" @click="presentComboVertically()">Present combo vertically</button>
-        <button class="bg-cyan-500" @click="saveCharacterCombo()">Save Combo</button> -->
-    <!-- </div> -->
 </template>
 <style lang="">
     

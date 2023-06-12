@@ -35,14 +35,10 @@ export default {
                     :notation="gameNotation.notation"
                     :iconFileName="gameNotation.icon_file_name"
                     class="fill-white text-white"
-
-
                 />
             </div>
         </div>
-
     </div>
-
 </template>
 <style lang="">
     

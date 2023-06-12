@@ -5,15 +5,6 @@ import AddIcon from './icons/AddIcon.vue';
 import CheckmarkIcon from './icons/CheckmarkIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 export default {
-    setup(props) {
-
-
-
-
-        return {
-            
-        }
-    },
     components: {
         Note,
         MagnifyingGlass,
@@ -43,8 +34,6 @@ export default {
                     <textarea name="" :value="noteBody" @input="$emit('updateEditNoteBody', $event.target.value)" id="" class="bg-white" cols="30" rows="10"></textarea>
                 </div>
                 <div v-if="mode === 'view'" class="flex flex-col text-white space-y-2">
-                    <!-- <input type="text" :value="noteTitle" @input="$emit('updateEditNoteTitle', $event.target.value)" class="bg-white" placeholder="Enter note title...">
-                    <textarea name="" :value="noteBody" @input="$emit('updateEditNoteBody', $event.target.value)" id="" class="bg-white" cols="30" rows="10"></textarea> -->
                     <h3 class="text-3xl">{{ noteTitle }}</h3>
                     <p>{{ noteBody }}</p>
                 </div>

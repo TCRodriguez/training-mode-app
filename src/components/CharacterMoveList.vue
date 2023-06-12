@@ -19,12 +19,8 @@ export default {
         const searchMoves = ref(null);
         const searchOptionsModalActive = ref(false);
         const searchByOptionSelection = ref('name');
-        // const characterMoveOptionsActive = ref(0);
         const characterMoveOptionsActive = ref([]);
-        // const characterMoveEditTagsActive = ref(0);
         const characterMoveEditTagsActive = ref([]);
-
-
 
         const searchCharacterMoveInputValue = computed(() => characterMoveStore.characterMoveNameSearchInputValue);
         const characterMoveSearchInput = ref('');
@@ -32,41 +28,21 @@ export default {
 
         const notLoggedInMessageActive = ref(false);
 
-
-        // const openAddTagInput = () => {
-        //     // alert('test');
-        //     addTagActive.value = !addTagActive.value;
-        // }
-
         const addTagToMove = (newTag, moveId) => {
-            // alert(moveId);
-
-            characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag)
-            .then(() => {
-                // alert('yes?');
-                // addTagActive.value = !addTagActive.value
-
-
-            })
+            characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag);
         }
 
-
         const toggleSearchOptionsModal = () => {
-            // alert('yes');
-            console.log(searchOptionsModalActive.value);
             searchOptionsModalActive.value = !searchOptionsModalActive.value;
         }
 
         const switchSearchByOption = (option: string) => {
-            console.log(option);
             characterMoveStore.resetCharacterMoveListDisplay();
             characterMoveSearchInput.value = '';
             searchByOptionSelection.value = option;
         }
 
         const addTagToSearchList = (event) => {
-            
-            console.log(event);
             if(event.target.tagName === 'SPAN') {
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');
@@ -74,7 +50,6 @@ export default {
                 return;
             }
 
-            // console.log(searchByTagsInput.value);
             characterMoveStore.addCharacterMoveTagToSearchList(searchByTagsInput.value);
             characterMoveStore.updateCharacterMovesListDisplay('tags');
             searchByTagsInput.value = '';
@@ -87,7 +62,6 @@ export default {
 
         const toggleMoveOptions = (moveId: number, event) => {
             if(event.target.__vueParentComponent !== undefined) {
-                console.log(event.target.__vueParentComponent.attrs['aria-labelledby']);
                 if(event.target.__vueParentComponent.attrs['aria-labelledby'] === 'Close move options') {
                     characterMoveOptionsActive.value.splice(characterMoveOptionsActive.value.indexOf(moveId), 1);
                     if(characterMoveEditTagsActive.value.includes(moveId)) {
@@ -96,17 +70,7 @@ export default {
                 }
                 return;
             }
-            // if(event.target.__vueParentComponent.attrs.aria-labelledby === 'Close move options') {
 
-            // }
-            // if(characterMoveOptionsActive.value !== moveId) {
-            //     characterMoveOptionsActive.value = moveId
-            //     // toggleEditTagsMode(moveId);
-            //     // characterMoveEditTagsActive.value = moveId
-            // } else {
-            //     characterMoveOptionsActive.value = 0;
-            //     characterMoveEditTagsActive.value = 0;
-            // }
             if(!characterMoveOptionsActive.value.includes(moveId)) {
                 characterMoveOptionsActive.value.push(moveId);
             } else if(characterMoveOptionsActive.value.includes(moveId)) {
@@ -118,25 +82,18 @@ export default {
 
         const toggleEditTagsMode = (moveId: number) => {
             if(authStore.loggedInUser === null) {
-                // notLoggedInMessageActive.value = !notLoggedInMessageActive.value;
                 showNotLoggedInMessage();
                 setTimeout(() => {
                     hideNotLoggedInMessage();
                 }, 3000);
                 return;
             }
-            // console.log(characterMoveEditTagsActive.value);
-            // characterMoveEditTagsActive.value !== moveId 
-            //     ? characterMoveEditTagsActive.value = moveId 
-            //     : characterMoveEditTagsActive.value = 0;
-            // console.log("characterMoveEditTagsActive is " + characterMoveEditTagsActive.value);
+
             if(!characterMoveEditTagsActive.value.includes(moveId)) {
                 characterMoveEditTagsActive.value.push(moveId);
             } else if(characterMoveEditTagsActive.value.includes(moveId)) {
                 characterMoveEditTagsActive.value.splice(characterMoveEditTagsActive.value.indexOf(moveId), 1);
             }
-
-            console.log(characterMoveOptionsActive.value);
         }
 
         const showNotLoggedInMessage = () => {
@@ -148,22 +105,17 @@ export default {
         }
 
         const removeTagFromCharacterMove = (tagId: string, moveId: string) => {
-            console.log(tagId);
-            console.log(moveId);
-            // console.log(route.params.game);
             characterMoveStore.removeTagFromCharacterMove(route.params.game, route.params.character, moveId, tagId);
         }
 
         watch(characterMoveSearchInput, () => {
-                console.log(characterMoveSearchInput.value);
-                characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
-                    .then(() => {
-                        characterMoveStore.updateCharacterMovesListDisplay();
-                    })
+            characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
+                .then(() => {
+                    characterMoveStore.updateCharacterMovesListDisplay();
+                })
         });
 
         watch(searchByTagsInput, () => {
-            // console.log(searchByTagsInput);
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
                 gameStore.updateTagsListDisplay();
@@ -176,11 +128,8 @@ export default {
             gameStore,
             route,
             router,
-
-
             
             addTagActive,
-            // openAddTagInput,
             addTagToMove,
             searchMoves,
             searchCharacterMoveInputValue,
@@ -202,7 +151,6 @@ export default {
             hideNotLoggedInMessage,
 
             removeTagFromCharacterMove
-
         }
     },
     created() {
@@ -213,7 +161,6 @@ export default {
         MagnifyingGlass,
         EllipsisIcon,
         CloseIcon
-
     }
 
 }
@@ -256,17 +203,12 @@ export default {
                 <div v-for="(tag, index) in characterMoveStore.searchByTagsList" :key="index" class="">
                     <div
                         class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
-                        
                     >
                         <span>{{tag}}</span>
                         <CloseIcon class="h-5 w-5" @click="removeTagFromSearchList(tag)" />
                     </div>
                 </div>
             </div>
-            <!-- <div class="">
-                <VerticalEllipsisIcon v-if="searchOptionsModalActive === false" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
-                <CloseIcon v-if="searchOptionsModalActive === true" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
-            </div> -->
         </div>
         <div class="">
             <ul class="xs:h-[18.5rem] lg:h-96 overflow-y-auto space-y-2">

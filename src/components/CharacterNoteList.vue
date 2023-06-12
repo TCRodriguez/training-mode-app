@@ -37,7 +37,6 @@ export default {
 
         const characterNoteOptionsActive = ref([]);
         const characterNoteEditActive = ref(0);
-        // const editNoteActive = ref(false);
         const toggleNoteOptions = (noteId: string) => {
             if(!characterNoteOptionsActive.value.includes(noteId)) {
                 characterNoteOptionsActive.value.push(noteId);
@@ -91,26 +90,7 @@ export default {
                 editNoteBody.value = null;
             });
         };
-        // ! Remove?
-        // const toggleEditNoteMode = (noteId: number, note: object) => {
-        //     // editNoteActive.value === noteId ?
-        //     //     characterNoteEditActive.value = 0
-        //     //     : characterNoteEditActive.value = noteId;
-
-        //     // editCharacterComboId.value = comboId;
-        //     // characterNoteEditActive.value = !characterNoteEditActive.value;
-        //     // inputsForEditCharacterCombo.value.push(comboInputs);
-        //     // if(comboInputs.length !== 0) {
-        //     //     comboStore.populateComboInputsDisplay(comboInputs);
-        //     // }
-        //     // console.log(comboStore.comboInputsDisplay);
-        //     // console.log();
-        //     editNoteActive.value === noteId ?
-        //         characterNoteEditActive.value = 0
-        //         : characterNoteEditActive.value = noteId;
-            
-        // }
-
+        
         const openEditNoteModal = (characterNote: object) => {
             editNoteActive.value = !editNoteActive.value;
 
@@ -135,47 +115,34 @@ export default {
         };
 
         const toggleViewCharacterNote = (characterNote: object) => {
-            console.log(characterNote);
             viewNoteActive.value = !viewNoteActive.value;
 
             if(viewNoteActive.value) {
                 viewNoteTitle.value = characterNote.title;
                 viewNoteBody.value = characterNote.body;
             }
-
-            console.log(viewNoteTitle.value);
-            console.log(viewNoteBody.value);
-
         };
 
         const updateCreateNoteTitle = (noteTitle: string) => {
             // console.log(noteTitle);
             createNoteTitle.value = noteTitle;
-            console.log(createNoteTitle.value);
         };
         const updateCreateNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             createNoteBody.value = noteBody;
-            console.log(createNoteBody.value);
         };
 
         const updateEditNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             editNoteTitle.value = noteTitle;
-            console.log(editNoteTitle.value);
         };
         const updateEditNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             editNoteBody.value = noteBody;
-            console.log(editNoteBody.value);
         };
 
         watch(characterNoteSearchInput, () => {
-                // console.log(characterSearchInput.value);
-                characterStore.updateCharacterNoteSearchCriteria(characterNoteSearchInput.value)
-                    .then(() => {
-                        characterStore.updateCharacterNoteListDisplay();
-                    });
+            characterStore.updateCharacterNoteSearchCriteria(characterNoteSearchInput.value)
+                .then(() => {
+                    characterStore.updateCharacterNoteListDisplay();
+                });
 
         });
         return {
@@ -202,7 +169,6 @@ export default {
             toggleNoteOptions,
             characterNoteEditActive,
             deleteCharacterNote,
-            // toggleEditNoteMode,
             openEditNoteModal,
             editNoteActive,
             editNoteId,
@@ -253,10 +219,6 @@ export default {
                             <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="deleteCharacterNote(characterNote.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                             </button>
-                            <!-- <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
-                                <span v-if="characterComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
-                            </button> -->
                             <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="toggleNoteOptions(characterNote.id, $event)">
                                 <span v-if="characterNoteEditActive === characterNote.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                                 <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(characterNote)">Edit</span>

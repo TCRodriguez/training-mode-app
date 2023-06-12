@@ -1,7 +1,6 @@
 <script lang=ts>
 import GameControllerIcon from '@/components/icons/GameControllerIcon.vue'
 export default {
-
     props: {
         name: String,
         icon: String,
@@ -9,7 +8,6 @@ export default {
     components: {
         GameControllerIcon
     }
-
 }
 </script>
 <template lang="">

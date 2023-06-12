@@ -283,10 +283,7 @@ export default {
         <div>
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
                 <div class="my-2">
-                    <ComboInputDisplay
-                        @trigger-close-create-combo-modal="closeCreateComboModal()" 
-                        @trigger-save-character-combo="saveCharacterCombo()"
-                    />
+                    <ComboInputDisplay />
                 </div>
                 <div class="px-2">
                     <GameNotationGroup />
