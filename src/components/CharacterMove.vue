@@ -3,6 +3,7 @@ import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
 import GameNotation from './GameNotation.vue';
 import AddIconOutline from './icons/AddIconOutline.vue';
+import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
 // import EllipsisIcon from './icons/EllipsisIcon.vue';
@@ -12,6 +13,7 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 export default {
     setup(props) {
+        const authStore = useAuthStore();
         const gameStore = useGameStore();
         const characterMoveStore = useCharacterMoveStore();
         const addTagInput = ref(null);
@@ -30,6 +32,7 @@ export default {
         const { getCharacterMoveTags } = storeToRefs(characterMoveStore);
 
         return {
+            authStore,
             gameStore,
             characterMoveStore,
             getCharacterMoveTags,
@@ -90,7 +93,7 @@ export default {
                 />
             </div>
         </div>
-        <div>
+        <div v-if="authStore.loggedInUser !== null" >
             <p class="font-bold">Tags</p>
             <div class="flex flex-row space-x-2 items-center flex-wrap">
                 <!-- <div
@@ -110,7 +113,7 @@ export default {
                         <div>
                             <span>#{{tag.name}}</span>
                         </div>
-                        <CloseIcon v-if="editTagsActive.includes(moveId)" class="h-6 w-6" @click="$emit('triggerRemoveTag', tag.id, moveId), removeTagFromFrontEnd(tag)" />
+                        <CloseIcon v-if="editTagsActive.includes(moveId)" class="h-6 w-6" @click="$emit('triggerRemoveTag', tag.id, moveId)" />
                     </div>
                 </div>
                 <div class="">

@@ -27,21 +27,29 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async fetchCharacterMoves(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+
+            const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
+
+
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/moves`, {
+                const data = await trainingModeApi.get(endpoint, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 });
+                console.log(data.data);
                 this.characterMoves = data.data;
                 
                 // this.characterMoveListDisplay = data.data;
-                this.updateCharacterMovesListDisplay('tags');
-
-
+                this.updateCharacterMovesListDisplay();
+                gameStore.fetchTags(gameId)
+                .then(response => {
+                    console.log(response);
+                    // this.insertTagsToCharacterMoves(response)
+                })
 
             } catch (error) {
-                
+                console.log(error);
             }
 
 
@@ -119,9 +127,27 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
             
         },
+        async fetchCharacterMoveTags(gameId: string, characterId: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('move tags fetch');
+            try {
+                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/tags`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                });
+
+
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async addTagToCharacterMove(gameId: string, characterId:string, characterMoveId:string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+            console.log('add tag to move hit');
             try {
                 await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
@@ -131,13 +157,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    
+                    console.log('hello?');
+                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
                 })
 
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async updateCharacterMoveSearchCriteria(input: string) {
@@ -210,6 +237,34 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             } catch (error) {
                 
             }
+        },
+
+        async insertTagsToCharacterMoves(tags: object[]) {
+            console.log(tags);
+            const characterMoveTags = tags.filter(tag => tag.character_moves.length !== 0)
+            // console.log(characterMoveTags);
+
+
+            characterMoveTags.forEach(tag => {
+                tag.character_moves.forEach(moveInTag => {
+                    this.characterMoveListDisplay.forEach(moveInDisplay => {
+                        if(moveInDisplay.name === moveInTag.name) {
+                            moveInDisplay.tags.push(tag);
+                        }
+                    })
+                })
+            })
+
+            // this.characterMoveListDisplay.forEach(move => {
+            //     characterMoveTags.forEach(tag => {
+            //         tag.character_moves.forEach(moveTag => {
+            //             if(moveTag.name === move.name) {
+            //                 if(move.tags.)
+            //                 move.tags.push(tag);
+            //             }
+            //         })
+            //     })
+            // })
         }
     }
 });

@@ -15,7 +15,7 @@ export default {
 </script>
 <template lang="">
     <div class="flex justify-center items-center h-full w-full">
-        <div  v-if="iconFileName === ''">
+        <div  v-if="notation === '+'">
             <p>{{notation}}</p>
         </div>
 

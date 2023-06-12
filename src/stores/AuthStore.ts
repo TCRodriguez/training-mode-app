@@ -43,9 +43,14 @@ export const useAuthStore = defineStore('AuthStore', {
                     gameStore.fetchGames();
                     gameStore.fetchGameNotes(gameStore.game.id);
                     characterMoveStore.fetchCharacterMoves(gameStore.game.id, characterStore.character.id);
+                    // characterMoveStore.fetchCharacterMoveTags(gameStore.game.id, characterStore.character.id)
                     comboStore.fetchCharacterCombos(gameStore.game.id, characterStore.character.id);
+                    // gameStore.fetchTags(gameStore.game.id)
+                    // .then(() => {
+                    //     // characterMoveStore.insertTagsToCharacterMoves(gameStore.tags);
+                    // });
                     
-                })
+                });
             } catch (error) {
                 console.log(error);
             }

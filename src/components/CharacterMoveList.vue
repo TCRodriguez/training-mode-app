@@ -18,7 +18,7 @@ export default {
         const addTagActive = ref(false);
         const searchMoves = ref(null);
         const searchOptionsModalActive = ref(false);
-        const searchByOptionSelection = ref('tags');
+        const searchByOptionSelection = ref('name');
         // const characterMoveOptionsActive = ref(0);
         const characterMoveOptionsActive = ref([]);
         // const characterMoveEditTagsActive = ref(0);
@@ -171,13 +171,14 @@ export default {
         });
 
         return {
+            authStore,
             characterMoveStore,
             gameStore,
             route,
             router,
 
 
-
+            
             addTagActive,
             // openAddTagInput,
             addTagToMove,
@@ -229,13 +230,17 @@ export default {
                 >
                     <span>Name</span>
                 </button>
-                <button 
+                <button
+                    v-if="authStore.loggedInUser !== null" 
                     class="text-black p-1" 
                     :class="{ 'border rounded': searchByOptionSelection === 'tags'}"
                     @click="switchSearchByOption('tags')"
                 >
                     <span>Tags</span>
                 </button>
+                <div v-else>
+                    <p>Log in to search by tags!</p>
+                </div>
             </div>
             <div class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
@@ -285,7 +290,7 @@ export default {
                             class="border rounded p-2 w-full"
                         />
                     </div>
-                    <div class="flex flex-row justify-end items-center space-x-2">
+                    <div v-if="authStore.loggedInUser !== null" class="flex flex-row justify-end items-center space-x-2">
                         <p v-if="notLoggedInMessageActive" class="">Must be logged in!</p>
                         <button v-if="characterMoveOptionsActive.includes(move.id)" @click="toggleEditTagsMode(move.id)">
                             <span v-if="characterMoveEditTagsActive.includes(move.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>

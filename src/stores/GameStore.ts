@@ -261,10 +261,13 @@ export const useGameStore = defineStore('GameStore', {
                 //     
                 // })
                 this.tags = data.data;
+                console.log(this.tags);
                 
             } catch (error) {
                 console.log(error);
             }
+
+            return this.tags;
         },
         async setGame(gameId: string) {
             this.game = this.games.find(game => game.id === gameId);
