@@ -45,8 +45,8 @@ export default {
                 </div>
             </div>
             <div>
-                <Field name="email" type="email" value="user@example.com" placeholder="Email" />
-                <Field name="password" type="password" value="password123" placeholder="Password" />
+                <Field name="email" type="email" placeholder="Email" />
+                <Field name="password" type="password" placeholder="Password" />
             </div>
             <div class="flex flex-row justify-center">
                 <button class="rounded p-2 text-white bg-blue w-1/3">Login</button>

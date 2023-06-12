@@ -64,7 +64,7 @@
                     :key="game.id"
                     @click="goToCharacterSelect(game.id)"
                 >
-                    <div class="relative">
+                    <div class="relative flex flex-col items-center">
                         <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
                             <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
                         </div>
