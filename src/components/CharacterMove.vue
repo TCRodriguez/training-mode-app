@@ -6,7 +6,6 @@ import AddIconOutline from './icons/AddIconOutline.vue';
 import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
-// import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import { storeToRefs } from 'pinia';
 
@@ -17,17 +16,7 @@ export default {
         const gameStore = useGameStore();
         const characterMoveStore = useCharacterMoveStore();
         const addTagInput = ref(null);
-        // const tagsList = ref([]);
-        // tagsList.value = [...props.tags]
         const removedTagIds = ref([]);
-        // const removeTagFromFrontEnd = (tag: object) => {
-        //     console.log(props.tags);
-        //     // removedTagIds.value.push(tag.id);
-        //     // console.log(removedTagIds.value);
-
-        //     // props.tags?.splice(props.tags.indexOf())
-        //     // props.tags?.filter(tag => tag.name !== tagName);
-        // }
 
         const { getCharacterMoveTags } = storeToRefs(characterMoveStore);
 
@@ -37,7 +26,6 @@ export default {
             characterMoveStore,
             getCharacterMoveTags,
             addTagInput,
-            // removeTagFromFrontEnd,
             removedTagIds
         }
     },
@@ -54,7 +42,6 @@ export default {
         DirectionalInput,
         AttackButton,
         AddIconOutline,
-        // EllipsisIcon
         CloseIcon,
         GameNotation
     }
@@ -96,19 +83,12 @@ export default {
         <div v-if="authStore.loggedInUser !== null" >
             <p class="font-bold">Tags</p>
             <div class="flex flex-row space-x-2 items-center flex-wrap">
-                <!-- <div
-                    v-for="(tag, index) in tags" 
-                    :key="index" 
-                    class="flex flex-row items-center"
-                    :class=" {'p-1 rounded': editTagsActive === moveId}"
-                > -->
                 <div
                     v-for="(tag, index) in getCharacterMoveTags(moveId)" 
                     :key="index" 
                     class="flex flex-row items-center"
                     :class=" {'p-1 rounded': editTagsActive.includes(moveId)}"
                 >
-                    <!-- <div v-if="!removedTagIds.includes(tag.id)" class="flex flex-row"> -->
                     <div class="flex flex-row">
                         <div>
                             <span>#{{tag.name}}</span>
@@ -126,10 +106,6 @@ export default {
                         class="border w-min"
                     >
                 </div>
-                <!-- <button v-if="editTagsActive.includes(moveId)" @click="$emit('addTagPressed')">
-                    <AddIconOutline class="h-6 w-6" />
-                    <EllipsisIcon />
-                </button> -->
             </div>
         </div>
     </div>
