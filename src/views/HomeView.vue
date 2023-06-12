@@ -10,7 +10,6 @@
 
 <template>
     <div>
-      <!-- <router-link to="/combo-viewer">Combo Viewer</router-link> -->
       <SelectGameView />
     </div>
 </template>

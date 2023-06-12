@@ -27,7 +27,6 @@ export default {
             Combos,
         }
 
-
         return {
             gameStore,
             characterStore,
@@ -47,9 +46,6 @@ export default {
         CharacterPortrait,
         CharacterHeroImage
     },
-    // components: {
-    //     CharacterMoveList
-    // }
 }
 </script>
 <template lang="">
@@ -63,15 +59,11 @@ export default {
                     :class="{ 'border-b-2 border-b-blue': currentTab === tab }"
                     @click="currentTab = tab"
                 >
-                    <!-- <span v-if="tab === 'CharacterMoveList'">Moves</span>
-                    <span v-if="tab === 'CharacterComboList'">Combos</span> -->
-                        {{ tab }}
-                        <!-- {{_}} -->
+                    {{ tab }}
                 </li>
             </ul>
         </nav>
         <component :is="tabs[currentTab]"></component>
-      <!-- <CharacterMoveList /> -->
     </div>
 </template>
 <style lang="">

@@ -180,7 +180,7 @@ export default {
 </script>
 <template lang="">
     <div class="mt-8 w-full">
-        <div class="">
+        <div class="px-2">
             <div v-if="gameNotes.length !== 0" class="flex flex-row w-full items-center">
                 <MagnifyingGlass class="h-10 w-10" />
                 <input 
