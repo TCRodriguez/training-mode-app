@@ -10,7 +10,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         characterMoveListByTagDisplay: [],
         characterMoveNameSearchInputValue: '',
         searchByTagsList: [],
-
     }),
     getters: {
         getCharacterMoveTags(state) {
@@ -18,7 +17,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 let characterMove = state.characterMoveListDisplay.find(move => move.id === moveId);
                 let tags = [...characterMove?.tags];
                 
-                // return state.characterMoves.
                 return tags;
             }
         }
@@ -30,7 +28,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
             const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
 
-
             try {
                 const data = await trainingModeApi.get(endpoint, {
                     headers: {
@@ -40,33 +37,24 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 console.log(data.data);
                 this.characterMoves = data.data;
                 
-                // this.characterMoveListDisplay = data.data;
                 this.updateCharacterMovesListDisplay();
                 gameStore.fetchTags(gameId)
                 .then(response => {
                     console.log(response);
-                    // this.insertTagsToCharacterMoves(response)
                 })
-
             } catch (error) {
                 console.log(error);
             }
-
 
             for (let i = 0; i < this.characterMoves.length; i++) {
                 const move = this.characterMoves[i];
                 const moveInputs = [];
                 let moveInputsSorted = [];
 
-                // const moveInputs = [];
-                // move.inputs = [];
                 move.directional_inputs.forEach(input => {
-                    // 
                     const directionalInputModel = gameStore.directionalInputs.find(directionalInput => {
                         return directionalInput.direction === input.direction;
                     });
-                    // 
-                    // const iconFileName = directionalInputModel?.icons.icon_file_name;
 
                     const iconFileName = directionalInputModel?.icon_file_name;
 
@@ -77,9 +65,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                         icon_file_name: iconFileName,
                         
                     }
-                    // input.input_category = "directions";
-                    // input.img_category = "directional-inputs";
-                    // input.icon_file_name = iconFileName;
+
                     moveInputs.push(directionalInputObject);
                 })
 
@@ -96,8 +82,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                         icon_file_name: iconFileName,
                         
                     }
-                    // input.input_category = "attacks";
-                    // input.img_category = "attack-buttons";
                     moveInputs.push(attackButtonObject);
                 });
 
@@ -108,38 +92,22 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 });
 
                 moveInputs.forEach(input => {
-                    // 
                     input.order_in_move = input.pivot.order_in_move;
                 })
                     
-                    
-                //     // input.order_in_move = input.pivot.order_in_move;
-                // });
-
                 moveInputsSorted = moveInputs.sort((a, b) => a.order_in_move - b.order_in_move);
 
-                
-                
-
                 move.inputs = [...moveInputsSorted];
-                
             }
-
-            
         },
         async fetchCharacterMoveTags(gameId: string, characterId: string) {
             const authStore = useAuthStore();
-            const gameStore = useGameStore();
-            console.log('move tags fetch');
             try {
                 const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/tags`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 });
-
-
-                console.log(data);
             } catch (error) {
                 console.log(error);
             }
@@ -184,19 +152,13 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             }
 
             if(criteria === 'tags') {
-                // ! characterMove.tags is an array of objects...
-                // ! Iterate through `tags` to identify 
-
-                // this.characterMoveListDisplay = this.characterMoves.filter(characterMove => characterMove.tags.includes(this.searchByTagsList));
                 if(this.searchByTagsList.length === 0) {
                     this.resetCharacterMoveListDisplay();
                     return;
                 }
 
                 this.characterMoves.forEach(move => {
-                    // 
                     move.tags.forEach(tag => {
-                        
                         if(this.searchByTagsList.includes(tag.name)) {
                             characterMoveListFilteredByTags.push(move);
                         }
@@ -204,7 +166,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 })
                 
                 this.characterMoveListDisplay = [...characterMoveListFilteredByTags];
-                
             }
         },
 
@@ -229,42 +190,11 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    
                     this.fetchCharacterMoves(gameId, characterId);
-                    // this.updateCharacterMovesListDisplay('tags');
-                    // this.searchByTagsList = [];
                 })
             } catch (error) {
-                
+                console.log(error);
             }
         },
-
-        async insertTagsToCharacterMoves(tags: object[]) {
-            console.log(tags);
-            const characterMoveTags = tags.filter(tag => tag.character_moves.length !== 0)
-            // console.log(characterMoveTags);
-
-
-            characterMoveTags.forEach(tag => {
-                tag.character_moves.forEach(moveInTag => {
-                    this.characterMoveListDisplay.forEach(moveInDisplay => {
-                        if(moveInDisplay.name === moveInTag.name) {
-                            moveInDisplay.tags.push(tag);
-                        }
-                    })
-                })
-            })
-
-            // this.characterMoveListDisplay.forEach(move => {
-            //     characterMoveTags.forEach(tag => {
-            //         tag.character_moves.forEach(moveTag => {
-            //             if(moveTag.name === move.name) {
-            //                 if(move.tags.)
-            //                 move.tags.push(tag);
-            //             }
-            //         })
-            //     })
-            // })
-        }
     }
 });
