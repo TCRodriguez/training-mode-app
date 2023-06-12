@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-// import { clearPiniaState } from '@/common/helpers';
 import trainingModeApi from '../axios-http';
 import { useCharacterMoveStore } from "@/stores/CharacterMoveStore";
 import { useCharacterStore } from "@/stores/CharacterStore";
@@ -7,19 +6,24 @@ import { useGameStore } from "@/stores/GameStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
 import { useComboStore } from "@/stores/ComboStore";
 
-
 export const useAuthStore = defineStore('AuthStore', {
     state: () => ({
-        // navItems: [],
         token: null,
         loggedInUser: null,
-
+        loginFormActive: false,
     }),
     getters: {
 
     },
     actions: {
+        async toggleLoginModal() {
+            this.loginFormActive = !this.loginFormActive;
+        },
         async login(email: string, password: string) {
+            const gameStore = useGameStore();
+            const characterStore = useCharacterStore();
+            const characterMoveStore = useCharacterMoveStore();
+            const comboStore = useComboStore();
             try {
                 await trainingModeApi.post('/login', {
                     email: email,
@@ -30,19 +34,20 @@ export const useAuthStore = defineStore('AuthStore', {
                     this.token = response.data.token;
                     this.loggedInUser = response.data.user
                     
-                })
+                    gameStore.fetchGames();
+                    gameStore.fetchGameNotes(gameStore.game.id);
+                    characterStore.fetchCharacterNotes(gameStore.game.id, characterStore.character.id);
+                    characterMoveStore.fetchCharacterMoves(gameStore.game.id, characterStore.character.id);
+                    comboStore.fetchCharacterCombos(gameStore.game.id, characterStore.character.id);
+                });
             } catch (error) {
                 console.log(error);
             }
         },
         async logout() {
-            // this.loggedInUser = null;
             this.clearPiniaState();
-
-            // ? do we need to make a new token or is it preferable to use the one that was already created if it hasn't expired?
         },
         async clearPiniaState () {
-
             const characterMoveStore = useCharacterMoveStore();
             const characterStore = useCharacterStore();
             const gameStore = useGameStore();

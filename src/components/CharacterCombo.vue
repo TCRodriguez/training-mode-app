@@ -1,6 +1,7 @@
 <script lang="ts">
 import DirectionalInput from './DirectionalInput.vue';
 import AttackButton from './AttackButton.vue';
+import GameNotation from './GameNotation.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -29,19 +30,15 @@ export default {
     components: {
         DirectionalInput, 
         AttackButton,
+        GameNotation,
         CloseIcon
     }
 }
 </script>
 <template lang="">
     <div>
-        <div class="flex flex-row">
+        <div class="flex flex-row overflow-x-auto space-x-2">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col shrink-0">
-                <!-- {{input.icon_file_name}} -->
-                <!-- <img
-                    :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/${input.img_category}%2Ftekken-7%2F${input.icon_file_name}`" 
-                    alt="" 
-                > -->
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
                     :iconFileName="input.icon_file_name"
@@ -55,24 +52,24 @@ export default {
                     :game="gameStore.game.abbreviation"
                     class="h-12 w-12"
                 />
+                <GameNotation
+                    v-if="input.img_category === 'notations'"
+                    class=""
+                    :notation="input.notation"
+                    :iconFileName="input.icon_file_name"
+                
+                />
             </div>
         </div>
         <div>
             <p class="font-bold">Tags</p>
             <div class="flex flex-row space-x-2 items-center flex-wrap">
-                <!-- <div
-                    v-for="(tag, index) in tags" 
-                    :key="index" 
-                    class="flex flex-row items-center"
-                    :class=" {'p-1 rounded': editTagsActive === moveId}"
-                > -->
                 <div
                     v-for="(tag, index) in getCharacterComboTags(comboId)" 
                     :key="index" 
                     class="flex flex-row items-center"
                     :class=" {'p-1 rounded': editTagsActive.includes(comboId)}"
                 >
-                    <!-- <div v-if="!removedTagIds.includes(tag.id)" class="flex flex-row"> -->
                     <div class="flex flex-row">
                         <div>
                             <span>#{{tag.name}}</span>
@@ -90,10 +87,6 @@ export default {
                         class="border w-min"
                     >
                 </div>
-                <!-- <button v-if="editTagsActive.includes(comboId)" @click="$emit('addTagPressed')">
-                    <AddIconOutline class="h-6 w-6" />
-                    <EllipsisIcon />
-                </button> -->
             </div>
         </div>
     </div>

@@ -10,15 +10,13 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         characterMoveListByTagDisplay: [],
         characterMoveNameSearchInputValue: '',
         searchByTagsList: [],
-
     }),
     getters: {
         getCharacterMoveTags(state) {
             return function (moveId: string) {
                 let characterMove = state.characterMoveListDisplay.find(move => move.id === moveId);
                 let tags = [...characterMove?.tags];
-                console.log(tags);
-                // return state.characterMoves.
+                
                 return tags;
             }
         }
@@ -27,38 +25,32 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async fetchCharacterMoves(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+
+            const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
+
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/moves`, {
+                const data = await trainingModeApi.get(endpoint, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 });
                 this.characterMoves = data.data;
-                console.log(this.characterMoves);
-                // this.characterMoveListDisplay = data.data;
-                this.updateCharacterMovesListDisplay('tags');
-
-
-
+                
+                this.updateCharacterMovesListDisplay();
+                gameStore.fetchTags(gameId);
             } catch (error) {
-                console.log(error);                
+                console.log(error);
             }
-
 
             for (let i = 0; i < this.characterMoves.length; i++) {
                 const move = this.characterMoves[i];
                 const moveInputs = [];
                 let moveInputsSorted = [];
 
-                // const moveInputs = [];
-                // move.inputs = [];
                 move.directional_inputs.forEach(input => {
-                    // console.log(input);
                     const directionalInputModel = gameStore.directionalInputs.find(directionalInput => {
                         return directionalInput.direction === input.direction;
                     });
-                    // console.log(directionalInputModel);
-                    // const iconFileName = directionalInputModel?.icons.icon_file_name;
 
                     const iconFileName = directionalInputModel?.icon_file_name;
 
@@ -69,9 +61,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                         icon_file_name: iconFileName,
                         
                     }
-                    // input.input_category = "directions";
-                    // input.img_category = "directional-inputs";
-                    // input.icon_file_name = iconFileName;
+
                     moveInputs.push(directionalInputObject);
                 })
 
@@ -79,7 +69,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     const attackButtonModel = gameStore.attackButtons.find(attackButton => {
                         return attackButton.name === input.name;
                     }); 
-                    console.log(attackButtonModel);
+                    
                     const iconFileName = attackButtonModel?.icon_file_name;
                     const attackButtonObject = {
                         ...input,
@@ -88,8 +78,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                         icon_file_name: iconFileName,
                         
                     }
-                    // input.input_category = "attacks";
-                    // input.img_category = "attack-buttons";
                     moveInputs.push(attackButtonObject);
                 });
 
@@ -100,28 +88,30 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 });
 
                 moveInputs.forEach(input => {
-                    // console.log(input);
                     input.order_in_move = input.pivot.order_in_move;
                 })
                     
-                    
-                //     // input.order_in_move = input.pivot.order_in_move;
-                // });
-
                 moveInputsSorted = moveInputs.sort((a, b) => a.order_in_move - b.order_in_move);
 
-                console.log(moveInputsSorted);
-                
-
                 move.inputs = [...moveInputsSorted];
-                
             }
-
-            console.log(this.characterMoves);
+        },
+        async fetchCharacterMoveTags(gameId: string, characterId: string) {
+            const authStore = useAuthStore();
+            try {
+                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/tags`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
         },
         async addTagToCharacterMove(gameId: string, characterId:string, characterMoveId:string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+            console.log('add tag to move hit');
             try {
                 await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
@@ -131,25 +121,26 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
+                    console.log('hello?');
                     console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
                 })
 
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async updateCharacterMoveSearchCriteria(input: string) {
             this.characterMoveNameSearchInputValue = input;
-            console.log(this.characterMoveNameSearchInputValue);
+            
         },
 
         async updateCharacterMovesListDisplay(criteria: string = ''): Promise<void> {
             let characterMoveListFilteredByTags: object[] = [];
 
 
-            console.log(this.characterMoveNameSearchInputValue);
+            
             if(this.characterMoveNameSearchInputValue.length === 0) {
                 this.characterMoveListDisplay = [...this.characterMoves];
             } else {
@@ -157,27 +148,20 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             }
 
             if(criteria === 'tags') {
-                // ! characterMove.tags is an array of objects...
-                // ! Iterate through `tags` to identify 
-
-                // this.characterMoveListDisplay = this.characterMoves.filter(characterMove => characterMove.tags.includes(this.searchByTagsList));
                 if(this.searchByTagsList.length === 0) {
                     this.resetCharacterMoveListDisplay();
                     return;
                 }
 
                 this.characterMoves.forEach(move => {
-                    // console.log(move);
                     move.tags.forEach(tag => {
-                        console.log(tag);
                         if(this.searchByTagsList.includes(tag.name)) {
                             characterMoveListFilteredByTags.push(move);
                         }
                     })
                 })
-                console.log(characterMoveListFilteredByTags);
+                
                 this.characterMoveListDisplay = [...characterMoveListFilteredByTags];
-                console.log(this.characterMoveListDisplay);
             }
         },
 
@@ -202,14 +186,11 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.fetchCharacterMoves(gameId, characterId);
-                    // this.updateCharacterMovesListDisplay('tags');
-                    // this.searchByTagsList = [];
                 })
             } catch (error) {
                 console.log(error);
             }
-        }
+        },
     }
 });

@@ -8,9 +8,6 @@ export default {
 }
 </script>
 <template lang="">
-    <!-- <div>
-        
-    </div> -->
     <img
         :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${iconFileName}`" 
         alt=""

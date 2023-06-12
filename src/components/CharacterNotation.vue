@@ -18,17 +18,8 @@ export default {
 }
 </script>
 <template lang="">
-    <!-- <div>
-       <span
-            v-for="notation in character.notations"
-            :key="notation.id"
-            class="border bg-red-500 p-2"
-            @click="renderNotationInput(notation)"
-       ></span> 
-    </div> -->
     <span
         class="bg-red p-2"
-    
     >{{notation}}</span>
 </template>
 <style lang="">

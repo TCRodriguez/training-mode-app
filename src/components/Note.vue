@@ -1,15 +1,5 @@
 <script lang="ts">
 export default {
-    setup() {
-
-
-
-
-
-        return {
-
-        }
-    },
     props: {
         note: Object
     }

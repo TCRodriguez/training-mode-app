@@ -16,10 +16,8 @@
 
             const loadCharacterData = (characterId: string) => {
                 const game = gameStore.getGame;
-                console.log(game);
-
+                
                 characterStore.setCharacter(characterId);
-                console.log(characterSearchInput.value);
                 characterSearchInput.value = '';
 
                 const navItem = {
@@ -30,8 +28,6 @@
                 router.push(navItem.link);
 
                 navigationStore.addNavigationItem(navItem);
-
-                
             }
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);
@@ -47,12 +43,10 @@
             }
 
             watch(characterSearchInput, () => {
-                // console.log(characterSearchInput.value);
                 characterStore.updateCharacterSearchCriteria(characterSearchInput.value)
                     .then(() => {
                         characterStore.updateCharacterListDisplay();
                     })
-
             })
             return {
                 characterStore,
@@ -81,7 +75,7 @@
     }
 </script>
 <template lang="">
-    <div class="w-full">
+    <div class="w-full p-2">
         <div class="flex flex-row w-full items-center">
             <MagnifyingGlass class="h-10 w-10" />
             <input 
@@ -91,22 +85,14 @@
                 class="my-8"
             >
         </div>
-        <!-- <p v-if="Object.keys(characterStore.character).length !== 0">Input combo for: {{characterStore.character.name}}</p> -->
-        <!-- <ul v-if="inputHasFocusBool === true">
-            <li
-                v-for="character in characterStore.characterListDisplay"
-                :key="character.id"
-                @mousedown="loadCharacterData(character.id)"
-            >{{ character.name }}</li>
-        </ul> -->
-        <div class="xs:h-96 lg:h-[32rem] overflow-y-auto scroll-pb-24">
-            <ul class="space-y-2">
+        <div class="xs:h-[16.5rem] lg:h-96 overflow-y-auto">
+            <ul class="space-y-2 divide-y-2">
                 <li
                     v-for="character in characterStore.characterListDisplay"
                     :key="character.id"
                     @mousedown="loadCharacterData(character.id)"
                 >
-                    <CharacterCard :characterName="character.name" class="font-bold text-xl"/>     
+                    <CharacterCard :game="gameStore.game.abbreviation" :characterName="character.name" class="font-bold text-xl"/>     
                 </li>
             </ul>
         </div>

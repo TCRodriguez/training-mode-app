@@ -7,15 +7,12 @@ export default {
         const authStore = useAuthStore();
         const router = useRouter();
         const onSubmit = (values: {email: string, password: string}) => {
-            // alert('submitted');
-            console.log(values);
             const { email, password } = values;
             authStore.login(email, password)
             .then(() => {
                 router.push('/games');
             })
         }
-
 
         return {
             onSubmit
@@ -28,13 +25,12 @@ export default {
 }
 </script>
 <template lang="">
-    <div>
-        <div class="flex flex-col items-center h-screen justify-center space-y-4">
-            <h1 class="text-5xl">TrainingMode</h1>
-            <!-- <form action="POST">
-                <input type="text" placeholder="email">
-                <input type="password" placeholder="password">
-            </form> -->
+    <div class="flex justify-center h-full ">
+        <div class="flex flex-col items-center justify-center space-y-4">
+            <div class="flex flex-row">
+                <h1 class="text-5xl">TrainingMode</h1>
+                <p class="text-xs">TM</p>
+            </div>
             <Form @submit="onSubmit">
                 <div>
                     <Field name="email" type="email" value="user@example.com" placeholder="Email" />
@@ -45,7 +41,6 @@ export default {
                 </div>
             </Form>
         </div>
-        <!-- <p>Login</p> -->
     </div>
 </template>
 <style lang="">

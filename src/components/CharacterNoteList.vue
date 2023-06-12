@@ -1,9 +1,10 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import CharacterNote from './CharacterNote.vue';
+import Note from './Note.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import NoteModal from './NoteModal.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
@@ -13,6 +14,8 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
+        
+        const authStore = useAuthStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
         const characterNotes = computed(() => characterStore.characterNoteListDisplay);
@@ -34,7 +37,6 @@ export default {
 
         const characterNoteOptionsActive = ref([]);
         const characterNoteEditActive = ref(0);
-        // const editNoteActive = ref(false);
         const toggleNoteOptions = (noteId: string) => {
             if(!characterNoteOptionsActive.value.includes(noteId)) {
                 characterNoteOptionsActive.value.push(noteId);
@@ -44,8 +46,6 @@ export default {
 
             console.log(characterNoteOptionsActive.value);
         }
-
-
 
         const openCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
@@ -71,6 +71,7 @@ export default {
             });
         };
 
+
         const updateCharacterNote = () => {
 
             const game = gameStore.game;
@@ -89,27 +90,7 @@ export default {
                 editNoteBody.value = null;
             });
         };
-
-        // ! Remove?
-        const toggleEditNoteMode = (noteId: number, note: object) => {
-            // editNoteActive.value === noteId ?
-            //     characterNoteEditActive.value = 0
-            //     : characterNoteEditActive.value = noteId;
-
-            // editCharacterComboId.value = comboId;
-            // characterNoteEditActive.value = !characterNoteEditActive.value;
-            // inputsForEditCharacterCombo.value.push(comboInputs);
-            // if(comboInputs.length !== 0) {
-            //     comboStore.populateComboInputsDisplay(comboInputs);
-            // }
-            // console.log(comboStore.comboInputsDisplay);
-            // console.log();
-            editNoteActive.value === noteId ?
-                characterNoteEditActive.value = 0
-                : characterNoteEditActive.value = noteId;
-            
-        }
-
+        
         const openEditNoteModal = (characterNote: object) => {
             editNoteActive.value = !editNoteActive.value;
 
@@ -134,50 +115,38 @@ export default {
         };
 
         const toggleViewCharacterNote = (characterNote: object) => {
-            console.log(characterNote);
             viewNoteActive.value = !viewNoteActive.value;
 
             if(viewNoteActive.value) {
                 viewNoteTitle.value = characterNote.title;
                 viewNoteBody.value = characterNote.body;
             }
-
-            console.log(viewNoteTitle.value);
-            console.log(viewNoteBody.value);
-
         };
 
         const updateCreateNoteTitle = (noteTitle: string) => {
             // console.log(noteTitle);
             createNoteTitle.value = noteTitle;
-            console.log(createNoteTitle.value);
         };
         const updateCreateNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             createNoteBody.value = noteBody;
-            console.log(createNoteBody.value);
         };
 
         const updateEditNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             editNoteTitle.value = noteTitle;
-            console.log(editNoteTitle.value);
         };
         const updateEditNoteBody = (noteBody: string) => {
-            // console.log(noteTitle);
             editNoteBody.value = noteBody;
-            console.log(editNoteBody.value);
         };
 
         watch(characterNoteSearchInput, () => {
-                // console.log(characterSearchInput.value);
-                characterStore.updateCharacterNoteSearchCriteria(characterNoteSearchInput.value)
-                    .then(() => {
-                        characterStore.updateCharacterNoteListDisplay();
-                    });
+            characterStore.updateCharacterNoteSearchCriteria(characterNoteSearchInput.value)
+                .then(() => {
+                    characterStore.updateCharacterNoteListDisplay();
+                });
 
         });
         return {
+            authStore,
             characterStore,
             characterNotes,
             characterNoteSearchInput,
@@ -200,7 +169,6 @@ export default {
             toggleNoteOptions,
             characterNoteEditActive,
             deleteCharacterNote,
-            toggleEditNoteMode,
             openEditNoteModal,
             editNoteActive,
             editNoteId,
@@ -210,7 +178,7 @@ export default {
         }
     },
     components: {
-        CharacterNote,
+        Note,
         MagnifyingGlass,
         NoteModal,
         EllipsisIcon,
@@ -231,11 +199,16 @@ export default {
                     class="my-8"
                 >
             </div>
-            <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
+            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
+                <p class="font-bold text-xl text-center">Must be logged in to view character notes!</p>
+            </div>
+            <div v-if="authStore.loggedInUser !== null">
+                <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
+            </div>
             <ul class="space-y-2">
                 <li v-for="characterNote in characterNotes" :key="characterNote.id">
                     <div>
-                        <CharacterNote 
+                        <Note 
                             :note="characterNote"
                             class="border rounded p-2"
                             @click="toggleViewCharacterNote(characterNote)"
@@ -246,10 +219,6 @@ export default {
                             <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="deleteCharacterNote(characterNote.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                             </button>
-                            <!-- <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
-                                <span v-if="characterComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
-                            </button> -->
                             <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="toggleNoteOptions(characterNote.id, $event)">
                                 <span v-if="characterNoteEditActive === characterNote.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                                 <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(characterNote)">Edit</span>
@@ -269,7 +238,7 @@ export default {
             :noteBody="createNoteBody"
             @trigger-create-note-modal="openCreateNoteModal()"
             @trigger-close-note-modal="closeCreateNoteModal()"
-            @trigger-save-character-note="saveCharacterNote()"
+            @trigger-save-note="saveCharacterNote()"
             @update-create-note-title="updateCreateNoteTitle"
             @update-create-note-body="updateCreateNoteBody"
         />
@@ -288,11 +257,11 @@ export default {
             :noteBody="editNoteBody"
             @trigger-create-note-modal="openEditNoteModal()"
             @trigger-close-note-modal="closeEditNoteModal()"
-            @trigger-update-character-note="updateCharacterNote()"
+            @trigger-update-note="updateCharacterNote()"
             @update-edit-note-title="updateEditNoteTitle"
             @update-edit-note-body="updateEditNoteBody"
         />
-        <div>
+        <div v-if="authStore.loggedInUser !== null">
             <AddIcon
                 v-if="createNoteActive !== true"
                 class="h-20 w-20 absolute bottom-4 right-4"

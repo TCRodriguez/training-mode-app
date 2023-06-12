@@ -44,3 +44,7 @@ input {
     @apply w-full;
     @apply my-2;
 }
+
+body {
+    font-family: 'Inter', sans-serif;
+}

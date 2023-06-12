@@ -4,14 +4,9 @@ import { useComboStore } from '@/stores/ComboStore';
 import { toRaw, ref, computed } from 'vue';
 import AttackButton from './AttackButton.vue';
 export default {
-    // props: {
-    //     buttons: Array
-    // },
     setup(props) {
         const gameStore = useGameStore();
         const comboStore = useComboStore();
-        // const attackButtons = ref(props.buttons);
-        // const displayAccountCreationSuccess = computed(() => store.state.login.newTrainerCreated);
         const attackButtonSingles = gameStore.getAttackButtonSingles;
         const renderAttackInput = (input: object) => {
             comboStore.addAttackButtonInputToDisplay(input)
@@ -24,13 +19,16 @@ export default {
         }
         
     },
+    props: {
+        buttons: String
+    },
     components: {
         AttackButton
     }
 }
 </script>
 <template lang="">
-    <div class="grid grid-rows-2 grid-cols-2">
+    <div class="grid grid-rows-2 grid-cols-2" :class="{'grid-cols-3': buttons === '6' }">
         <div
             v-for="attackButton in gameStore.getAttackButtonSingles"
             :key="attackButton.id"

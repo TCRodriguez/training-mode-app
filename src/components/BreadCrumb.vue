@@ -5,9 +5,6 @@ import { useNavigationStore } from '@/stores/NavigationStore';
 import { useRouter } from 'vue-router';
 export default {
     setup() {
-        // const gameStore = useGameStore();
-        // const characterStore = useCharacterStore();
-
         const navigationStore = useNavigationStore();
         const router = useRouter();
         const goToBreadCrumb = (type: string, link: string) => {
@@ -21,8 +18,6 @@ export default {
         }
 
         return {
-            // gameStore,
-            // characterStore
             navigationStore,
             goToBreadCrumb,
             router

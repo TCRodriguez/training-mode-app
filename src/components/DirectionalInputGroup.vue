@@ -14,7 +14,6 @@ export default {
         const directions = computed(() => gameStore.directionalInputs);
         const renderComboInput = (input: string) => {
             comboStore.addComboInputToDisplay(input)
-            // const test = gameStore.getDirectionalInputTaps;
         }
         const renderDirectionalInput = (input) => {
             comboStore.addDirectionalInputToDisplay(input)
@@ -36,15 +35,6 @@ export default {
 </script>
 <template lang="">
     <div class="grid grid-rows-3 grid-cols-3">
-        <!-- <img
-            v-for="direction in directions" 
-            :key="direction.id"
-            @click="renderComboInput(direction)"
-            height="150"
-            width="150"
-            :alt="direction.direction"
-            :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${direction.icon_file_name}`"
-        > -->
         <div
             v-for="direction in gameStore.getDirectionalInputTaps" 
             :key="direction.id"

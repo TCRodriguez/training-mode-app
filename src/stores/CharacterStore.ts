@@ -5,14 +5,17 @@ import trainingModeApi from '../axios-http';
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
         characters: [],
-        characterListDisplay: [],
-        characterNoteListDisplay: [],
-        characterSearchInputValue: '',
-        characterNoteSearchInputValue: '',
         character: {},
-        characterNotations: [],
-        characterNotes: [],
 
+        characterListDisplay: [],
+
+        characterNotes: [],
+        characterNoteListDisplay: [],
+        characterNoteSearchInputValue: '',
+
+        characterSearchInputValue: '',
+
+        characterNotations: [],
     }),
     getters: {
         getCharacter(state) {
@@ -33,9 +36,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 })
                 this.characters = data.data;
                 this.characterListDisplay = data.data;
-                // this.updateCharacterNoteListDisplay();
-                console.log(this.characters)
-
             }
             catch(error) {
                 console.log(error);
@@ -45,25 +45,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             this.character = this.characters.find(character => character.id === characterId);
             this.character.bread_crumb_type = 'character';
             this.characterNoteListDisplay = [...this.character.notes];
-            // * Add a controller action to get notations along with character
-            // ? Perhaps this is a new query that hits the /games/{game}/game-notations endpoint?
-            // ? Or could this be worked into the fetchCharacters() action above?
-            // ? We could do a ->with('notations') in the controller
-            /**
-             * ? Though could we do this with the index()? Or would this need to be handled by the
-             * ? show() method? This would mean we'd need to do some reworking and it would add a new
-             * ? API call...
-             */
-            // try {
-
-            // } catch(error) {
-            //     console.log(error);
-            // }
-            // this.character.notations = [
-
-            // ]
             this.characterNotations = this.character.notations;
-            console.log(this.characterNotations);
             this.characterSearchInputValue = '';
         },
         async fetchCharacterNotes(gameId: string, characterId: string) {
@@ -75,10 +57,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response.data);
-                    this.characterNotes = response.data
-                    // this.characterNoteListDisplay = response.data;
-                    // this.setCharacter(characterId);
+                    this.characterNotes = [...response.data]
                     this.updateCharacterNoteListDisplay();
                 })
             } catch (error) {
@@ -87,15 +66,12 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         async updateCharacterSearchCriteria(input: string) {
             this.characterSearchInputValue = input;
-            console.log(this.characterSearchInputValue);
         },
         async updateCharacterNoteSearchCriteria(input: string) {
             this.characterNoteSearchInputValue = input;
-            console.log(this.characterNoteSearchInputValue);
         },
 
         async updateCharacterListDisplay() {
-            console.log(this.characterSearchInputValue);
             if(this.characterSearchInputValue.length === 0) {
                 this.characterListDisplay = [...this.characters];
             } else {
@@ -103,12 +79,10 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async updateCharacterNoteListDisplay() {
-            // this.setCharacter(this.character.id);
             if(this.characterNoteSearchInputValue.length === 0) {
-                this.characterNoteListDisplay = [...this.character.notes];
+                this.characterNoteListDisplay = [...this.characterNotes];
             } else {
                 this.characterNoteListDisplay = this.character.notes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
-
             }
         },
         async saveCharacterNote(gameId: string, characterId: string, note: object) {
@@ -123,11 +97,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                         }
                     })
                 .then(response => {
-                    console.log(response);
                     this.fetchCharacterNotes(gameId, characterId);
-                    // this.fetchCharacters(gameId);
-
-                    // this.characterNoteListDisplay = [...this.character.notes]
                 })
             } catch (error) {
                 console.log(error);
@@ -135,7 +105,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         async updateCharacterNote(gameId: string, characterId: string, note: object) {
             const authStore = useAuthStore();
-            console.log(note);
             try {
                 await trainingModeApi.put(`games/${gameId}/characters/${characterId}/notes/${note.id}`, {
                     'title': note.title,
@@ -146,8 +115,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
-                    this.fetchCharacters(gameId);
+                    this.fetchCharacterNotes(gameId, characterId);
                 })
             } catch (error) {
                 console.log(error);
@@ -162,8 +130,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    this.fetchCharacters(gameId);
-                    console.log(response);
+                    this.fetchCharacterNotes(gameId, characterId);
                 })
             } catch (error) {
                 console.log(error);

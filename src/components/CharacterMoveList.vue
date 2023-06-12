@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed, watch } from 'vue';
@@ -9,6 +10,7 @@ import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 export default {
     setup() {
+        const authStore = useAuthStore();
         const characterMoveStore = useCharacterMoveStore();
         const gameStore = useGameStore();
         const route = useRoute();
@@ -16,53 +18,31 @@ export default {
         const addTagActive = ref(false);
         const searchMoves = ref(null);
         const searchOptionsModalActive = ref(false);
-        const searchByOptionSelection = ref('tags');
-        // const characterMoveOptionsActive = ref(0);
+        const searchByOptionSelection = ref('name');
         const characterMoveOptionsActive = ref([]);
-        // const characterMoveEditTagsActive = ref(0);
         const characterMoveEditTagsActive = ref([]);
-
-
 
         const searchCharacterMoveInputValue = computed(() => characterMoveStore.characterMoveNameSearchInputValue);
         const characterMoveSearchInput = ref('');
         const searchByTagsInput = ref('');
 
-
-        // const openAddTagInput = () => {
-        //     // alert('test');
-        //     addTagActive.value = !addTagActive.value;
-        // }
+        const notLoggedInMessageActive = ref(false);
 
         const addTagToMove = (newTag, moveId) => {
-            // alert(moveId);
-
-            characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag)
-            .then(() => {
-                // alert('yes?');
-                // addTagActive.value = !addTagActive.value
-
-
-            })
+            characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag);
         }
 
-
         const toggleSearchOptionsModal = () => {
-            // alert('yes');
-            console.log(searchOptionsModalActive.value);
             searchOptionsModalActive.value = !searchOptionsModalActive.value;
         }
 
         const switchSearchByOption = (option: string) => {
-            console.log(option);
             characterMoveStore.resetCharacterMoveListDisplay();
             characterMoveSearchInput.value = '';
             searchByOptionSelection.value = option;
         }
 
         const addTagToSearchList = (event) => {
-            
-            console.log(event);
             if(event.target.tagName === 'SPAN') {
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');
@@ -70,7 +50,6 @@ export default {
                 return;
             }
 
-            // console.log(searchByTagsInput.value);
             characterMoveStore.addCharacterMoveTagToSearchList(searchByTagsInput.value);
             characterMoveStore.updateCharacterMovesListDisplay('tags');
             searchByTagsInput.value = '';
@@ -83,7 +62,6 @@ export default {
 
         const toggleMoveOptions = (moveId: number, event) => {
             if(event.target.__vueParentComponent !== undefined) {
-                console.log(event.target.__vueParentComponent.attrs['aria-labelledby']);
                 if(event.target.__vueParentComponent.attrs['aria-labelledby'] === 'Close move options') {
                     characterMoveOptionsActive.value.splice(characterMoveOptionsActive.value.indexOf(moveId), 1);
                     if(characterMoveEditTagsActive.value.includes(moveId)) {
@@ -92,17 +70,7 @@ export default {
                 }
                 return;
             }
-            // if(event.target.__vueParentComponent.attrs.aria-labelledby === 'Close move options') {
 
-            // }
-            // if(characterMoveOptionsActive.value !== moveId) {
-            //     characterMoveOptionsActive.value = moveId
-            //     // toggleEditTagsMode(moveId);
-            //     // characterMoveEditTagsActive.value = moveId
-            // } else {
-            //     characterMoveOptionsActive.value = 0;
-            //     characterMoveEditTagsActive.value = 0;
-            // }
             if(!characterMoveOptionsActive.value.includes(moveId)) {
                 characterMoveOptionsActive.value.push(moveId);
             } else if(characterMoveOptionsActive.value.includes(moveId)) {
@@ -113,37 +81,41 @@ export default {
         }
 
         const toggleEditTagsMode = (moveId: number) => {
-            // console.log(characterMoveEditTagsActive.value);
-            // characterMoveEditTagsActive.value !== moveId 
-            //     ? characterMoveEditTagsActive.value = moveId 
-            //     : characterMoveEditTagsActive.value = 0;
-            // console.log("characterMoveEditTagsActive is " + characterMoveEditTagsActive.value);
+            if(authStore.loggedInUser === null) {
+                showNotLoggedInMessage();
+                setTimeout(() => {
+                    hideNotLoggedInMessage();
+                }, 3000);
+                return;
+            }
+
             if(!characterMoveEditTagsActive.value.includes(moveId)) {
                 characterMoveEditTagsActive.value.push(moveId);
             } else if(characterMoveEditTagsActive.value.includes(moveId)) {
                 characterMoveEditTagsActive.value.splice(characterMoveEditTagsActive.value.indexOf(moveId), 1);
             }
+        }
 
-            console.log(characterMoveOptionsActive.value);
+        const showNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = true;
+        }
+
+        const hideNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = false;
         }
 
         const removeTagFromCharacterMove = (tagId: string, moveId: string) => {
-            console.log(tagId);
-            console.log(moveId);
-            // console.log(route.params.game);
             characterMoveStore.removeTagFromCharacterMove(route.params.game, route.params.character, moveId, tagId);
         }
 
         watch(characterMoveSearchInput, () => {
-                console.log(characterMoveSearchInput.value);
-                characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
-                    .then(() => {
-                        characterMoveStore.updateCharacterMovesListDisplay();
-                    })
+            characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
+                .then(() => {
+                    characterMoveStore.updateCharacterMovesListDisplay();
+                })
         });
 
         watch(searchByTagsInput, () => {
-            // console.log(searchByTagsInput);
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
                 gameStore.updateTagsListDisplay();
@@ -151,12 +123,13 @@ export default {
         });
 
         return {
+            authStore,
             characterMoveStore,
             gameStore,
             route,
             router,
+            
             addTagActive,
-            // openAddTagInput,
             addTagToMove,
             searchMoves,
             searchCharacterMoveInputValue,
@@ -172,8 +145,12 @@ export default {
             removeTagFromSearchList,
             toggleMoveOptions,
             toggleEditTagsMode,
-            removeTagFromCharacterMove
 
+            notLoggedInMessageActive,
+            showNotLoggedInMessage,
+            hideNotLoggedInMessage,
+
+            removeTagFromCharacterMove
         }
     },
     created() {
@@ -184,13 +161,12 @@ export default {
         MagnifyingGlass,
         EllipsisIcon,
         CloseIcon
-
     }
 
 }
 </script>
 <template lang="">
-    <div>
+    <div class="px-2">
         <div class="my-2 flex flex-col space-x-2">
             <div class="flex flex-row items-center space-x-2 my-2">
                 <p>Search by:</p>
@@ -201,13 +177,17 @@ export default {
                 >
                     <span>Name</span>
                 </button>
-                <button 
+                <button
+                    v-if="authStore.loggedInUser !== null" 
                     class="text-black p-1" 
                     :class="{ 'border rounded': searchByOptionSelection === 'tags'}"
                     @click="switchSearchByOption('tags')"
                 >
                     <span>Tags</span>
                 </button>
+                <div v-else>
+                    <p>Log in to search by tags!</p>
+                </div>
             </div>
             <div class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
@@ -223,20 +203,15 @@ export default {
                 <div v-for="(tag, index) in characterMoveStore.searchByTagsList" :key="index" class="">
                     <div
                         class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
-                        
                     >
                         <span>{{tag}}</span>
                         <CloseIcon class="h-5 w-5" @click="removeTagFromSearchList(tag)" />
                     </div>
                 </div>
             </div>
-            <!-- <div class="">
-                <VerticalEllipsisIcon v-if="searchOptionsModalActive === false" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
-                <CloseIcon v-if="searchOptionsModalActive === true" class="h-10 w-10" @click="toggleSearchOptionsModal()" />
-            </div> -->
         </div>
         <div class="">
-            <ul class="space-y-2 overflow-y-scroll xs:h-96 lg:h-[32rem]">
+            <ul class="xs:h-[18.5rem] lg:h-96 overflow-y-auto space-y-2">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
@@ -254,10 +229,11 @@ export default {
                             :inputs="move.inputs" 
                             :tags="move.tags"
                             :editTagsActive="characterMoveEditTagsActive"
-                            class="border rounded p-2 overflow-x-auto w-full"
+                            class="border rounded p-2 w-full"
                         />
                     </div>
-                    <div class="flex flex-row justify-end">
+                    <div v-if="authStore.loggedInUser !== null" class="flex flex-row justify-end items-center space-x-2">
+                        <p v-if="notLoggedInMessageActive" class="">Must be logged in!</p>
                         <button v-if="characterMoveOptionsActive.includes(move.id)" @click="toggleEditTagsMode(move.id)">
                             <span v-if="characterMoveEditTagsActive.includes(move.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                             <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>

@@ -7,8 +7,6 @@ export default {
     setup(props) {
         const gameStore = useGameStore();
         const comboStore = useComboStore();
-        // const attackButtons = ref(props.buttons);
-        // const displayAccountCreationSuccess = computed(() => store.state.login.newTrainerCreated);
         const renderAttackInput = (input: object) => {
             comboStore.addAttackButtonInputToDisplay(input)
         }
