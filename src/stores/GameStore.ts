@@ -47,21 +47,15 @@ export const useGameStore = defineStore('GameStore', {
         },
         getAttackButtons: (state) => state.attackButtons,
         getAttackButtonSingles: (state) => {
-            // ! Need to remove this hardcoded list here
             const attackButtonSinglesNotations = ['1', '2', '3', '4']
             const attackButtonSinglesArray: any[] = [];
 
             state.attackButtons.forEach(attackButton => {
                 
-                // if(attackButton.notations[0] !== undefined && attackButtonSinglesNotations.includes(attackButton.notations[0].notation)) {
-                //     attackButtonSinglesArray.push(attackButton)
-                // }
                 if(attackButton.button_count === "1") {
                     attackButtonSinglesArray.push(attackButton)
                 }
             });
-
-            
 
             return attackButtonSinglesArray;
         },
@@ -81,8 +75,6 @@ export const useGameStore = defineStore('GameStore', {
                     attackButtonDoublesArray.push(attackButton)
                 }
             });
-
-            
 
             return attackButtonDoublesArray;
         },
@@ -106,13 +98,10 @@ export const useGameStore = defineStore('GameStore', {
                 }
             });
 
-            
-
             return attackButtonTriplesArray;
         },
         getDirectionalInputTaps(state) {
             const inputs = state.directionalInputs.filter(input => !input.direction.includes('(hold)'));
-            
             
             return inputs;
         },
@@ -132,7 +121,6 @@ export const useGameStore = defineStore('GameStore', {
             return gameNotations;
         },
         getInput(state) {
-            // Get input that matches provided notation
             return (inputNotation: string, inputCategory: string) => {
                 
                 let result;
@@ -147,7 +135,6 @@ export const useGameStore = defineStore('GameStore', {
                         break;
                     case 'notations':
                         result = state.gameNotations.find((gameNotation) => gameNotation.notations[0].notation === inputNotation); 
-                        
                         break;
                     default:
                         break;
@@ -161,9 +148,6 @@ export const useGameStore = defineStore('GameStore', {
             try {
                 const data = await trainingModeAPI.get('/directional-inputs');
                 this.directionalInputs = data.data;
-                // this.directionalInputs.forEach(input => {
-                //     input.notation = this.directionalInputNotations.find(notation => )
-                // })
                 this.directionalInputs.forEach(input => {
                     input.notations.forEach(notation => {
                         if(notation.game_id === this.game.id) {
@@ -178,7 +162,7 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async fetchGames() {
@@ -188,7 +172,7 @@ export const useGameStore = defineStore('GameStore', {
                 this.games = [...data.data];
             }
             catch(error) {
-                
+                console.log(error);
             }
         },
         async fetchGameNotes(gameId: string) {
@@ -200,14 +184,11 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    
                     this.gameNotes = [...response.data]
-                    // this.characterNoteListDisplay = response.data;
-                    // this.setCharacter(characterId);
                     this.updateGameNoteListDisplay();
                 })
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async fetchGameNotations(gameId: string) {
@@ -216,14 +197,11 @@ export const useGameStore = defineStore('GameStore', {
                 this.gameNotations = data.data.filter(notation => notation.notations_group === 'other');
                 this.directionalInputNotations = data.data.filter(notation => notation.notations_group === 'directions');
                 this.attackButtonNotations = data.data.filter(notation => notation.notations_group === 'attacks')
-                // 
-                
             } catch (error) {
-                
+                console.log(error);
             }
         },
         async fetchAttackButtons(gameId: string) {
-            
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
                 this.attackButtons = data.data
@@ -240,9 +218,8 @@ export const useGameStore = defineStore('GameStore', {
                         }
                     })
                 })
-
             } catch(error) {
-                
+                console.log(error);
             }
         },
         async fetchTags(gameId: string) {
@@ -256,17 +233,11 @@ export const useGameStore = defineStore('GameStore', {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
-                // .then(() => {
-                //     this.tags = data.data;
-                //     
-                // })
                 this.tags = data.data;
-                console.log(this.tags);
-                
             } catch (error) {
                 console.log(error);
             }
-
+            
             return this.tags;
         },
         async setGame(gameId: string) {
@@ -288,14 +259,10 @@ export const useGameStore = defineStore('GameStore', {
                         }
                     })
                 .then(response => {
-                    
                     this.fetchGameNotes(gameId);
-                    // this.fetchCharacters(gameId);
-
-                    // this.characterNoteListDisplay = [...this.character.notes]
                 })
             } catch (error) {
-                
+                console.log(error);
             }
         },
 
@@ -312,11 +279,10 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    
                     this.fetchGameNotes(gameId);
                 })
             } catch (error) {
-                
+                console.log(error);
             }
         },
 
@@ -330,36 +296,27 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 .then(response => {
                     this.fetchGameNotes(gameId);
-                    
                 })
             } catch (error) {
-                
+                console.log(error);
             }
         },
 
-
-
-
-
         async updateGameNoteListDisplay() {
-            // this.setCharacter(this.character.id);
             if(this.gameNoteSearchInputValue.length === 0) {
                 this.gameNoteListDisplay = [...this.gameNotes];
             } else {
                 this.gameNoteListDisplay = this.game.notes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchInputValue.toLowerCase()))
-
             }
         },        
         async updateTagsListDisplay() {
             this.tagsListDisplay = this.tags.filter(tag => {
-                // 
                 return tag.name.includes(this.tagSearchCriteria);
             })
             
         },
         async updateTagSearchCriteria(input: string) {
             this.tagSearchCriteria = input;
-            
         }
     }
 });

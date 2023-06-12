@@ -29,10 +29,8 @@ export default {
         }
     },
     created() {
-        // this.gameStore.setGame(this.route.params.game);
         this.gameStore.fetchGameNotations(this.route.params.game);
         this.gameStore.fetchDirectionalInputs();
-        this.gameStore.fetchAttackButtons(this.route.params.game);
         this.gameStore.fetchTags(this.route.params.game);
     },
     components: {

@@ -34,14 +34,10 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 });
-                console.log(data.data);
                 this.characterMoves = data.data;
                 
                 this.updateCharacterMovesListDisplay();
-                gameStore.fetchTags(gameId)
-                .then(response => {
-                    console.log(response);
-                })
+                gameStore.fetchTags(gameId);
             } catch (error) {
                 console.log(error);
             }

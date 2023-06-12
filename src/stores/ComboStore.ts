@@ -21,8 +21,6 @@ export const useComboStore = defineStore('ComboStore', {
             return function (comboId: string) {
                 let characterCombo = state.characterComboListDisplay.find(combo => combo.id === comboId);
                 let tags = [...characterCombo?.tags];
-                // console.log(tags);
-                // return state.characterMoves.
                 return tags;
             }
         }
@@ -31,66 +29,45 @@ export const useComboStore = defineStore('ComboStore', {
         async addDirectionalInputToDisplay(directionalInput: object) {
             directionalInput.category = 'directional-inputs';
             this.comboInputsDisplay.push(directionalInput)
-            console.log(directionalInput);
-            // this.notationsDisplay.push(directionalInput.)
-            console.log(this.comboInputsDisplay);
 
-            // this.notationsDisplay.push(directionalInput.notations[0].notation)
             this.notationsDisplay.push({
                 notation: directionalInput.notations[0].notation,
                 category: 'directional-inputs',
                 icon_file_name: directionalInput.icons[0].icon_file_name
             });
-
-
-            // this.notationsDisplay.push(',');
-            // console.log(this.notationsDisplay);
         },
         async addAttackButtonInputToDisplay(attackButtonInput: object) {
             attackButtonInput.category = 'attack-buttons';
             this.comboInputsDisplay.push(attackButtonInput);
 
-            // this.notationsDisplay.push(attackButtonInput.notations[0].notation)
             this.notationsDisplay.push({
                 notation: attackButtonInput.notations[0].notation,
                 category: 'attack-buttons',
                 icon_file_name: attackButtonInput.icon_file_name
             });
-            // console.log(this.notationsDisplay);
         },
-        // async addComboInputToDisplay(comboInput) {
-        //     'direction' in comboInput ? comboInput.category = 'directional-inputs' : comboInput.category = 'attack-buttons'
-        //     this.comboDisplay.push(comboInput);
-        //     console.log(this.comboDisplay);
-
-        // },
         async addNotationToDisplay(notation) {
             if(notation.character_id !== null) {
                 notation.category = 'character-notations';
             } else {
                 notation.category = 'notations'
             }
-            this.comboInputsDisplay.push(notation);
-            console.log(this.comboInputsDisplay);
 
-            // this.notationsDisplay.push(notation.notation)
+            this.comboInputsDisplay.push(notation);
             this.notationsDisplay.push({
                 notation: notation.notation,
                 category: 'other',
                 icon_file_name: notation.icon_file_name
             });
-            console.log(this.notationsDisplay);
         },
         async addNotationSegments(notationSegments) {
             this.notationSegments.push(notationSegments);
-            console.log(this.notationSegments);
         },
         async eraseComboInput() {
             this.comboInputsDisplay.pop();
             this.notationsDisplay.pop();
         },
         async clearComboInputsDisplay() {
-            console.log('objectestt');
             this.comboInputsDisplay = [];
             this.notationsDisplay = [];
         },
@@ -104,14 +81,12 @@ export const useComboStore = defineStore('ComboStore', {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
-                    //hits
                 }, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.fetchCharacterCombos(gameId, characterId);
                 })
             } catch (error) {
@@ -120,20 +95,17 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async updateCharacterCombo(gameId: string, characterId: string, comboId: string, comboInputs: object) {
             const authStore = useAuthStore();
-            console.log(comboInputs);
             try {
                 await trainingModeAPI.put(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
-                    //hits
                 }, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.clearComboInputsDisplay();
                     this.fetchCharacterCombos(gameId, characterId);
                 })
@@ -150,7 +122,6 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.fetchCharacterCombos(gameId, characterId);
                 })
             } catch (error) {
@@ -170,11 +141,6 @@ export const useComboStore = defineStore('ComboStore', {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 });
-                // .then(response => {
-                //     this.combos = response.data;
-                //     // console.log(response.data);
-                //     console.log(this.combos);
-                // });
                 this.combos = data.data;
                 this.updateCharacterComboListDisplay();
 
@@ -183,14 +149,10 @@ export const useComboStore = defineStore('ComboStore', {
                     const comboInputs = [];
                     let comboInputsSorted = [];
 
-                    // const moveInputs = [];
-                    // move.inputs = [];
                     combo.directional_inputs.forEach(input => {
-                        // console.log(input);
                         const directionalInputModel = gameStore.directionalInputs.find(directionalInput => {
                             return directionalInput.direction === input.direction;
                         });
-                        // console.log(directionalInputModel);
                         const iconFileName = directionalInputModel?.icon_file_name;
     
                         const directionalInputObject = {
@@ -200,9 +162,6 @@ export const useComboStore = defineStore('ComboStore', {
                             icon_file_name: iconFileName,
                             
                         }
-                        // input.input_category = "directions";
-                        // input.img_category = "directional-inputs";
-                        // input.icon_file_name = iconFileName;
                         comboInputs.push(directionalInputObject);
                     })
     
@@ -210,7 +169,6 @@ export const useComboStore = defineStore('ComboStore', {
                         const attackButtonModel = gameStore.attackButtons.find(attackButton => {
                             return attackButton.name === input.name;
                         }); 
-                        // console.log(attackButtonModel);
                         const iconFileName = attackButtonModel?.icon_file_name;
                         const attackButtonObject = {
                             ...input,
@@ -219,8 +177,6 @@ export const useComboStore = defineStore('ComboStore', {
                             icon_file_name: iconFileName,
                             
                         }
-                        // input.input_category = "attacks";
-                        // input.img_category = "attack-buttons";
                         comboInputs.push(attackButtonObject);
                     });
     
@@ -231,26 +187,16 @@ export const useComboStore = defineStore('ComboStore', {
                     });
     
                     comboInputs.forEach(input => {
-                        // console.log(input);
                         input.order_in_combo = input.pivot.order_in_combo;
                     });
                         
-                        
-                    //     // input.order_in_combo = input.pivot.order_in_combo;
-                    // });
-    
                     comboInputsSorted = comboInputs.sort((a, b) => a.order_in_combo - b.order_in_combo);
-    
-                    console.log(comboInputsSorted);
-                    
     
                     combo.inputs = [...comboInputsSorted];
                 }
             } catch (error) {
                 console.log(error);
             }
-
-            console.log(this.combos);
         },
         async addTagToCharacterCombo(gameId: string, characterId:string, characterComboId:string, newTag: string) {
             const authStore = useAuthStore();
@@ -264,7 +210,6 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterCombos(gameId, characterId);
                 })
@@ -282,17 +227,13 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.fetchCharacterCombos(gameId, characterId);
-                    // this.updateCharacterMovesListDisplay('tags');
-                    // this.searchByTagsList = [];
                 })
             } catch (error) {
                 console.log(error);
             }
         },
         async addCharacterComboTagToSearchList(tag: string) {
-            console.log(tag);
             this.searchByTagsList.push(tag);
         },
 
@@ -302,31 +243,24 @@ export const useComboStore = defineStore('ComboStore', {
         async updateCharacterComboListDisplay() {
             let characterComboListFilteredByTags: object[] = [];
 
-
-
             if(this.searchByTagsList.length === 0) {
                 this.resetCharacterComboListDisplay();
                 return;
             }
 
             this.combos.forEach(combo => {
-                // console.log(move);
                 combo.tags.forEach(tag => {
-                    console.log(tag);
                     if(this.searchByTagsList.includes(tag.name)) {
                         characterComboListFilteredByTags.push(combo);
                     }
                 })
             })
-            console.log(characterComboListFilteredByTags);
             this.characterComboListDisplay = [...characterComboListFilteredByTags];
-            console.log(this.characterComboListDisplay);
         },
         async resetCharacterComboListDisplay() {
             this.characterComboListDisplay = [...this.combos];
         },
         async populateComboInputsDisplay(inputs: object[]) {
-            console.log(inputs);
             this.comboInputsDisplay = [...inputs];
         }
     }

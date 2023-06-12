@@ -9,12 +9,7 @@ export const useNavigationStore = defineStore('NavigationStore', {
                 icon: 'GameControllerIcon',
                 link: '/games'
             },
-            // {
-            //     name: 'Articles',
-            //     icon:''
-            // }
         ]
-
     }),
     getters: {
 
