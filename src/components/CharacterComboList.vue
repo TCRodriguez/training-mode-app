@@ -331,7 +331,6 @@ export default {
                     <button class="bg-red text-white p-2 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
                     <button class="bg-yellow p-2 rounded" @click="comboStore.eraseComboInput">Erase</button>
                 </div>
-
             </div>
         </div>
     </div>

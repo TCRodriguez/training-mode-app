@@ -181,7 +181,8 @@ export default {
 <template lang="">
     <div class="mt-8 w-full">
         <div class="px-2">
-            <div v-if="gameNotes.length !== 0" class="flex flex-row w-full items-center">
+            <!-- TODO Add notes filter -->
+            <!-- <div v-if="gameNotes.length !== 0" class="flex flex-row w-full items-center">
                 <MagnifyingGlass class="h-10 w-10" />
                 <input 
                     type="text" 
@@ -189,7 +190,7 @@ export default {
                     v-model="gameNoteSearchInput" 
                     class="my-8"
                 >
-            </div>
+            </div> -->
             <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
                 <p class="font-bold text-xl text-center">Must be logged in to view game notes!</p>
             </div>

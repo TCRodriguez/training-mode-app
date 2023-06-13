@@ -58,13 +58,13 @@
             >
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="space-y-4 xs:h-96 lg:h-[32rem]">
+            <ul class="space-y-4 xs:h-96 lg:h-[45rem]">
                 <li 
                     v-for="game in gameStore.getGames"
                     :key="game.id"
                     @click="goToCharacterSelect(game.id)"
                 >
-                    <div class="relative">
+                    <div class="relative flex flex-col items-center">
                         <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
                             <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
                         </div>

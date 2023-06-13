@@ -37,6 +37,10 @@ export default {
         }
 
         const switchSearchByOption = (option: string) => {
+            if(option === 'tags' && authStore.loggedInUser === null) {
+                showNotLoggedInMessage();
+                return;
+            }
             characterMoveStore.resetCharacterMoveListDisplay();
             characterMoveSearchInput.value = '';
             searchByOptionSelection.value = option;
@@ -79,13 +83,14 @@ export default {
 
             console.log(characterMoveOptionsActive.value);
         }
+        
 
         const toggleEditTagsMode = (moveId: number) => {
             if(authStore.loggedInUser === null) {
                 showNotLoggedInMessage();
-                setTimeout(() => {
-                    hideNotLoggedInMessage();
-                }, 3000);
+                // setTimeout(() => {
+                //     hideNotLoggedInMessage();
+                // }, 3000);
                 return;
             }
 
@@ -98,6 +103,9 @@ export default {
 
         const showNotLoggedInMessage = () => {
             notLoggedInMessageActive.value = true;
+            setTimeout(() => {
+                hideNotLoggedInMessage();
+            }, 3000);
         }
 
         const hideNotLoggedInMessage = () => {
@@ -178,15 +186,15 @@ export default {
                     <span>Name</span>
                 </button>
                 <button
-                    v-if="authStore.loggedInUser !== null" 
+
                     class="text-black p-1" 
-                    :class="{ 'border rounded': searchByOptionSelection === 'tags'}"
+                    :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
                     @click="switchSearchByOption('tags')"
                 >
                     <span>Tags</span>
                 </button>
-                <div v-else>
-                    <p>Log in to search by tags!</p>
+                <div v-if="notLoggedInMessageActive === true">
+                    <p class="text-black rounded bg-yellow p-1 xs:text-xs lg:text-lg">Log in to search by tags!</p>
                 </div>
             </div>
             <div class="flex flex-row items-center">
@@ -211,7 +219,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[18.5rem] lg:h-96 overflow-y-auto space-y-2">
+            <ul class="xs:h-[19.5rem] lg:h-[26rem] overflow-y-auto space-y-2">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
