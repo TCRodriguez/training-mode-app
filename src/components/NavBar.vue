@@ -98,8 +98,8 @@ import { computed } from "vue";
             <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0 z-40" :class="{ 'hidden': loginModalActive === false }"></div>
             <div class="">
                 <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between justify-center" :class="{'hidden': loginModalActive === false }">
-                    <div class="h-full flex flex-col justify-center m-2">
-                        <div class="bg-gray z-50">
+                    <div class="h-full flex flex-col justify-center items-center m-2">
+                        <div class="bg-gray z-50 lg:w-1/2">
                             <LoginModal class="p-2 m-2" @trigger-toggle-login-modal="toggleLoginModal()" />
                         </div>
                     </div>
