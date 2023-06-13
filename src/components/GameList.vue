@@ -58,7 +58,7 @@
             >
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="space-y-4 xs:h-96 lg:h-[32rem]">
+            <ul class="space-y-4 xs:h-96 lg:h-[45rem]">
                 <li 
                     v-for="game in gameStore.getGames"
                     :key="game.id"

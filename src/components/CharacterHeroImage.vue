@@ -19,12 +19,12 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="flex flex-row justify-center mb-4 h-24 items-center space-x-4 bg-black overflow-hidden relative">
+    <div class="flex flex-row justify-center mb-4 h-24 lg:h-60 items-center space-x-4 bg-black overflow-hidden relative">
         <img 
             :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/character-art%2F${gameStore.game.abbreviation}%2F${gameStore.game.abbreviation}-${characterStore.character.name}.png`" 
             alt="{{characterStore.character.name}}" 
             srcset="" 
-            class="absolute opacity-[.35] w-max h-auto left-0 -bottom-32 lg:left-32">
+            class="absolute opacity-[.35] w-max h-auto left-0 xs:-bottom-32 lg:left-52 lg:-bottom-0 lg:-top-60">
         <div class="relative">
             <h3 class="text-5xl font-bold text-white">{{ characterStore.character.name }}</h3>
         </div>
