@@ -33,9 +33,9 @@ import { computed } from "vue";
             }
 
             const goBack = () => {
-                if(route.name === 'games') {
-                    return;
-                }
+                // if(route.name === 'games') {
+                //     return;
+                // }
                 router.back();
             }
 

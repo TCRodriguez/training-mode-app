@@ -76,16 +76,18 @@
 </script>
 <template lang="">
     <div class="w-full p-2">
-        <div class="flex flex-row w-full items-center">
-            <MagnifyingGlass class="h-10 w-10" />
-            <input 
-                type="text" 
-                placeholder="Enter character name" 
-                v-model="characterSearchInput" 
-                class="my-8"
-            >
+        <div class="flex flex-row items-center justify-center">
+            <div class="flex flex-row xs:w-full items-center lg:w-1/3">
+                <MagnifyingGlass class="h-10 w-10" />
+                <input 
+                    type="text" 
+                    placeholder="Enter character name" 
+                    v-model="characterSearchInput" 
+                    class="my-8"
+                >
+            </div>
         </div>
-        <div class="xs:h-[16.5rem] lg:h-96 overflow-y-auto">
+        <div class="xs:h-[20rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-2 divide-y-2">
                 <li
                     v-for="character in characterStore.characterListDisplay"
