@@ -27,7 +27,6 @@ import { computed } from "vue";
                         navigationStore.clearNavItems();
                         router.replace('/');
                         // TODO Clear history and redirect to home/dashboard?
-                        // Test
 
                     });
                 }
