@@ -1,17 +1,21 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { defineRule, configure } from "vee-validate";
-import { required } from '@vee-validate/rules';
+import { required, email } from '@vee-validate/rules';
 import { localize } from '@vee-validate/i18n';
 
 defineRule('required', required);
+defineRule('email', email);
 
 configure({
     generateMessage: context => {
         const fieldName = context.field;
+        // console.log(context);
         const capitalizeFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
 
-        return `${capitalizeFieldName} is required`
+        return context.rule.name === 'required' ? `${capitalizeFieldName} is required` 
+            : context.rule.name === context.field ? `Must be a valid ${context.field}` 
+            : null;
     }
 });
 

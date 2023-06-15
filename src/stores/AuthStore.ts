@@ -39,9 +39,11 @@ export const useAuthStore = defineStore('AuthStore', {
                     characterStore.fetchCharacterNotes(gameStore.game.id, characterStore.character.id);
                     characterMoveStore.fetchCharacterMoves(gameStore.game.id, characterStore.character.id);
                     comboStore.fetchCharacterCombos(gameStore.game.id, characterStore.character.id);
+                    return response;
                 });
             } catch (error) {
                 console.log(error);
+                return error;
             }
         },
         async logout() {
