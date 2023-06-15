@@ -31,6 +31,7 @@ export const useAuthStore = defineStore('AuthStore', {
                 })
                 .then(response => {
                     console.log(response);
+                    this.toggleLoginModal();
                     this.token = response.data.token;
                     this.loggedInUser = response.data.user
                     

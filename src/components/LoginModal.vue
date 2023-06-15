@@ -18,11 +18,7 @@ export default {
                     loginFailedMessage.value = 'Incorrect email or password';
                     loginFailed.value = true;
                     return;
-                } else {
-                    authStore.toggleLoginModal();
                 }
-                console.log(responseMessage);
-                authStore.toggleLoginModal();
             })
         }
 
