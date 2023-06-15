@@ -163,6 +163,7 @@ export default {
     },
     created() {
         this.characterMoveStore.fetchCharacterMoves(this.route.params.game, this.route.params.character);
+        console.log(this.characterMoveStore.characterMoves);
     },
     components: {
         CharacterMove,

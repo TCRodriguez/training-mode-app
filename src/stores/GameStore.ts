@@ -157,6 +157,7 @@ export const useGameStore = defineStore('GameStore', {
                     input.icons.forEach(icon => {
                         if(icon.game_id === this.game.id) {
                             input.icon_file_name = icon.icon_file_name;
+                            localStorage.setItem(`${input.direction}`, `${icon.icon_file_name}`);
                         }
                     })
                 })
@@ -204,19 +205,28 @@ export const useGameStore = defineStore('GameStore', {
         async fetchAttackButtons(gameId: string) {
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
-                this.attackButtons = data.data
+                this.attackButtons = [...data.data]
+                console.log(this.attackButtons);
+
                 
                 this.attackButtons.forEach(input => {
+                    // console.log(input);
                     input.notations.forEach(notation => {
                         if(notation.game_id === this.game.id) {
                             input.notation = notation.notation
                         }
-                    })
-                    input.icons.forEach(icon => {
-                        if(icon.game_id === this.game.id) {
-                            input.icon_file_name = icon.icon_file_name;
-                        }
-                    })
+                    });
+
+                    localStorage.setItem(`${input.name}`, `${input.icon_file_name}`);
+                    
+                    // input.icons.forEach(icon => {
+                    //     if(icon.game_id === this.game.id) {
+                    //         input.icon_file_name = icon.icon_file_name;
+                    //         
+                    //         console.log(input);
+                    //     }
+                    // })
+
                 })
             } catch(error) {
                 console.log(error);
@@ -244,6 +254,7 @@ export const useGameStore = defineStore('GameStore', {
             this.game = this.games.find(game => game.id === gameId);
             this.game.bread_crumb_type = 'game';
             this.gameNoteListDisplay = [...this.game.notes];
+            localStorage.setItem('game', this.game.abbreviation);
             
         },
         async saveGameNote(gameId: string, note: object) {
