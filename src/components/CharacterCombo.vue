@@ -7,6 +7,7 @@ import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
+import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
 export default {
     setup() {
         const gameStore = useGameStore();
@@ -18,7 +19,9 @@ export default {
             gameStore,
             comboStore,
             getCharacterComboTags,
-            addTagInput
+            addTagInput,
+            getGameAbbreviation,
+            getInputImgFilename
         }
     },
     props: {
@@ -41,23 +44,21 @@ export default {
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col shrink-0">
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
-                    :iconFileName="input.icon_file_name"
-                    :game="gameStore.game.abbreviation"
+                    :iconFileName="getInputImgFilename(input.direction)"
+                    :game="getGameAbbreviation()"
                     class="h-12 w-12"
                 />               
-
                 <AttackButton 
                     v-if="input.img_category === 'attack-buttons'"
-                    :iconFileName="input.icon_file_name"
-                    :game="gameStore.game.abbreviation"
+                    :iconFileName="getInputImgFilename(input.name)"
+                    :game="getGameAbbreviation()"
                     class="h-12 w-12"
                 />
                 <GameNotation
                     v-if="input.img_category === 'notations'"
                     class=""
                     :notation="input.notation"
-                    :iconFileName="input.icon_file_name"
-                
+                    :iconFileName="getInputImgFilename(input.notation)"
                 />
             </div>
         </div>

@@ -278,13 +278,13 @@ export default {
         <!-- Create Combo -->
         <div>
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
-                <div class="my-2">
+                <div class="fixed top-0 right-0 w-full">
                     <ComboInputDisplay />
                 </div>
-                <div class="px-2">
+                <div class="px-2 mt-20 sm:mb-4">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center justify-center">
+                <div class="flex flex-row items-center justify-center sm:justify-between">
                     <DirectionalInputSwitcher class=""/>
                     <div class="w-0.5 h-full border rounded border-gray"></div>
                     <AttackButtonSwitcher class="" />

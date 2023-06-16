@@ -115,7 +115,7 @@ export default {
 </script>
 <template lang="">
     <div
-        class="border space-x-2 flex flex-row overflow-x-scroll overflow-y-auto items-center h-20 bg-blue" 
+        class="space-x-2 flex flex-row overflow-x-scroll pt-1 overflow-y-auto items-center h-20 bg-blue" 
         id="horizontal-combo-display"
     >
         <div
