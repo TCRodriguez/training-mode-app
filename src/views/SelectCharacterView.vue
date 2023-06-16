@@ -4,6 +4,7 @@ import Notes from "../components/GameNoteList.vue";
 import GameBanner from "@/components/GameBanner.vue";
 import { useGameStore } from "@/stores/GameStore";
 import { useRoute, useRouter } from "vue-router";
+import { getGameAbbreviation } from "@/common/helpers";
 import { ref } from "vue";
 export default {
     setup(params) {
@@ -23,7 +24,8 @@ export default {
             route,
             router,
             currentTab,
-            tabs
+            tabs,
+            getGameAbbreviation
         }
     },
     created() {
@@ -41,7 +43,7 @@ export default {
 </script>
 <template lang="">
     <div class="flex flex-col items-center">
-        <GameBanner class="h-1/2 w-1/2" :game="gameStore.game.abbreviation" />
+        <GameBanner class="h-1/2 w-1/2" :game="getGameAbbreviation()" />
         <nav>
             <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
                 <li 

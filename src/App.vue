@@ -7,9 +7,6 @@ export default {
   setup() {
     const loginStore = useAuthStore();
 
-
-
-
     return {
       loginStore,
     }
@@ -23,7 +20,7 @@ export default {
 
 <template>
     <main class="flex justify-center">
-      <div class="bg-gray w-full h-screen lg:w-1/2 relative">
+      <div class="bg-gray w-full xs:h-screen sm:h-full lg:h-screen relative">
         <!-- <NavBar v-if="loginStore.loggedInUser !== null"></NavBar> -->
         <NavBar></NavBar>
         <RouterView />

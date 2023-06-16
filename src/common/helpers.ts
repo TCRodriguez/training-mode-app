@@ -25,11 +25,16 @@ export const addNotationToNotationDisplay = (notation: string) => {
 
 }
 
-// export const clearPiniaState = () => {
-//     authStore.$reset();
-//     characterMoveStore.$reset();
-//     characterStore.$reset();
-//     gameStore.$reset();
-//     navigationStore.$reset();
-//     comboStore.$reset(); 
-// }
+export const getGameAbbreviation = () => {
+    
+    return localStorage.getItem('game');
+}
+
+export const getInputImgFilename = (inputName: string) => {
+    // console.log(inputName);
+    return localStorage.getItem(inputName);
+}
+
+export const getCharacterName = () => {
+    return localStorage.getItem('character');
+}

@@ -47,6 +47,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             this.characterNoteListDisplay = [...this.character.notes];
             this.characterNotations = this.character.notations;
             this.characterSearchInputValue = '';
+            localStorage.setItem('character', `${this.character.name}`)
         },
         async fetchCharacterNotes(gameId: string, characterId: string) {
             const authStore = useAuthStore();

@@ -3,6 +3,8 @@ import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { toRaw, ref, computed } from 'vue';
 import AttackButton from './AttackButton.vue';
+
+import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
 export default {
     setup(props) {
         const gameStore = useGameStore();
@@ -15,7 +17,9 @@ export default {
             gameStore,
             comboStore,
             attackButtonSingles,
-            renderAttackInput
+            renderAttackInput,
+            getGameAbbreviation,
+            getInputImgFilename
         }
         
     },
@@ -34,7 +38,7 @@ export default {
             :key="attackButton.id"
             @click="renderAttackInput(attackButton)"
         >
-            <AttackButton :iconFileName="attackButton.icon_file_name" :game="gameStore.game.abbreviation" class="h-20 w-20" />
+            <AttackButton :iconFileName="getInputImgFilename(attackButton.name)" :game="getGameAbbreviation()" class="h-20 w-20" />
         </div>
     </div>
 </template>
