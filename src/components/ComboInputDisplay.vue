@@ -8,6 +8,7 @@ import AttackButton from '@/components/AttackButton.vue';
 import DirectionalInput from './DirectionalInput.vue';
 import CharacterNotation from './CharacterNotation.vue';
 import GameNotation from './GameNotation.vue';
+import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
 
 export default {
     setup() {
@@ -94,6 +95,8 @@ export default {
             splitComboSections,
             presentComboVertically,
             getInput,
+            getGameAbbreviation,
+            getInputImgFilename
         }
     },
     props: {
@@ -112,7 +115,7 @@ export default {
 </script>
 <template lang="">
     <div
-        class="border space-x-2 flex flex-row overflow-x-auto overflow-y-auto items-center h-20 bg-blue" 
+        class="border space-x-2 flex flex-row overflow-x-scroll overflow-y-auto items-center h-20 bg-blue" 
         id="horizontal-combo-display"
     >
         <div
@@ -122,15 +125,15 @@ export default {
         >
             <AttackButton 
                 v-if="comboInput.category === 'attack-buttons'" 
-                :iconFileName="comboInput.icon_file_name"
-                :game="gameStore.game.abbreviation"
+                :iconFileName="getInputImgFilename(comboInput.name)"
+                :game="getGameAbbreviation()"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
 
             />
             <DirectionalInput 
                 v-else-if="comboInput.category === 'directional-inputs'" 
-                :iconFileName="comboInput.icon_file_name"
-                :game="gameStore.game.abbreviation"
+                :iconFileName="getInputImgFilename(comboInput.direction)"
+                :game="getGameAbbreviation()"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
             />
             <CharacterNotation 
@@ -144,7 +147,7 @@ export default {
                 class="text-white p-2 h-10 w-10"
                 :isFullScreen="fullScreenActiveHorizontalBool"
 
-                :iconFileName="comboInput.icon_file_name"
+                :iconFileName="getInputImgFilename(comboInput.notation)"
             />
         </div>
     </div>

@@ -26,12 +26,15 @@ export const addNotationToNotationDisplay = (notation: string) => {
 }
 
 export const getGameAbbreviation = () => {
-    const gameAbbreviation = gameStore.game.abbreviation === undefined ? localStorage.getItem('game') : gameStore.game.abbreviation;
-
-    return gameAbbreviation;
+    
+    return localStorage.getItem('game');
 }
 
 export const getInputImgFilename = (inputName: string) => {
     // console.log(inputName);
     return localStorage.getItem(inputName);
+}
+
+export const getCharacterName = () => {
+    return localStorage.getItem('character');
 }
