@@ -16,6 +16,7 @@ import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 export default {
     setup(params) {
         const route = useRoute();
@@ -78,7 +79,6 @@ export default {
             .then(() => toggleEditComboMode(comboId));
         }
 
-
         const toggleEditComboMode = (comboId: number, comboInputs: object[] = []) => {
             editCharacterComboId.value === comboId ?
                 editCharacterComboId.value = 0
@@ -91,8 +91,6 @@ export default {
             console.log(comboStore.comboInputsDisplay);
             
         }
-
-
 
         const deleteCharacterCombo = (comboId: number) => {
             // ! May need to rework this if it doesn't work in mobile app
@@ -191,7 +189,7 @@ export default {
             toggleEditComboMode,
             editCharacterComboModeActive,
             inputsForEditCharacterCombo,
-            editCharacterCombo
+            editCharacterCombo,
         }
     },
     components: {
@@ -255,11 +253,9 @@ export default {
                             />
                         </div>
                         <div class="flex flex-row justify-end space-x-2">
-                            <!-- <div v-if="comboOptionsActive"> -->
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="deleteCharacterCombo(combo.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                             </button>
-                            <!-- </div> -->
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
                                 <span v-if="characterComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                                 <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
@@ -282,13 +278,13 @@ export default {
         <!-- Create Combo -->
         <div>
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
-                <div class="my-2">
+                <div class="fixed top-0 right-0 w-full">
                     <ComboInputDisplay />
                 </div>
-                <div class="px-2">
+                <div class="px-2 mt-20 sm:mb-4">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center justify-center">
+                <div class="flex flex-row items-center justify-center sm:justify-between">
                     <DirectionalInputSwitcher class=""/>
                     <div class="w-0.5 h-full border rounded border-gray"></div>
                     <AttackButtonSwitcher class="" />

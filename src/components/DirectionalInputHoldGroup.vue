@@ -3,6 +3,8 @@ import { useComboStore } from '@/stores/ComboStore';
 import { useGameStore } from '@/stores/GameStore';
 import { computed } from 'vue';
 import DirectionalInput from './DirectionalInput.vue';
+
+import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
 export default {
     props: {
         directions: String,
@@ -20,7 +22,9 @@ export default {
             gameStore,
             comboStore,
             directions,
-            renderDirectionalInput
+            renderDirectionalInput,
+            getGameAbbreviation,
+            getInputImgFilename
         }
     },
     components: {
@@ -36,7 +40,7 @@ export default {
             :key="direction.id"
             @click="renderDirectionalInput(direction)"
         >
-            <DirectionalInput :iconFileName="direction.icon_file_name" :game="gameStore.game.abbreviation" class="h-20 w-20"/>
+            <DirectionalInput :iconFileName="getInputImgFilename(direction.direction)" :game="getGameAbbreviation()" class="h-20 w-20"/>
         </div>
     </div>
 </template>

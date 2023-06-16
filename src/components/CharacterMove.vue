@@ -8,6 +8,7 @@ import { useGameStore } from '@/stores/GameStore';
 import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
 import CloseIcon from './icons/CloseIcon.vue';
 import { storeToRefs } from 'pinia';
+import { getInputImgFilename, getGameAbbreviation} from '@/common/helpers';
 
 import { ref } from 'vue';
 export default {
@@ -26,7 +27,9 @@ export default {
             characterMoveStore,
             getCharacterMoveTags,
             addTagInput,
-            removedTagIds
+            removedTagIds,
+            getGameAbbreviation,
+            getInputImgFilename
         }
     },
     props: {
@@ -61,15 +64,14 @@ export default {
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col mt-2 shrink-0">
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
-                    :iconFileName="input.icon_file_name"
-                    :game="gameStore.game.abbreviation"
+                    :iconFileName="getInputImgFilename(input.direction)"
+                    :game="getGameAbbreviation()"
                     class="h-12 w-12"
                 />               
-
                 <AttackButton 
                     v-if="input.img_category === 'attack-buttons'" 
-                    :iconFileName="input.icon_file_name"
-                    :game="gameStore.game.abbreviation"
+                    :iconFileName="getInputImgFilename(input.name)"
+                    :game="getGameAbbreviation()"
                     class="h-12 w-12"
                 />
                 <GameNotation

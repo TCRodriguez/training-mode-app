@@ -14,6 +14,8 @@
             const router = useRouter();
             const route = useRoute();
 
+            const game = gameStore.game.abbreviation === undefined ? localStorage.getItem('game') : gameStore.game.abbreviation;
+
             const loadCharacterData = (characterId: string) => {
                 const game = gameStore.getGame;
                 
@@ -54,6 +56,7 @@
                 navigationStore,
                 router,
                 route,
+                game,
                 loadCharacterData,
                 searchCharacterInputValue,
                 characterSearchInput,
@@ -94,7 +97,7 @@
                     :key="character.id"
                     @mousedown="loadCharacterData(character.id)"
                 >
-                    <CharacterCard :game="gameStore.game.abbreviation" :characterName="character.name" class="font-bold text-xl"/>     
+                    <CharacterCard :game="game" :characterName="character.name" class="font-bold text-xl"/>     
                 </li>
             </ul>
         </div>

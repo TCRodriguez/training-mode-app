@@ -10,6 +10,7 @@ import CharacterHeroImage from '@/components/CharacterHeroImage.vue';
 import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getCharacterName, getGameAbbreviation } from '@/common/helpers';
 export default {
     setup(params) {
         const gameStore = useGameStore();
@@ -36,6 +37,8 @@ export default {
             router,
             currentTab,
             tabs,
+            getCharacterName,
+            getGameAbbreviation,
         }
     },
     created() {
@@ -50,7 +53,10 @@ export default {
 </script>
 <template lang="">
     <div class="">
-        <CharacterHeroImage />
+        <CharacterHeroImage
+            :game="getGameAbbreviation()"
+            :characterName="getCharacterName()"
+        />
         <nav>
             <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
                 <li 
