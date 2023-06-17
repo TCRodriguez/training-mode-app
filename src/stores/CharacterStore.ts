@@ -21,9 +21,9 @@ export const useCharacterStore = defineStore('CharacterStore', {
         getCharacter(state) {
             return state.character;
         },
-        getCharacterName(state) {
-            return state.character.name;
-        }
+        // getCharacterName(state) {
+        //     return state.character.name;
+        // }
     },
     actions: {
         async fetchCharacters(gameId: any) {
@@ -41,13 +41,14 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 console.log(error);
             }
         },
-        async setCharacter(characterId: any) {
-            this.character = this.characters.find(character => character.id === characterId);
-            this.character.bread_crumb_type = 'character';
+        async setCharacter(characterId: string) {
+            this.character = this.characters.find(character => character.id == characterId);
+            this.fetchCharacterNotes(characterId);
             this.characterNoteListDisplay = [...this.character.notes];
             this.characterNotations = this.character.notations;
             this.characterSearchInputValue = '';
-            localStorage.setItem('character', `${this.character.name}`)
+            localStorage.setItem('character', `${this.character.name}`);
+            localStorage.setItem('characterId', `${this.character.id}`);
         },
         async fetchCharacterNotes(gameId: string, characterId: string) {
             const authStore = useAuthStore();
@@ -82,6 +83,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async updateCharacterNoteListDisplay() {
             if(this.characterNoteSearchInputValue.length === 0) {
                 this.characterNoteListDisplay = [...this.characterNotes];
+                console.log(this.characterNoteListDisplay);
             } else {
                 this.characterNoteListDisplay = this.character.notes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
             }
