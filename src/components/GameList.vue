@@ -25,6 +25,8 @@
                 router.push(navItem.link)
 
                 navigationStore.addNavigationItem(navItem)
+
+                localStorage.setItem('gameId', gameId);
             }
 
             return {
