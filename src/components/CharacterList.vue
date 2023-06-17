@@ -6,6 +6,7 @@
     import { ref, computed, watch } from 'vue';
     import CharacterCard from './CharacterCard.vue';
     import MagnifyingGlass from './icons/MagnifyingGlass.vue';
+    import { getGameId } from '@/common/helpers';
     export default {
         setup(params) {
             const characterStore = useCharacterStore();
@@ -17,14 +18,14 @@
             const game = gameStore.game.abbreviation === undefined ? localStorage.getItem('game') : gameStore.game.abbreviation;
 
             const loadCharacterData = (characterId: string) => {
-                const game = gameStore.getGame;
+                const gameId = getGameId();
                 
                 characterStore.setCharacter(characterId);
                 characterSearchInput.value = '';
 
                 const navItem = {
                     name: characterStore.getCharacterName,
-                    link: `/games/${game?.id}/characters/${characterId}`,
+                    link: `/games/${gameId}/characters/${characterId}`,
                     type: 'character'
                 };
                 router.push(navItem.link);
