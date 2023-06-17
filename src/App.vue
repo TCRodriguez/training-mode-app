@@ -2,18 +2,37 @@
 import { RouterLink, RouterView } from "vue-router";
 import NavBar from './components/NavBar.vue';
 import { useAuthStore } from "./stores/AuthStore";
+import { useGameStore } from "./stores/GameStore";
+import { useCharacterStore } from "./stores/CharacterStore";
+import { getCharacterId, getGameId } from "./common/helpers";
 
 export default {
   setup() {
     const loginStore = useAuthStore();
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
 
     return {
-      loginStore,
+      gameStore,
+      characterStore,
+      getGameId
     }
   },
   components: {
     NavBar,
     RouterView
+  },
+  created() {
+    const gameId = getGameId();
+    const characterId = getCharacterId();
+
+    this.gameStore.fetchDirectionalInputs();
+    this.gameStore.fetchAttackButtons(gameId);
+    this.gameStore.fetchGameNotations(gameId);
+    this.characterStore.fetchCharacters(gameId)
+    .then(() => {
+      this.characterStore.setCharacter(characterId);
+    });
   }
 }
 </script>
