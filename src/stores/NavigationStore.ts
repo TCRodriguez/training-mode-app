@@ -17,7 +17,6 @@ export const useNavigationStore = defineStore('NavigationStore', {
     actions: {
         async addNavigationItem(navItem: { name: string; link: string; type: string; }) {
             this.navItems.push(navItem);
-            console.log(this.navItems);
         },
         async clearNavItems() {
             this.navItems = [];

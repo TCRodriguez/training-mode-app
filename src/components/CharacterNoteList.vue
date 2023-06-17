@@ -10,6 +10,7 @@ import NoteModal from './NoteModal.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
+import { getGameId, getCharacterId } from '@/common/helpers';
 export default {
     setup() {
         const route = useRoute();
@@ -55,15 +56,15 @@ export default {
         };
         const saveCharacterNote = () => {
 
-            const game = gameStore.game;
-            const character = characterStore.character;
+            const gameId = getGameId();
+            const characterId = getCharacterId();
             const characterNote = {
                 'title': createNoteTitle.value,
                 'body': createNoteBody.value
             }
 
 
-            characterStore.saveCharacterNote(game.id, character.id, characterNote)
+            characterStore.saveCharacterNote(gameId, characterId, characterNote)
             .then(() => {
                 createNoteActive.value = !createNoteActive.value
                 createNoteTitle.value = null;
@@ -74,8 +75,8 @@ export default {
 
         const updateCharacterNote = () => {
 
-            const game = gameStore.game;
-            const character = characterStore.character;
+            const gameId = getGameId();
+            const characterId = getCharacterId();
             const characterNote = {
                 'id': editNoteId.value,
                 'title': editNoteTitle.value,
@@ -83,7 +84,7 @@ export default {
             }
 
 
-            characterStore.updateCharacterNote(game.id, character.id, characterNote)
+            characterStore.updateCharacterNote(gameId, characterId, characterNote)
             .then(() => {
                 editNoteActive.value = !editNoteActive.value
                 editNoteTitle.value = null;
@@ -107,7 +108,9 @@ export default {
 
         const deleteCharacterNote = (noteId: string) => {
             if(window.confirm("Are you sure you want to delete this note?")) {
-                characterStore.deleteCharacterNote(route.params.game, route.params.character, noteId)
+                const gameId = getGameId();
+                const characterId = getCharacterId();
+                characterStore.deleteCharacterNote(gameId, characterId, noteId)
                 .then(() => {
                     toggleNoteOptions(noteId);
                 })
@@ -188,9 +191,9 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8">
-        <div class="h-96 overflow-auto">
-            <div v-if="characterNotes.length !== 0" class="flex flex-row w-full items-center">
+    <div class="mt-8 px-2">
+        <div class="">
+            <!-- <div v-if="characterNotes.length !== 0" class="flex flex-row w-full items-center">
                 <MagnifyingGlass class="h-10 w-10" />
                 <input 
                     type="text" 
@@ -198,38 +201,40 @@ export default {
                     v-model="characterNoteSearchInput" 
                     class="my-8"
                 >
-            </div>
+            </div> -->
             <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
                 <p class="font-bold text-xl text-center">Must be logged in to view character notes!</p>
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
             </div>
-            <ul class="space-y-2">
-                <li v-for="characterNote in characterNotes" :key="characterNote.id">
-                    <div>
-                        <Note 
-                            :note="characterNote"
-                            class="border rounded p-2"
-                            @click="toggleViewCharacterNote(characterNote)"
-                        />
-                    </div>
-                    <div>
-                        <div class="flex flex-row justify-end space-x-2">
-                            <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="deleteCharacterNote(characterNote.id)">
-                                <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
-                            </button>
-                            <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="toggleNoteOptions(characterNote.id, $event)">
-                                <span v-if="characterNoteEditActive === characterNote.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(characterNote)">Edit</span>
-                            </button>
-                            <CloseIcon v-if="characterNoteOptionsActive.includes(characterNote.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(characterNote.id, $event)"/>
-                            <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(characterNote.id, $event)" />
+            <div class="xs:h-[19.5rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
+                <ul class="space-y-2">
+                    <li v-for="characterNote in characterNotes" :key="characterNote.id">
+                        <div>
+                            <Note 
+                                :note="characterNote"
+                                class="border rounded p-2"
+                                @click="toggleViewCharacterNote(characterNote)"
+                            />
                         </div>
+                        <div>
+                            <div class="flex flex-row justify-end space-x-2">
+                                <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="deleteCharacterNote(characterNote.id)">
+                                    <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
+                                </button>
+                                <button v-if="characterNoteOptionsActive.includes(characterNote.id)" @click="toggleNoteOptions(characterNote.id, $event)">
+                                    <span v-if="characterNoteEditActive === characterNote.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
+                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(characterNote)">Edit</span>
+                                </button>
+                                <CloseIcon v-if="characterNoteOptionsActive.includes(characterNote.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(characterNote.id, $event)"/>
+                                <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(characterNote.id, $event)" />
+                            </div>
 
-                    </div>
-                </li>
-            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
         <NoteModal 
             :viewCondition="createNoteActive"
