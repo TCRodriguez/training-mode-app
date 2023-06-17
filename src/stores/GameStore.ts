@@ -206,11 +206,8 @@ export const useGameStore = defineStore('GameStore', {
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/attack-buttons`)
                 this.attackButtons = [...data.data]
-                console.log(this.attackButtons);
 
-                
                 this.attackButtons.forEach(input => {
-                    // console.log(input);
                     input.notations.forEach(notation => {
                         if(notation.game_id === this.game.id) {
                             input.notation = notation.notation
@@ -218,15 +215,6 @@ export const useGameStore = defineStore('GameStore', {
                     });
 
                     localStorage.setItem(`${input.name}`, `${input.icon_file_name}`);
-                    
-                    // input.icons.forEach(icon => {
-                    //     if(icon.game_id === this.game.id) {
-                    //         input.icon_file_name = icon.icon_file_name;
-                    //         
-                    //         console.log(input);
-                    //     }
-                    // })
-
                 })
             } catch(error) {
                 console.log(error);
@@ -251,7 +239,7 @@ export const useGameStore = defineStore('GameStore', {
             return this.tags;
         },
         async setGame(gameId: string) {
-            this.game = this.games.find(game => game.id === gameId);
+            this.game = this.games.find(game => game.id == gameId);
             this.game.bread_crumb_type = 'game';
             this.gameNoteListDisplay = [...this.game.notes];
             localStorage.setItem('game', this.game.abbreviation);
