@@ -26,6 +26,10 @@ export default {
     const gameId = getGameId();
     const characterId = getCharacterId();
 
+    this.gameStore.fetchGames()
+    .then(() => {
+      this.gameStore.setGame(gameId);
+    })
     this.gameStore.fetchDirectionalInputs();
     this.gameStore.fetchAttackButtons(gameId);
     this.gameStore.fetchGameNotations(gameId);
