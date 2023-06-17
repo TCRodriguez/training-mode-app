@@ -42,9 +42,13 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async setCharacter(characterId: string) {
+            const authStore = useAuthStore();
+
             this.character = this.characters.find(character => character.id == characterId);
-            this.fetchCharacterNotes(characterId);
-            this.characterNoteListDisplay = [...this.character.notes];
+            if(authStore.loggedInUser !== null) {
+                this.fetchCharacterNotes(characterId);
+                this.characterNoteListDisplay = [...this.character.notes];
+            }
             this.characterNotations = this.character.notations;
             this.characterSearchInputValue = '';
             localStorage.setItem('character', `${this.character.name}`);

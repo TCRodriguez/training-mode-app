@@ -39,8 +39,13 @@ export const useAuthStore = defineStore('AuthStore', {
                     const gameId = getGameId();
                     const characterId = characterStore.character.id === undefined ? getCharacterId() : characterStore.character.id;
                     
-                    gameStore.fetchGames();
+                    gameStore.fetchGames()
+                    .then(() => {
+
+                        gameStore.setGame(gameId);
+                    })
                     gameStore.fetchGameNotes(gameId);
+                    characterStore.fetchCharacters(gameId);
                     characterStore.fetchCharacterNotes(gameId, characterId);
                     characterMoveStore.fetchCharacterMoves(gameId, characterId);
                     comboStore.fetchCharacterCombos(gameId, characterId);

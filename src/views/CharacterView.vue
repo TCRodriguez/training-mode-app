@@ -1,4 +1,5 @@
 <script lang="ts">
+import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -10,9 +11,10 @@ import CharacterHeroImage from '@/components/CharacterHeroImage.vue';
 import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getCharacterName, getGameAbbreviation } from '@/common/helpers';
+import { getCharacterName, getGameAbbreviation, getGameId, getCharacterId } from '@/common/helpers';
 export default {
     setup(params) {
+        const authStore = useAuthStore();
         const gameStore = useGameStore();
         const characterStore = useCharacterStore();
         const characterMoveStore = useCharacterMoveStore();
@@ -29,6 +31,7 @@ export default {
         }
 
         return {
+            authStore,
             gameStore,
             characterStore,
             characterMoveStore,
@@ -44,6 +47,9 @@ export default {
     created() {
         this.characterMoveStore.fetchCharacterMoves(this.route.params.game, this.route.params.character);
         this.comboStore.fetchCharacterCombos(this.route.params.game, this.route.params.character);
+        if(this.authStore.loggedInUser !== null){
+            this.characterStore.fetchCharacterNotes(getGameId(), getCharacterId());
+        }
     },
     components: {
         CharacterPortrait,
