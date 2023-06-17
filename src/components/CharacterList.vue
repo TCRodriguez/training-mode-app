@@ -29,7 +29,9 @@
                 };
                 router.push(navItem.link);
 
-                navigationStore.addNavigationItem(navItem);
+                // navigationStore.addNavigationItem(navItem);
+
+                localStorage.setItem('characterId', characterId);
             }
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);
