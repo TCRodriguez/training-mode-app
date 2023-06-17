@@ -11,17 +11,19 @@ import { useComboStore } from "@/stores/ComboStore";
 // const characterStore = useCharacterStore();
 // const gameStore = useGameStore();
 // const navigationStore = useNavigationStore();
-// const comboStore = useComboStore();
 
 export const renderComboInput = (input: string) => {
+    const comboStore = useComboStore();
     comboStore.addComboInputToDisplay(input);
 };
 
 export const renderNotationInput = (notation: object) => {
+    const comboStore = useComboStore();
     comboStore.addNotationToDisplay(notation);
 }
 
 export const addNotationToNotationDisplay = (notation: string) => {
+    const comboStore = useComboStore();
     comboStore.notationsDisplay.push(notation);
 
 }
