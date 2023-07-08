@@ -9,10 +9,12 @@ import { useAuthStore } from "@/stores/AuthStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
 import { useRouter, useRoute, createWebHistory } from "vue-router";
 import { computed } from "vue";
+import { useAppMetadataStore } from "@/stores/AppMetadataStore";
     export default {
         setup() {
             const authStore = useAuthStore();
             const navigationStore = useNavigationStore();
+            const appMetadataStore = useAppMetadataStore();
             const clearBreadCrumbs = () => {
                 navigationStore.clearNavItems();
             }
@@ -46,16 +48,20 @@ import { computed } from "vue";
                 authStore.toggleLoginModal();
             }
 
+            const env = window.location.href.includes('localhost') ? 'develop' : 'production';
+
             return {
                 authStore,
                 navigationStore,
+                appMetadataStore,
                 route,
                 clearBreadCrumbs,
                 logout,
                 history,
                 goBack,
                 toggleLoginModal,
-                loginModalActive
+                loginModalActive,
+                env,
             }
         },
         components: {
@@ -64,7 +70,7 @@ import { computed } from "vue";
             ChevronBackOutlineIcon,
             PersonOutlineIcon,
             LoginOutlineIcon,
-            LoginModal
+            LoginModal,
         }
     }
 </script>
@@ -79,6 +85,11 @@ import { computed } from "vue";
                     <div class="flex flex-row">
                         <router-link to="/" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
                         <p class="text-[.50rem]">TM</p>
+                    </div>
+                    <div v-if="authStore.loggedInUser?.username === 'NiGHTBass'" class="flex flex-row">
+                        <p>{{env}}</p>
+                        <p class="px-1">{{'-'}}</p>
+                        <p>v{{ appMetadataStore.appVersion }}</p>
                     </div>
                     <div class="flex justify-center items-center space-x-1">
                         <!-- TODO Show username here if logged in -->
