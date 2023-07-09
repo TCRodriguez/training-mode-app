@@ -48,7 +48,7 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 authStore.toggleLoginModal();
             }
 
-            const env = window.location.href.includes('localhost') ? 'develop' : 'production';
+            const env = window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1') ? 'develop' : 'production';
 
             return {
                 authStore,
