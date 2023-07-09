@@ -208,7 +208,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="characterNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
             </div>
-            <div class="xs:h-[19.5rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
+            <div class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2">
                     <li v-for="characterNote in characterNotes" :key="characterNote.id">
                         <div>

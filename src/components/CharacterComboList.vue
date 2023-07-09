@@ -235,7 +235,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[15rem] lg:h-96">
+            <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
                     :key="index"
                     class="flex flex-row"
