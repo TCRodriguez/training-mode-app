@@ -148,6 +148,8 @@ export default {
                 return;
             }
             comboStore.addCharacterComboTagToSearchList(searchByTagsInput.value);
+            comboStore.updateCharacterComboListDisplay();
+            searchByTagsInput.value = '';
         }
 
         const removeTagFromSearchList = (tag) => {
@@ -211,7 +213,7 @@ export default {
         <div class="flex flex-col space-y-2 px-2">
             <div v-if="comboList.length !== 0" class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
-                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput">
+                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)">
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
