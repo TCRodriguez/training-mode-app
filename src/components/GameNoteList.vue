@@ -198,7 +198,7 @@ export default {
                 <p v-if="gameNotes.length === 0" class="flex justify-center font-bold text-2xl">Add your game notes!</p>
             </div>
 
-            <ul class="space-y-2 overflow-auto xs:h-[15rem] lg:h-96">
+            <ul class="space-y-2 overflow-auto xs:h-[32rem] lg:h-96">
                 <li v-for="gameNote in gameNotes" :key="gameNote.id">
                     <div>
                         <Note 
