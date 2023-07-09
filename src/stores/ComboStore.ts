@@ -234,7 +234,14 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
         async addCharacterComboTagToSearchList(tag: string) {
-            this.searchByTagsList.push(tag);
+            const gameStore = useGameStore();
+
+            const tagNamesArray = gameStore.tags.map(tag => tag.name);
+            const tagExists = tagNamesArray.includes(tag);
+
+            if(!this.searchByTagsList.includes(tag) && tagExists) {
+                this.searchByTagsList.push(tag);
+            }
         },
 
         async removeCharacterComboTagFromSearchList(tag: string) {
