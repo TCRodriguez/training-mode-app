@@ -220,7 +220,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[19.5rem] lg:h-[26rem] overflow-y-auto space-y-2">
+            <ul class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"

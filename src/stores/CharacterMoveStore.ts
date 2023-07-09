@@ -166,7 +166,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         },
 
         async addCharacterMoveTagToSearchList(tag: string) {
-            this.searchByTagsList.push(tag);
+            const gameStore = useGameStore();
+
+            const tagNamesArray = gameStore.tags.map(tag => tag.name);
+            const tagExists = tagNamesArray.includes(tag);
+
+            if(!this.searchByTagsList.includes(tag) && tagExists) {
+                this.searchByTagsList.push(tag);
+            }
         },
 
         async removeCharacterMoveTagFromSearchList(tag: string) {
