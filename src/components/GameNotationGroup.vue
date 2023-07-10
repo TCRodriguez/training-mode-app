@@ -11,23 +11,22 @@ export default {
         const gameStore = useGameStore();
         const gameNotations = computed(() => gameStore.gameNotations);
 
-        const showLegendOverlay = ref(false);
-        const openLegendOverlay = () => {
-            showLegendOverlay.value = true;
-            console.log('test');
+        const showNotationLegendOverlay = ref(false);
+        const openNotationLegendOverlay = () => {
+            showNotationLegendOverlay.value = true;
         }
 
-        const closeLegendOverlay = () => {
-            showLegendOverlay.value = false;
+        const closeNotationLegendOverlay = () => {
+            showNotationLegendOverlay.value = false;
         }
 
         return {
             gameStore,
             gameNotations,
             renderNotationInput,
-            showLegendOverlay,
-            openLegendOverlay,
-            closeLegendOverlay
+            showNotationLegendOverlay,
+            openNotationLegendOverlay,
+            closeNotationLegendOverlay
         }
     },
     components: {
@@ -42,12 +41,15 @@ export default {
         <div class="flex flex-row justify-between items-center mb-2">
             <p class="text-white font-bold">Game notations:</p>
             <LegendOverlay
-                :showLegendOverlay="showLegendOverlay === true"
-                :helpIconStyles="['text-white', 'h-10', 'w-10', 'fill-white']"
-                :descriptionsStyles="['text-white']"
-                @trigger-close-legend-overlay="closeLegendOverlay()"
+                :showLegendOverlay="showNotationLegendOverlay === true"
+                :showGameNotations="true"
+                :showAttackButtons="false"
+                :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
+                :descriptionsStyles="['text-white', 'text-lg']"
+                :descriptionsContainerStyles="['space-y-4', 'overflow-y-auto', 'xs:h-[49rem]']"
+                @trigger-close-legend-overlay="closeNotationLegendOverlay()"
             />
-            <HelpCircleOutlineIcon class="text-white fill-white h-8 w-8" @click="openLegendOverlay()"/>
+            <HelpCircleOutlineIcon class="text-white fill-white h-8 w-8" @click="openNotationLegendOverlay()"/>
         </div>
         <div class="grid grid-rows-2 grid-cols-5 items-center justify-center">
             <div
