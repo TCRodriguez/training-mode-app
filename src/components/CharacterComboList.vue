@@ -4,11 +4,13 @@ import CheckmarkIcon from './icons/CheckmarkIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
+import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
 import DirectionalInputSwitcher from './DirectionalInputSwitcher.vue';
 import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
 import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
+import LegendOverlay from './LegendOverlay.vue';
 
 import { useAuthStore } from '@/stores/AuthStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -35,6 +37,14 @@ export default {
 
         const characterComboOptionsActive = ref([]);
         const characterComboEditTagsActive = ref([]);
+
+        const showAttackButtonLegendOverlay = ref(false);
+        const openAttackButtonLegendOverlay = () => {
+            showAttackButtonLegendOverlay.value = true;
+        }
+        const closeAttackButtonLegendOverlay = () => {
+            showAttackButtonLegendOverlay.value = false;
+        }
 
         const openCreateComboModal = () => {
             createComboActive.value = !createComboActive.value;
@@ -148,6 +158,8 @@ export default {
                 return;
             }
             comboStore.addCharacterComboTagToSearchList(searchByTagsInput.value);
+            comboStore.updateCharacterComboListDisplay();
+            searchByTagsInput.value = '';
         }
 
         const removeTagFromSearchList = (tag) => {
@@ -190,6 +202,9 @@ export default {
             editCharacterComboModeActive,
             inputsForEditCharacterCombo,
             editCharacterCombo,
+            showAttackButtonLegendOverlay,
+            openAttackButtonLegendOverlay,
+            closeAttackButtonLegendOverlay,
         }
     },
     components: {
@@ -202,7 +217,9 @@ export default {
         DirectionalInputSwitcher,
         AttackButtonSwitcher,
         ComboInputDisplay,
-        CharacterCombo
+        CharacterCombo,
+        HelpCircleOutlineIcon,
+        LegendOverlay
     }
 }
 </script>
@@ -211,7 +228,7 @@ export default {
         <div class="flex flex-col space-y-2 px-2">
             <div v-if="comboList.length !== 0" class="flex flex-row items-center">
                 <MagnifyingGlass class="h-10 w-10" />
-                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput">
+                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)">
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
@@ -235,7 +252,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[15rem] lg:h-96">
+            <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
                     :key="index"
                     class="flex flex-row"
@@ -284,10 +301,24 @@ export default {
                 <div class="px-2 mt-20 sm:mb-4">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center justify-center sm:justify-between">
-                    <DirectionalInputSwitcher class=""/>
-                    <div class="w-0.5 h-full border rounded border-gray"></div>
-                    <AttackButtonSwitcher class="" />
+                <div class="flex flex-col items-center justify-center sm:justify-between">
+                    <div class="flex justify-end w-full">
+                        <HelpCircleOutlineIcon class="h-8 w-8 text-white fill-white" @click="openAttackButtonLegendOverlay()" />
+                    </div>
+                    <LegendOverlay
+                        :showLegendOverlay="showAttackButtonLegendOverlay === true"
+                        :showGameNotations="false"
+                        :showAttackButtons="true"
+                        :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
+                        :descriptionsStyles="['text-yellow', 'text-xl']"
+                        :descriptionsContainerStyles="['space-y-4', 'xs:h-[49rem]']"
+                        @trigger-close-legend-overlay="closeAttackButtonLegendOverlay()"
+                    />
+                    <div class="flex flex-row">
+                        <DirectionalInputSwitcher class=""/>
+                        <div class="w-0.5 h-full border rounded border-gray"></div>
+                        <AttackButtonSwitcher class="" />
+                    </div>
                 </div>
                 <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
                     <button class="bg-red p-2 rounded text-white" @click="closeCreateComboModal()">Cancel</button>

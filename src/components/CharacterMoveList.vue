@@ -8,6 +8,8 @@ import CharacterMove from './CharacterMove.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
+import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
+import LegendOverlay from './LegendOverlay.vue';
 export default {
     setup() {
         const authStore = useAuthStore();
@@ -27,6 +29,14 @@ export default {
         const searchByTagsInput = ref('');
 
         const notLoggedInMessageActive = ref(false);
+
+        const showLegendOverlay = ref(false);
+        const openLegendOverlay = () => {
+            showLegendOverlay.value = true;
+        }
+        const closeLegendOverlay = () => {
+            showLegendOverlay.value = false;
+        }
 
         const addTagToMove = (newTag, moveId) => {
             characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag);
@@ -158,7 +168,11 @@ export default {
             showNotLoggedInMessage,
             hideNotLoggedInMessage,
 
-            removeTagFromCharacterMove
+            removeTagFromCharacterMove,
+
+            openLegendOverlay,
+            closeLegendOverlay,
+            showLegendOverlay
         }
     },
     created() {
@@ -169,7 +183,9 @@ export default {
         CharacterMove,
         MagnifyingGlass,
         EllipsisIcon,
-        CloseIcon
+        CloseIcon,
+        HelpCircleOutlineIcon,
+        LegendOverlay
     }
 
 }
@@ -177,25 +193,40 @@ export default {
 <template lang="">
     <div class="px-2">
         <div class="my-2 flex flex-col space-x-2">
-            <div class="flex flex-row items-center space-x-2 my-2">
-                <p>Search by:</p>
-                <button
-                    class="text-black p-1" 
-                    :class="{ 'border rounded': searchByOptionSelection === 'name'}"
-                    @click="switchSearchByOption('name')"
-                >
-                    <span>Name</span>
-                </button>
-                <button
+            <div class="flex flex-row items-center justify-between space-x-2 my-2">
+                <div class="flex flex-row items-center space-x-2">
 
-                    class="text-black p-1" 
-                    :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
-                    @click="switchSearchByOption('tags')"
-                >
-                    <span>Tags</span>
-                </button>
+                    <p>Search by:</p>
+                    <button
+                        class="text-black p-1" 
+                        :class="{ 'border rounded': searchByOptionSelection === 'name'}"
+                        @click="switchSearchByOption('name')"
+                    >
+                        <span>Name</span>
+                    </button>
+                    <button
+    
+                        class="text-black p-1" 
+                        :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
+                        @click="switchSearchByOption('tags')"
+                    >
+                        <span>Tags</span>
+                    </button>
+                </div>
                 <div v-if="notLoggedInMessageActive === true">
                     <p class="text-black rounded bg-yellow p-1 xs:text-xs lg:text-lg">Log in to search by tags!</p>
+                </div>
+                <div>
+                    <HelpCircleOutlineIcon class="h-10 w-10" @click="openLegendOverlay()" />
+                    <LegendOverlay
+                        :showLegendOverlay="showLegendOverlay === true"
+                        :showGameNotations="false"
+                        :showAttackButtons="true"
+                        :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
+                        :descriptionsStyles="['text-white', 'text-lg']"
+                        :descriptionsContainerStyles="['space-y-4', 'xs:h-[49rem]']"
+                        @trigger-close-legend-overlay="closeLegendOverlay()"
+                    />
                 </div>
             </div>
             <div class="flex flex-row items-center">
@@ -220,7 +251,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[19.5rem] lg:h-[26rem] overflow-y-auto space-y-2">
+            <ul class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"

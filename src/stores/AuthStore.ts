@@ -41,7 +41,6 @@ export const useAuthStore = defineStore('AuthStore', {
                     
                     gameStore.fetchGames()
                     .then(() => {
-
                         gameStore.setGame(gameId);
                     })
                     gameStore.fetchGameNotes(gameId);
