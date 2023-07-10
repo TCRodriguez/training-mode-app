@@ -4,11 +4,13 @@ import CheckmarkIcon from './icons/CheckmarkIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
+import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
 import DirectionalInputSwitcher from './DirectionalInputSwitcher.vue';
 import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
 import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
+import LegendOverlay from './LegendOverlay.vue';
 
 import { useAuthStore } from '@/stores/AuthStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -35,6 +37,14 @@ export default {
 
         const characterComboOptionsActive = ref([]);
         const characterComboEditTagsActive = ref([]);
+
+        const showAttackButtonLegendOverlay = ref(false);
+        const openAttackButtonLegendOverlay = () => {
+            showAttackButtonLegendOverlay.value = true;
+        }
+        const closeAttackButtonLegendOverlay = () => {
+            showAttackButtonLegendOverlay.value = false;
+        }
 
         const openCreateComboModal = () => {
             createComboActive.value = !createComboActive.value;
@@ -192,6 +202,9 @@ export default {
             editCharacterComboModeActive,
             inputsForEditCharacterCombo,
             editCharacterCombo,
+            showAttackButtonLegendOverlay,
+            openAttackButtonLegendOverlay,
+            closeAttackButtonLegendOverlay,
         }
     },
     components: {
@@ -204,7 +217,9 @@ export default {
         DirectionalInputSwitcher,
         AttackButtonSwitcher,
         ComboInputDisplay,
-        CharacterCombo
+        CharacterCombo,
+        HelpCircleOutlineIcon,
+        LegendOverlay
     }
 }
 </script>
@@ -286,10 +301,24 @@ export default {
                 <div class="px-2 mt-20 sm:mb-4">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center justify-center sm:justify-between">
-                    <DirectionalInputSwitcher class=""/>
-                    <div class="w-0.5 h-full border rounded border-gray"></div>
-                    <AttackButtonSwitcher class="" />
+                <div class="flex flex-col items-center justify-center sm:justify-between">
+                    <div class="flex justify-end w-full">
+                        <HelpCircleOutlineIcon class="h-8 w-8 text-white fill-white" @click="openAttackButtonLegendOverlay()" />
+                    </div>
+                    <LegendOverlay
+                        :showLegendOverlay="showAttackButtonLegendOverlay === true"
+                        :showGameNotations="false"
+                        :showAttackButtons="true"
+                        :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
+                        :descriptionsStyles="['text-yellow', 'text-xl']"
+                        :descriptionsContainerStyles="['space-y-4', 'xs:h-[49rem]']"
+                        @trigger-close-legend-overlay="closeAttackButtonLegendOverlay()"
+                    />
+                    <div class="flex flex-row">
+                        <DirectionalInputSwitcher class=""/>
+                        <div class="w-0.5 h-full border rounded border-gray"></div>
+                        <AttackButtonSwitcher class="" />
+                    </div>
                 </div>
                 <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
                     <button class="bg-red p-2 rounded text-white" @click="closeCreateComboModal()">Cancel</button>
