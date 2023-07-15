@@ -12,6 +12,8 @@ export const useComboStore = defineStore('ComboStore', {
         notationsDisplay: [],
         notationSegments: [],
         searchByTagsList: [],
+        characterComboNotes: [],
+        characterComboNoteListDisplay: []
     }),
     getters: {
         getCombos(state) {
@@ -22,6 +24,13 @@ export const useComboStore = defineStore('ComboStore', {
                 let characterCombo = state.characterComboListDisplay.find(combo => combo.id === comboId);
                 let tags = [...characterCombo?.tags];
                 return tags;
+            }
+        },
+        getCharacterComboNotes(state) {
+            return function (comboId: number) {
+                let characterCombo = state.characterComboListDisplay.find(combo => combo.id === comboId);
+                let notes = [...characterCombo?.notes];
+                return notes;
             }
         }
     },
@@ -142,7 +151,9 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 });
                 this.combos = data.data;
+                // console.log(data);
                 this.updateCharacterComboListDisplay();
+                // this.characterComboNotes = data.data
 
                 for (let i = 0; i < this.combos.length; i++) {
                     const combo = this.combos[i];
