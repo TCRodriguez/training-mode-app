@@ -169,8 +169,11 @@ export default {
         }
 
         const openCharacterComboModal = (comboId: number, comboInputs: object[]) => {
-            showCharacterComboModal.value = true;
-            selectedCharacterComboId.value = comboId;
+            comboStore.setCharacterCombo(comboId)
+            .then(() => {
+                showCharacterComboModal.value = true;
+                selectedCharacterComboId.value = comboId;
+            })
         }
 
         const closeCharacterComboModal = (comboId: number) => {
