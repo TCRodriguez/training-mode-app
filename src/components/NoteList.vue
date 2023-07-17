@@ -277,9 +277,6 @@ export default {
                     </li>
                 </ul>
             </div>
-            <div>
-                <button>Add Note</button>
-            </div>
         </div>
         <NoteModal 
             :viewCondition="createNoteActive"
