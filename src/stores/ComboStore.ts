@@ -7,13 +7,20 @@ import trainingModeAPI from '../axios-http';
 export const useComboStore = defineStore('ComboStore', {
     state: () => ({
         combos: [],
+        combo: {},
+
         characterComboListDisplay: [],
+
         comboInputsDisplay: [],
+
         notationsDisplay: [],
         notationSegments: [],
+
         searchByTagsList: [],
+
         characterComboNotes: [],
-        characterComboNoteListDisplay: []
+        characterComboNoteListDisplay: [],
+        characterComboNoteSearchInputValue: '',
     }),
     getters: {
         getCombos(state) {
@@ -280,6 +287,55 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async populateComboInputsDisplay(inputs: object[]) {
             this.comboInputsDisplay = [...inputs];
-        }
+        },
+        async saveCharacterComboNote(gameId: string, characterId: string, comboId: number, note: { title: string, body: string }) {
+            const authStore = useAuthStore();
+            
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/combos/${comboId}/notes`, {
+                    'title': note.title,
+                    'body': note.body
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${authStore.token}`
+                        }
+                    })
+                .then(response => {
+                    this.fetchCharacterComboNotes(gameId, characterId, comboId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async setCharacterCombo(comboId: number) {
+            this.combo = this.combos.find(combo => combo.id === comboId);
+            this.characterComboNotes = [...this.combo.notes];
+            this.updateCharacterComboNoteListDisplay();
+        },
+        async fetchCharacterComboNotes(gameId: string, characterId: string, comboId: number) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/combos/${comboId}/notes`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.characterComboNotes = [...response.data]
+                    this.updateCharacterComboNoteListDisplay();
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updateCharacterComboNoteListDisplay() {
+            if(this.characterComboNoteSearchInputValue.length === 0) {
+                this.characterComboNoteListDisplay = [...this.characterComboNotes];
+                console.log(this.characterComboNoteListDisplay);
+            } else {
+                this.characterComboNoteListDisplay = this.combo.notes.filter(characterComboNote => characterComboNote.title.toLowerCase().includes(this.characterComboNoteSearchInputValue.toLowerCase()));
+            }
+        },
+
     }
 });
