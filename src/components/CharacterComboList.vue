@@ -5,6 +5,8 @@ import CloseIcon from './icons/CloseIcon.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
+import OpenOutlineIcon from './icons/OpenOutlineIcon.vue';
+
 import DirectionalInputSwitcher from './DirectionalInputSwitcher.vue';
 import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
@@ -240,6 +242,7 @@ export default {
         CloseIcon,
         EllipsisIcon,
         MagnifyingGlass,
+        OpenOutlineIcon,
         GameNotationGroup,
         DirectionalInputSwitcher,
         AttackButtonSwitcher,
@@ -295,7 +298,6 @@ export default {
                                 :inputs="combo.inputs"
                                 :comboId="combo.id"
                                 :editTagsActive="characterComboEditTagsActive"
-                                @click="openCharacterComboModal(combo.id, combo.inputs)"
                             />
                         </div>
                         <div class="flex flex-row justify-end space-x-2">
@@ -312,6 +314,9 @@ export default {
                             </button>
                             <CloseIcon v-if="characterComboOptionsActive.includes(combo.id)" class="h-10 w-10" aria-labelledby="Close move options" @click="toggleComboOptions(combo.id, $event)"/>
                             <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open move options" @click="toggleComboOptions(combo.id, $event)" />
+                            <div class="flex justify-center items-center">
+                                <OpenOutlineIcon class="h-10 w-10" @click="openCharacterComboModal(combo.id, combo.inputs)" />
+                            </div>
                         </div>
                     </div>
                     <div v-if="selectedCharacterComboId === combo.id">
