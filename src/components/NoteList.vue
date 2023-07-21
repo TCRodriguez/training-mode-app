@@ -41,7 +41,6 @@ export default {
             };
             return retrieveNoteList[props.modelName]();
         })
-        // const characterNotes = computed(() => characterStore.characterNoteListDisplay);
 
         const noteSearchInput = ref(null);
 
@@ -85,7 +84,6 @@ export default {
                 'title': createNoteTitle.value,
                 'body': createNoteBody.value
             }
-
             const createNoteStoreActions = {
                 'game': function () {
                     return gameStore.saveGameNote(gameId, note);
@@ -94,7 +92,7 @@ export default {
                     return characterStore.saveCharacterNote(gameId, characterId, note)
                 },
                 'combo': function () {
-                    return comboStore.saveCharacterComboNote(gameId, comboId, note)
+                    return comboStore.saveCharacterComboNote(gameId, characterId, comboId, note)
                 }
             };
             createNoteStoreActions[modelName]();
@@ -108,29 +106,10 @@ export default {
             // });
         };
 
-
-        const updateCharacterNote = () => {
-
-            const gameId = getGameId();
-            const characterId = getCharacterId();
-            const characterNote = {
-                'id': editNoteId.value,
-                'title': editNoteTitle.value,
-                'body': editNoteBody.value
-            }
-
-
-            characterStore.updateCharacterNote(gameId, characterId, characterNote)
-            .then(() => {
-                editNoteActive.value = !editNoteActive.value
-                editNoteTitle.value = null;
-                editNoteBody.value = null;
-            });
-        };
         
-        const openEditNoteModal = (characterNote: object) => {
-            editNoteActive.value = !editNoteActive.value;
-
+        const openEditNoteModal = (note: object) => {
+            editNoteActive.value = true;
+            console.log(note);
             if(editNoteActive.value) {
                 editNoteId.value = note.id;
                 editNoteTitle.value = note.title;
@@ -139,7 +118,7 @@ export default {
         };
 
         const closeEditNoteModal = () => {
-            editNoteActive.value = !editNoteActive.value;
+            editNoteActive.value = false;
         }
 
         const deleteCharacterNote = (noteId: string) => {
@@ -153,7 +132,7 @@ export default {
             }
         };
 
-        const toggleViewCharacterNote = (characterNote: object) => {
+        const toggleViewNote = (note: object) => {
             viewNoteActive.value = !viewNoteActive.value;
 
             if(viewNoteActive.value) {
@@ -201,8 +180,7 @@ export default {
             viewNoteBody,
 
             saveNote,
-            updateCharacterNote,
-            toggleViewCharacterNote,
+            toggleViewNote,
             updateCreateNoteTitle,
             updateCreateNoteBody,
             updateEditNoteTitle,
@@ -229,7 +207,8 @@ export default {
     },
     props: {
         modelName: String,
-        modelId: Number
+        modelId: Number,
+        showAddIcon: Boolean
     }
 }
 </script>
@@ -258,7 +237,7 @@ export default {
                             <Note 
                                 :note="note"
                                 class="border rounded p-2"
-                                @click="toggleViewCharacterNote(characterNote)"
+                                @click="toggleViewNote(note)"
                             />
                         </div>
                         <div>
@@ -268,7 +247,7 @@ export default {
                                 </button>
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="toggleNoteOptions(note.id, $event)">
                                     <span v-if="noteEditActive === note.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(characterNote)">Edit</span>
+                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit</span>
                                 </button>
                                 <CloseIcon v-if="noteOptionsActive.includes(note.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(note.id, $event)"/>
                                 <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(note.id, $event)" />
@@ -281,11 +260,12 @@ export default {
         <NoteModal 
             :viewCondition="createNoteActive"
             :mode="'create'"
+            :model="modelName"
             :noteTitle="createNoteTitle" 
             :noteBody="createNoteBody"
             @trigger-create-note-modal="openCreateNoteModal()"
             @trigger-close-note-modal="closeCreateNoteModal()"
-            @trigger-save-note="saveCharacterNote()"
+            @trigger-save-note="saveNote()"
             @update-create-note-title="updateCreateNoteTitle"
             @update-create-note-body="updateCreateNoteBody"
         />
@@ -294,28 +274,30 @@ export default {
             :mode="'view'"
             :noteTitle="viewNoteTitle" 
             :noteBody="viewNoteBody"
-            @trigger-create-note-modal="toggleViewCharacterNote()"
-            @trigger-close-note-modal="toggleViewCharacterNote()"
+            @trigger-create-note-modal="toggleViewNote()"
+            @trigger-close-note-modal="toggleViewNote()"
         />
         <NoteModal 
             :viewCondition="editNoteActive"
             :mode="'edit'"
+            :model="modelName"
             :noteTitle="editNoteTitle" 
             :noteBody="editNoteBody"
+            :noteId="editNoteId"
             @trigger-create-note-modal="openEditNoteModal()"
             @trigger-close-note-modal="closeEditNoteModal()"
             @trigger-update-note="updateCharacterNote()"
             @update-edit-note-title="updateEditNoteTitle"
             @update-edit-note-body="updateEditNoteBody"
         />
-        <!-- <div v-if="authStore.loggedInUser !== null">
+        <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
                 class="h-20 w-20 absolute bottom-4 right-4"
                 :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
                 @click="openCreateNoteModal()" 
             />
-        </div> -->
+        </div>
     </div>
 </template>
 <style lang="">
