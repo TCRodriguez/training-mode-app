@@ -328,6 +328,25 @@ export const useComboStore = defineStore('ComboStore', {
                 console.log(error);
             }
         },
+        async updateCharacterComboNote(gameId: string, characterId: string, comboId: number, note: object) {
+            const authStore = useAuthStore();
+            console.log(note);
+            try {
+                await trainingModeAPI.put(`games/${gameId}/characters/${characterId}/combos/${comboId}/notes/${note.id}`, {
+                    'title': note.title,
+                    'body': note.body
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterComboNotes(gameId, characterId, comboId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async updateCharacterComboNoteListDisplay() {
             if(this.characterComboNoteSearchInputValue.length === 0) {
                 this.characterComboNoteListDisplay = [...this.characterComboNotes];
