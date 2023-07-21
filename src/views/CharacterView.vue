@@ -3,7 +3,8 @@ import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useComboStore } from '@/stores/ComboStore';
-import Notes from '@/components/CharacterNoteList.vue';
+// import Notes from '@/components/CharacterNoteList.vue';
+import Notes from '@/components/NoteList.vue';
 import Moves from '@/components/CharacterMoveList.vue';
 import Combos from '@/components/CharacterComboList.vue';
 import CharacterPortrait from '@/components/CharacterPortrait.vue';
@@ -30,6 +31,14 @@ export default {
             Combos,
         }
 
+        
+
+        const componentProps = {
+            modelId: getCharacterId(),
+            modelName: 'character',
+            showAddIcon: true
+        }
+
         return {
             authStore,
             gameStore,
@@ -42,6 +51,7 @@ export default {
             tabs,
             getCharacterName,
             getGameAbbreviation,
+            componentProps
         }
     },
     created() {
@@ -75,7 +85,7 @@ export default {
                 </li>
             </ul>
         </nav>
-        <component :is="tabs[currentTab]"></component>
+        <component :is="tabs[currentTab]" v-bind="componentProps"></component>
     </div>
 </template>
 <style lang="">
