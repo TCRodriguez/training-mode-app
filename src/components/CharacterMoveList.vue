@@ -317,7 +317,8 @@ export default {
                     <div v-if="selectedCharacterMoveId === move.id">
                         <CharacterMoveShowModal
                             @trigger-close-character-move-modal="closeCharacterMoveModal(move.id)"
-                            :moveId="move.id" 
+                            :moveId="move.id"
+                            :model="'move'"
                             :moveName="move.name"
                             :inputs="move.inputs" 
                             :moveNotes="move.notes"

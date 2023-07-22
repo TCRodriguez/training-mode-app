@@ -19,6 +19,7 @@ const closeNoteModal = () => {
 const props = defineProps({
     moveName: String,
     moveId: Number,
+    model: String,
     inputs: Array,
     moveNotes: Array,
     showCharacterMoveActive: Boolean,
@@ -69,7 +70,7 @@ const props = defineProps({
                     :mode="'create'"
                     :noteTitle="createNoteTitle" 
                     :noteBody="createNoteBody"
-                    :model="'combo'"
+                    :model="model"
                     :viewCondition="showNoteModal"
                     @trigger-close-note-modal="closeNoteModal()"
                     @update-create-note-title="updateCreateNoteTitle"

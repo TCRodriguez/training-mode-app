@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
+import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { useComboStore } from '@/stores/ComboStore';
 
 import { computed, ref, watch } from 'vue';
@@ -23,6 +24,7 @@ export default {
         const authStore = useAuthStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
+        const characterMoveStore = useCharacterMoveStore();
         const comboStore = useComboStore();
         console.log(props);
 
@@ -33,6 +35,9 @@ export default {
                 },
                 'character': function () {
                     return characterStore.characterNoteListDisplay;
+                },
+                'move': function () {
+                    return characterMoveStore.characterMoveNoteListDisplay;
                 },
                 'combo': function () {
                     console.log(comboStore.characterComboNoteListDisplay);
@@ -121,14 +126,28 @@ export default {
             editNoteActive.value = false;
         }
 
-        const deleteCharacterNote = (noteId: string) => {
+        const deleteNote = (noteId: string, modelName: 'game' | 'character' | 'move' | 'combo') => {
             if(window.confirm("Are you sure you want to delete this note?")) {
                 const gameId = getGameId();
                 const characterId = getCharacterId();
-                characterStore.deleteCharacterNote(gameId, characterId, noteId)
-                .then(() => {
-                    toggleNoteOptions(noteId);
-                })
+                const characterMoveId = characterMoveStore.characterMove.id;
+                const comboId = comboStore.combo.id;
+
+                const deleteNoteStoreActions = {
+                    'game': function () {
+                        return gameStore.deleteGameNote(gameId, note);
+                    },
+                    'character': function () {
+                        return characterStore.deleteCharacterNote(gameId, characterId, noteId)
+                    },
+                    'move': function () {
+                        return characterMoveStore.deleteCharacterMoveNote(gameId, characterId, characterMoveId, noteId)
+                    },
+                    'combo': function () {
+                        return comboStore.deleteCharacterComboNote(gameId, characterId, comboId, noteId)
+                    }
+                };
+            deleteNoteStoreActions[modelName]();
             }
         };
 
@@ -188,7 +207,7 @@ export default {
             noteOptionsActive,
             toggleNoteOptions,
             noteEditActive,
-            deleteCharacterNote,
+            deleteNote,
             openEditNoteModal,
             editNoteActive,
             editNoteId,
@@ -242,7 +261,7 @@ export default {
                         </div>
                         <div>
                             <div class="flex flex-row justify-end space-x-2">
-                                <button v-if="noteOptionsActive.includes(note.id)" @click="deleteCharacterNote(note.id)">
+                                <button v-if="noteOptionsActive.includes(note.id)" @click="deleteNote(note.id, modelName)">
                                     <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                                 </button>
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="toggleNoteOptions(note.id, $event)">

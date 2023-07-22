@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
+import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { useComboStore } from '@/stores/ComboStore';
 import Note from './Note.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
@@ -24,6 +25,7 @@ const props = defineProps({
 const authStore = useAuthStore();
 const characterStore = useCharacterStore();
 const gameStore = useGameStore();
+const characterMoveStore = useCharacterMoveStore();
 const comboStore = useComboStore();
 
 
@@ -55,10 +57,11 @@ const updateEditNoteBody = (noteBody: string) => {
     editNoteBody.value = noteBody;
 };
 
-const saveNote = (modelName: 'game' | 'character' | 'combo') => {
+const saveNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
 
     const gameId = getGameId();
     const characterId = getCharacterId();
+    const characterMoveId = characterMoveStore.characterMove.id;
     const comboId = comboStore.combo.id;
 
     const note = {
@@ -74,24 +77,25 @@ const saveNote = (modelName: 'game' | 'character' | 'combo') => {
         'character': function () {
             return characterStore.saveCharacterNote(gameId, characterId, note)
         },
+        'move': function () {
+            return characterMoveStore.saveCharacterMoveNote(gameId, characterId, characterMoveId, note)
+        },
         'combo': function () {
             return comboStore.saveCharacterComboNote(gameId, characterId, comboId, note)
         }
     };
-    createNoteStoreActions[modelName]();
-
-
-    // TODO This was after saving a character note
-    // .then(() => {
-    //     createNoteActive.value = !createNoteActive.value
-    //     createNoteTitle.value = null;
-    //     createNoteBody.value = null;
-    // });
+    createNoteStoreActions[modelName]()
+    .then(() => {
+        createNoteActive.value = !createNoteActive.value
+        createNoteTitle.value = null;
+        createNoteBody.value = null;
+    });
 };
-const updateNote = (modelName: 'game' | 'character' | 'combo') => {
+const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
 
     const gameId = getGameId();
     const characterId = getCharacterId();
+    const characterMoveId = characterMoveStore.characterMove.id;
     const comboId = comboStore.combo.id;
 
     // These ternary statements handle when a User doesn't make any changes but still hits "Save" when editing.
@@ -110,11 +114,19 @@ const updateNote = (modelName: 'game' | 'character' | 'combo') => {
         'character': function () {
             return characterStore.updateCharacterNote(gameId, characterId, note)
         },
+        'move': function () {
+            return characterMoveStore.updateCharacterMoveNote(gameId, characterId, characterMoveId, note)
+        },
         'combo': function () {
             return comboStore.updateCharacterComboNote(gameId, characterId, comboId, note)
         }
     };
-    updateNoteStoreActions[modelName]();
+    updateNoteStoreActions[modelName]()
+    .then(() => {
+        editNoteActive.value = !editNoteActive.value
+        editNoteTitle.value = null;
+        editNoteBody.value = null;
+    });
 };
 
 
