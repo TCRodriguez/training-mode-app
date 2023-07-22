@@ -347,6 +347,21 @@ export const useComboStore = defineStore('ComboStore', {
                 console.log(error);
             }
         },
+        async deleteCharacterComboNote(gameId: string, characterId: string, comboId: number, noteId: string) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/combos/${comboId}/notes/${noteId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterComboNotes(gameId, characterId, comboId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async updateCharacterComboNoteListDisplay() {
             if(this.characterComboNoteSearchInputValue.length === 0) {
                 this.characterComboNoteListDisplay = [...this.characterComboNotes];
