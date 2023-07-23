@@ -250,7 +250,7 @@ export default {
                 <p v-if="notes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
             </div>
             <div class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
-                <ul class="space-y-2">
+                <ul class="space-y-2 pb-24">
                     <li v-for="note in notes" :key="note.id">
                         <div>
                             <Note 
@@ -312,7 +312,7 @@ export default {
         <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
-                class="h-20 w-20 absolute bottom-4 right-4"
+                class="h-20 w-20 absolute bottom-4 right-4 fill-green"
                 :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
                 @click="openCreateNoteModal()" 
             />
