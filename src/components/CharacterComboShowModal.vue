@@ -30,7 +30,7 @@ const props = defineProps({
         <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0"></div>
         <div class="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center">
             <div class="w-full h-full flex flex-col justify-center items-center">
-                <div class="p-2 h-[90%] w-[90%] bg-gray flex flex-col justify-between rounded">
+                <div class="p-2 w-[90%] bg-gray flex flex-col justify-between rounded">
                     <div>
                         <div>
                             <CharacterCombo
