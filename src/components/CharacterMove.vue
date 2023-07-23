@@ -39,7 +39,10 @@ export default {
         inputs: Array,
         tags: Array,
         addTagInputActive: Boolean,
-        editTagsActive: Array,
+        editTagsActive: {
+            type: Array,
+            default: () => []   
+        }
     },
     components: {
         DirectionalInput,

@@ -28,7 +28,10 @@ export default {
         comboId: Number,
         iconFileName: String,
         inputs: Array,
-        editTagsActive: Array
+        editTagsActive: {
+            type: Array,
+            default: () => []   
+        }
     },
     components: {
         DirectionalInput, 

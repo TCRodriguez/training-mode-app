@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import { useGameStore } from './GameStore';
 import { useAuthStore } from './AuthStore';
-import trainingModeApi from '../axios-http';
+import trainingModeAPI from '../axios-http';
 
 export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
     state: () => ({
         characterMoves: [],
+        characterMove: {},
+
+        characterMoveNotes: [],
+        characterMoveNoteListDisplay: [],
+        characterMoveNoteSearchInputValue: '',
+
         characterMoveListDisplay: [],
         characterMoveListByTagDisplay: [],
         characterMoveNameSearchInputValue: '',
@@ -29,7 +35,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
 
             try {
-                const data = await trainingModeApi.get(endpoint, {
+                const data = await trainingModeAPI.get(endpoint, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
@@ -99,7 +105,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async fetchCharacterMoveTags(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/tags`, {
+                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/tags`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
@@ -113,7 +119,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             const gameStore = useGameStore();
             console.log('add tag to move hit');
             try {
-                await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
+                await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
                 }, {
                     headers: {
@@ -180,6 +186,92 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             this.searchByTagsList.splice(this.searchByTagsList.indexOf(tag), 1);
         },
 
+        async setCharacterMove(moveId: number) {
+            this.characterMove = this.characterMoves.find(move => move.id === moveId);
+            this.characterMoveNotes = [...this.characterMove.notes];
+            this.updateCharacterMoveNoteListDisplay();
+        },
+
+        async saveCharacterMoveNote(gameId: string, characterId: string, moveId: number, note: { title: string, body: string }) {
+            const authStore = useAuthStore();
+            
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/moves/${moveId}/notes`, {
+                    'title': note.title,
+                    'body': note.body
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${authStore.token}`
+                        }
+                    })
+                .then(response => {
+                    this.fetchCharacterMoveNotes(gameId, characterId, moveId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updateCharacterMoveNote(gameId: string, characterId: string, moveId: number, note: object) {
+            const authStore = useAuthStore();
+            console.log(note);
+            try {
+                await trainingModeAPI.put(`games/${gameId}/characters/${characterId}/moves/${moveId}/notes/${note.id}`, {
+                    'title': note.title,
+                    'body': note.body
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterMoveNotes(gameId, characterId, moveId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deleteCharacterMoveNote(gameId: string, characterId: string, characterMoveId: number, noteId: string) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/notes/${noteId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterMoveNotes(gameId, characterId, characterMoveId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async fetchCharacterMoveNotes(gameId: string, characterId: string, moveId: number) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/moves/${moveId}/notes`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.characterMoveNotes = [...response.data]
+                    this.updateCharacterMoveNoteListDisplay();
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async updateCharacterMoveNoteListDisplay() {
+            if(this.characterMoveNoteSearchInputValue.length === 0) {
+                this.characterMoveNoteListDisplay = [...this.characterMoveNotes];
+                console.log(this.characterMoveNoteListDisplay);
+            } else {
+                this.characterMoveNoteListDisplay = this.characterMove.notes.filter(characterMoveNote => characterMoveNote.title.toLowerCase().includes(this.characterMoveNoteSearchInputValue.toLowerCase()));
+            }
+        },
+
         async resetCharacterMoveListDisplay() {
             this.characterMoveListDisplay = [...this.characterMoves];
         },
@@ -187,7 +279,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async removeTagFromCharacterMove(gameId: string, characterId: string, moveId: string, tagId: string) {
             const authStore = useAuthStore();
             try {
-                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/moves/${moveId}/tags/${tagId}`, {
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/moves/${moveId}/tags/${tagId}`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
