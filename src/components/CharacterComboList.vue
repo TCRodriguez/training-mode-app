@@ -5,12 +5,15 @@ import CloseIcon from './icons/CloseIcon.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
+import OpenOutlineIcon from './icons/OpenOutlineIcon.vue';
+
 import DirectionalInputSwitcher from './DirectionalInputSwitcher.vue';
 import AttackButtonSwitcher from './AttackButtonSwitcher.vue';
 import ComboInputDisplay from './ComboInputDisplay.vue';
 import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
 import LegendOverlay from './LegendOverlay.vue';
+import CharacterComboShowModal from './CharacterComboShowModal.vue';
 
 import { useAuthStore } from '@/stores/AuthStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -167,6 +170,24 @@ export default {
             comboStore.updateCharacterComboListDisplay();
         }
 
+        const openCharacterComboModal = (comboId: number, comboInputs: object[]) => {
+            comboStore.setCharacterCombo(comboId)
+            .then(() => {
+                showCharacterComboModal.value = true;
+                selectedCharacterComboId.value = comboId;
+            })
+        }
+
+        const closeCharacterComboModal = (comboId: number) => {
+            showCharacterComboModal.value = false;
+            selectedCharacterComboId.value = null;
+            console.log(comboId);
+        }
+
+        const showCharacterComboModal = ref(false);
+
+        const selectedCharacterComboId = ref(null);
+
         watch(searchByTagsInput, () => {
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
@@ -177,10 +198,12 @@ export default {
         return {
             route,
             router,
+
             authStore,
             comboStore,
             characterStore,
             gameStore,
+
             comboList,
             createComboActive,
             searchByTagsInput,
@@ -202,9 +225,15 @@ export default {
             editCharacterComboModeActive,
             inputsForEditCharacterCombo,
             editCharacterCombo,
+
             showAttackButtonLegendOverlay,
             openAttackButtonLegendOverlay,
             closeAttackButtonLegendOverlay,
+
+            openCharacterComboModal,
+            closeCharacterComboModal,
+            showCharacterComboModal,
+            selectedCharacterComboId
         }
     },
     components: {
@@ -213,13 +242,15 @@ export default {
         CloseIcon,
         EllipsisIcon,
         MagnifyingGlass,
+        OpenOutlineIcon,
         GameNotationGroup,
         DirectionalInputSwitcher,
         AttackButtonSwitcher,
         ComboInputDisplay,
         CharacterCombo,
         HelpCircleOutlineIcon,
-        LegendOverlay
+        LegendOverlay,
+        CharacterComboShowModal
     }
 }
 </script>
@@ -254,8 +285,8 @@ export default {
             </div>
             <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96">
                 <li v-for="(combo, index) in comboList" 
-                    :key="index"
-                    class="flex flex-row"
+                    :key="combo.id"
+                    class="flex flex-col"
                 >
                     <div class="flex flex-col w-full">
                         <div class="flex flex-row items-center space-x-2">
@@ -273,19 +304,30 @@ export default {
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="deleteCharacterCombo(combo.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                             </button>
-                            <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
-                                <span v-if="characterComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
-                            </button>
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditComboMode(combo.id, combo.inputs)">
                                 <span v-if="editCharacterComboModeActive === combo.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
                                 <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white">Edit</span>
                             </button>
+                            <button v-if="characterComboOptionsActive.includes(combo.id)" @click="toggleEditTagsMode(combo.id)">
+                                <span v-if="characterComboEditTagsActive.includes(combo.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
+                                <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Add Tags</span>
+                            </button>
                             <CloseIcon v-if="characterComboOptionsActive.includes(combo.id)" class="h-10 w-10" aria-labelledby="Close move options" @click="toggleComboOptions(combo.id, $event)"/>
                             <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open move options" @click="toggleComboOptions(combo.id, $event)" />
+                            <div class="flex justify-center items-center">
+                                <OpenOutlineIcon class="h-10 w-10" @click="openCharacterComboModal(combo.id, combo.inputs)" />
+                            </div>
                         </div>
                     </div>
-                
+                    <div v-if="selectedCharacterComboId === combo.id">
+                        <CharacterComboShowModal
+                            @trigger-close-character-combo-modal="closeCharacterComboModal(combo.id)"
+                            :comboId="combo.id" 
+                            :inputs="combo.inputs" 
+                            :comboNotes="combo.notes"
+                            :showCharacterComboModal="showCharacterComboModal"
+                        />
+                    </div>
                 </li>
                 
             </ul>
@@ -330,7 +372,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
                     class="h-20 w-20 absolute bottom-4 right-4"
-                    :class="{ 'hidden': createComboActive === true }" 
+                    :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true }" 
                     @click="openCreateComboModal()" 
                 />
             </div>
@@ -362,6 +404,8 @@ export default {
         </div>
     </div>
 </template>
-<style lang="">
-    
+<style scoped>
+    button > span {
+        @apply text-sm;
+    }
 </style>

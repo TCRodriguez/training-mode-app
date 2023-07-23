@@ -4,12 +4,18 @@ import { useCharacterMoveStore } from '@/stores/CharacterMoveStore';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 import CharacterMove from './CharacterMove.vue';
+import CharacterMoveShowModal from './CharacterMoveShowModal.vue';
+
 import MagnifyingGlass from './icons/MagnifyingGlass.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
+import OpenOutlineIcon from './icons/OpenOutlineIcon.vue';
+
 import LegendOverlay from './LegendOverlay.vue';
+
 export default {
     setup() {
         const authStore = useAuthStore();
@@ -126,6 +132,23 @@ export default {
             characterMoveStore.removeTagFromCharacterMove(route.params.game, route.params.character, moveId, tagId);
         }
 
+        const openCharacterMoveModal = (moveId: number, moveInputs: object[]) => {
+            characterMoveStore.setCharacterMove(moveId)
+            .then(() => {
+                showCharacterMoveModal.value = true;
+                selectedCharacterMoveId.value = moveId;
+            })
+        }
+
+        const closeCharacterMoveModal = (moveId: number) => {
+            showCharacterMoveModal.value = false;
+            selectedCharacterMoveId.value = null;
+        }
+
+        const showCharacterMoveModal = ref(false);
+
+        const selectedCharacterMoveId = ref(null);
+
         watch(characterMoveSearchInput, () => {
             characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
                 .then(() => {
@@ -170,6 +193,11 @@ export default {
 
             removeTagFromCharacterMove,
 
+            openCharacterMoveModal,
+            closeCharacterMoveModal,
+            showCharacterMoveModal,
+            selectedCharacterMoveId,
+
             openLegendOverlay,
             closeLegendOverlay,
             showLegendOverlay
@@ -181,9 +209,11 @@ export default {
     },
     components: {
         CharacterMove,
+        CharacterMoveShowModal,
         MagnifyingGlass,
         EllipsisIcon,
         CloseIcon,
+        OpenOutlineIcon,
         HelpCircleOutlineIcon,
         LegendOverlay
     }
@@ -280,6 +310,20 @@ export default {
                         </button>
                         <CloseIcon v-if="characterMoveOptionsActive.includes(move.id)" class="h-10 w-10" aria-labelledby="Close move options" @click="toggleMoveOptions(move.id, $event)" />
                         <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open move options" @click="toggleMoveOptions(move.id, $event)" />
+                        <div>
+                            <OpenOutlineIcon class="h-10 w-10" @click="openCharacterMoveModal(move.id, move.inputs)" />
+                        </div>
+                    </div>
+                    <div v-if="selectedCharacterMoveId === move.id">
+                        <CharacterMoveShowModal
+                            @trigger-close-character-move-modal="closeCharacterMoveModal(move.id)"
+                            :moveId="move.id"
+                            :model="'move'"
+                            :moveName="move.name"
+                            :inputs="move.inputs" 
+                            :moveNotes="move.notes"
+                            :showCharacterMoveModal="showCharacterMoveModal"
+                        />
                     </div>
                 </li>
             </ul>
