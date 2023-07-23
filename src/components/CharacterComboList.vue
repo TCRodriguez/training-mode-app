@@ -283,7 +283,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96">
+            <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96 pb-24">
                 <li v-for="(combo, index) in comboList" 
                     :key="combo.id"
                     class="flex flex-col"
@@ -371,7 +371,7 @@ export default {
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
-                    class="h-20 w-20 absolute bottom-4 right-4"
+                    class="h-20 w-20 absolute bottom-4 right-4 fill-green"
                     :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true }" 
                     @click="openCreateComboModal()" 
                 />

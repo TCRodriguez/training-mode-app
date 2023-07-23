@@ -281,7 +281,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2">
+            <ul class="xs:h-[27rem] lg:h-[26rem] overflow-y-auto space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
