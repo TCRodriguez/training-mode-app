@@ -29,9 +29,7 @@ export default {
             Notes,
             Moves,
             Combos,
-        }
-
-        
+        };
 
         const componentProps = {
             modelId: getCharacterId(),

@@ -109,7 +109,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
 
     const updateNoteStoreActions = {
         'game': function () {
-            return gameStore.saveGameNote(gameId, note);
+            return gameStore.updateGameNote(gameId, note);
         },
         'character': function () {
             return characterStore.updateCharacterNote(gameId, characterId, note)

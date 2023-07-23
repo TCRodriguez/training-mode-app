@@ -135,7 +135,7 @@ export default {
 
                 const deleteNoteStoreActions = {
                     'game': function () {
-                        return gameStore.deleteGameNote(gameId, note);
+                        return gameStore.deleteGameNote(gameId, noteId);
                     },
                     'character': function () {
                         return characterStore.deleteCharacterNote(gameId, characterId, noteId)
@@ -232,7 +232,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8 px-2">
+    <div class="mt-8 px-2 w-full">
         <div class="">
             <!-- <div v-if="characterNotes.length !== 0" class="flex flex-row w-full items-center">
                 <MagnifyingGlass class="h-10 w-10" />
