@@ -167,8 +167,11 @@ export const useGameStore = defineStore('GameStore', {
             }
         },
         async fetchGames() {
+            const authStore = useAuthStore();
+            const endpoint = authStore.loggedInUser === null ? `/games/guest` : `/games`;
+
             try {
-                const data = await trainingModeAPI.get('/games')
+                const data = await trainingModeAPI.get(endpoint)
                 
                 this.games = [...data.data];
             }
