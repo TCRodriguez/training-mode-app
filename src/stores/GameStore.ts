@@ -308,7 +308,8 @@ export const useGameStore = defineStore('GameStore', {
             if(this.gameNoteSearchInputValue.length === 0) {
                 this.gameNoteListDisplay = [...this.gameNotes];
             } else {
-                this.gameNoteListDisplay = this.game.notes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchInputValue.toLowerCase()))
+                // TODO This will change once we remove note titles
+                this.gameNoteListDisplay = this.gameNotes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchInputValue.toLowerCase()))
             }
         },        
         async updateTagsListDisplay() {
@@ -319,6 +320,12 @@ export const useGameStore = defineStore('GameStore', {
         },
         async updateTagSearchCriteria(input: string) {
             this.tagSearchCriteria = input;
+        },
+        async resetGameNoteListDisplay() {
+            this.gameNoteListDisplay = [...this.gameNotes];
+        },
+        async updateSearchGameNoteByTextCriteria(input: string) {
+            this.gameNoteSearchInputValue = input;
         }
     }
 });
