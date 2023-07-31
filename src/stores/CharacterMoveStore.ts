@@ -271,6 +271,9 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 this.characterMoveNoteListDisplay = this.characterMove.notes.filter(characterMoveNote => characterMoveNote.title.toLowerCase().includes(this.characterMoveNoteSearchInputValue.toLowerCase()));
             }
         },
+        async updateCharacterMoveNoteSearchCriteria(input: string) {
+            this.characterMoveNoteSearchInputValue = input;
+        },
 
         async resetCharacterMoveListDisplay() {
             this.characterMoveListDisplay = [...this.characterMoves];

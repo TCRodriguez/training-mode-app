@@ -25,7 +25,6 @@ export const renderNotationInput = (notation: object) => {
 export const addNotationToNotationDisplay = (notation: string) => {
     const comboStore = useComboStore();
     comboStore.notationsDisplay.push(notation);
-
 }
 
 export const getGameAbbreviation = () => {
@@ -48,5 +47,47 @@ export const getGameId = () => {
 
 export const getCharacterId = () => {
     return localStorage.getItem('characterId');
-
 }
+
+export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' | 'move' | 'combo', searchValue: string) => {
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
+    const characterMoveStore = useCharacterMoveStore();
+    const comboStore = useComboStore();
+
+    
+    console.log(modelName);
+    const updateNoteSearch = () => {
+        const updateNoteListDisplay = {
+            'game': function () {
+                return gameStore.updateSearchGameNoteByTextCriteria(searchValue)
+                .then(() => {
+                    gameStore.updateGameNoteListDisplay();
+                });
+            },
+            'character': function () {
+                return characterStore.updateCharacterNoteSearchCriteria(searchValue)
+                .then(() => {
+                    characterStore.updateCharacterNoteListDisplay();
+                });
+            },
+            'move': function () {
+                return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
+                .then(() => {
+                    characterMoveStore.updateCharacterMoveNoteListDisplay();
+                })
+            },
+            // 'combo': function () {
+            //     characterStore.updateCharacterNoteSearchCriteria(searchNoteByTextInput.value)
+            //     .then(() => {
+            //         characterStore.updateCharacterNoteListDisplay();
+            //     });
+            // }
+        };
+        updateNoteListDisplay[modelName]();
+    }
+    return updateNoteSearch();
+}
+
+// export const updateSearchNoteByTagCriteria
+
