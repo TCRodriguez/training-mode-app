@@ -362,12 +362,16 @@ export const useComboStore = defineStore('ComboStore', {
                 console.log(error);
             }
         },
+
+        async updateCharacterComboNoteSearchCriteria(input: string) {
+            this.characterComboNoteSearchInputValue = input;
+        },
         async updateCharacterComboNoteListDisplay() {
             if(this.characterComboNoteSearchInputValue.length === 0) {
                 this.characterComboNoteListDisplay = [...this.characterComboNotes];
                 console.log(this.characterComboNoteListDisplay);
             } else {
-                this.characterComboNoteListDisplay = this.combo.notes.filter(characterComboNote => characterComboNote.title.toLowerCase().includes(this.characterComboNoteSearchInputValue.toLowerCase()));
+                this.characterComboNoteListDisplay = this.characterComboNotes.filter(characterComboNote => characterComboNote.title.toLowerCase().includes(this.characterComboNoteSearchInputValue.toLowerCase()));
             }
         },
 

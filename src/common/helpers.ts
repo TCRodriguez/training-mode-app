@@ -77,12 +77,12 @@ export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' |
                     characterMoveStore.updateCharacterMoveNoteListDisplay();
                 })
             },
-            // 'combo': function () {
-            //     characterStore.updateCharacterNoteSearchCriteria(searchNoteByTextInput.value)
-            //     .then(() => {
-            //         characterStore.updateCharacterNoteListDisplay();
-            //     });
-            // }
+            'combo': function () {
+                return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
+                .then(() => {
+                    comboStore.updateCharacterComboNoteListDisplay();
+                })
+            }
         };
         updateNoteListDisplay[modelName]();
     }
