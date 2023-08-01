@@ -144,9 +144,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         async updateCharacterMovesListDisplay(criteria: string = ''): Promise<void> {
             let characterMoveListFilteredByTags: object[] = [];
-
-
-            
+ 
             if(this.characterMoveNameSearchInputValue.length === 0) {
                 this.characterMoveListDisplay = [...this.characterMoves];
             } else {
