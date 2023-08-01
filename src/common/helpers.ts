@@ -62,7 +62,7 @@ export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' |
             'game': function () {
                 return gameStore.updateSearchGameNoteByTextCriteria(searchValue)
                 .then(() => {
-                    gameStore.updateGameNoteListDisplay();
+                    gameStore.updateGameNoteListDisplay('text');
                 });
             },
             'character': function () {
@@ -89,5 +89,44 @@ export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' |
     return updateNoteSearch();
 }
 
-// export const updateSearchNoteByTagCriteria
+export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' | 'move' | 'combo', searchValue: string) => {
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
+    const characterMoveStore = useCharacterMoveStore();
+    const comboStore = useComboStore();
 
+    
+    console.log(modelName);
+    const updateNoteSearch = () => {
+        const updateNoteListDisplay = {
+            'game': function () {
+                return gameStore.updateSearchGameNoteByTagsCriteria(searchValue)
+                .then(() => {
+                    gameStore.updateGameNoteTagsListDisplay();
+                    // gameStore.updateGameNoteListDisplay('tags');
+                });
+            },
+            // 'character': function () {
+            //     return characterStore.updateCharacterNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         characterStore.updateCharacterNoteListDisplay();
+            //     });
+            // },
+            // 'move': function () {
+            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
+            //     })
+            // },
+            // 'combo': function () {
+            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         comboStore.updateCharacterComboNoteListDisplay();
+            //     })
+            // }
+        };
+        updateNoteListDisplay[modelName]();
+    }
+    updateNoteSearch();
+
+}
