@@ -28,8 +28,10 @@ export const useCharacterStore = defineStore('CharacterStore', {
     actions: {
         async fetchCharacters(gameId: any) {
             const authStore = useAuthStore();
+            const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/guest` : `/games/${gameId}/characters`;
+
             try {
-                const data = await trainingModeApi.get(`/games/${gameId}/characters`, {
+                const data = await trainingModeApi.get(endpoint, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
@@ -74,6 +76,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             this.characterSearchInputValue = input;
         },
         async updateCharacterNoteSearchCriteria(input: string) {
+            // console.log('inside updateCharacterNoteSearchCriteria');
             this.characterNoteSearchInputValue = input;
         },
 
@@ -85,11 +88,14 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
         async updateCharacterNoteListDisplay() {
+            // console.log('inside updateCharacterNoteListDisplay');
             if(this.characterNoteSearchInputValue.length === 0) {
                 this.characterNoteListDisplay = [...this.characterNotes];
                 console.log(this.characterNoteListDisplay);
             } else {
-                this.characterNoteListDisplay = this.character.notes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
+                // TODO This would be where we make the change from searching by 'title' to either 'body', 'both'
+                // TODO or for when we remove note titles completely if we do so.
+                this.characterNoteListDisplay = this.characterNotes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
             }
         },
         async saveCharacterNote(gameId: string, characterId: string, note: object) {
