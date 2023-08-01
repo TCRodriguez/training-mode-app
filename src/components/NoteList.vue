@@ -15,7 +15,7 @@ import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
 
-import { getGameId, getCharacterId, updateSearchNoteByTextCriteria } from '@/common/helpers';
+import { getGameId, getCharacterId, updateSearchNoteByTextCriteria, updateSearchNoteByTagsCriteria } from '@/common/helpers';
 export default {
     setup(props) {
         const route = useRoute();
@@ -146,7 +146,7 @@ export default {
 
         const searchCharacterMoveInputValue = computed(() => characterMoveStore.characterMoveNameSearchInputValue);
         const characterMoveSearchInput = ref('');
-        const searchByTagsInput = ref('');
+        // const searchByTagsInput = ref('');
 
 
         const notLoggedInMessageActive = ref(false);
@@ -160,7 +160,7 @@ export default {
             notLoggedInMessageActive.value = false;
         }
 
-
+        const searchNoteByTagsInput = ref('');
         const switchSearchByOption = (option: string) => {
             if(option === 'tags' && authStore.loggedInUser === null) {
                 showNotLoggedInMessage();
@@ -189,53 +189,51 @@ export default {
             console.log(searchByOptionSelection.value);
         }
 
+        const addNoteTagToSearchList = (event) => {
+            const updateNoteTagSearchlist = {
+                'game': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        gameStore.addGameNoteTagToSearchList(event.target.textContent);
+                        gameStore.updateGameNoteListDisplay('tags');
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    gameStore.addGameNoteTagToSearchList(searchNoteByTagsInput.value);
+                    gameStore.updateGameNoteListDisplay('tags');
+                    searchNoteByTagsInput.value = '';
 
-    //     const createNoteStoreActions = {
-    //     'game': function () {
-    //         return gameStore.saveGameNote(gameId, note);
-    //     },
-    //     'character': function () {
-    //         return characterStore.saveCharacterNote(gameId, characterId, note)
-    //     },
-    //     'move': function () {
-    //         return characterMoveStore.saveCharacterMoveNote(gameId, characterId, characterMoveId, note)
-    //     },
-    //     'combo': function () {
-    //         return comboStore.saveCharacterComboNote(gameId, characterId, comboId, note)
-    //     }
-    // };
-    // createNoteStoreActions[modelName]()
-    // .then(() => {
-    //     createNoteActive.value = !createNoteActive.value
-    //     createNoteTitle.value = null;
-    //     createNoteBody.value = null;
-    // });
+                }
+            }
 
+            updateNoteTagSearchlist[props.modelName]();
+        }
 
-
-
-
-
-
-
-
-
+        const removeNoteTagFromSearchList = (tag) => {
+            const updateNoteTagSearchList = {
+                'game': function () {
+                    gameStore.removeGameNoteTagFromSearchList(tag);
+                    gameStore.updateGameNoteListDisplay('tags');
+                }
+            }
+            updateNoteTagSearchList[props.modelName]();
+        }
 
         watch(searchNoteByTextInput, () => {
             updateSearchNoteByTextCriteria(props.modelName, searchNoteByTextInput.value);
         });
 
-        // watch(searchNoteByTagsInput, () => {
-        //     gameStore.updateTagSearchCriteria(searchNoteByTagsInput.value)
-        //     .then(() => {
-        //         gameStore.updateTagsListDisplay();
-        //     })
-        // });
+
+
+        watch(searchNoteByTagsInput, () => {
+            updateSearchNoteByTagsCriteria(props.modelName, searchNoteByTagsInput.value);
+        });
         return {
             authStore,
             characterStore,
+            gameStore,
             notes,
             searchNoteByTextInput,
+            searchNoteByTagsInput,
             createNoteActive,
             openCreateNoteModal,
             closeCreateNoteModal,
@@ -264,6 +262,9 @@ export default {
 
             switchSearchByOption,
             searchByOptionSelection,
+
+            addNoteTagToSearchList,
+            removeNoteTagFromSearchList,
         }
     },
     components: {
@@ -305,19 +306,44 @@ export default {
             </div>
             <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center">
                 <MagnifyingGlass class="h-10 w-10" />
-                <input 
+                <input
+                    v-if="searchByOptionSelection === 'text'"
                     type="text" 
                     placeholder="Search notes" 
                     v-model="searchNoteByTextInput" 
                     class="my-8"
                 >
-                <!-- <input 
+                <input
+                    v-if="searchByOptionSelection === 'tags'"
                     type="text" 
                     placeholder="Search tags" 
                     v-model="searchNoteByTagsInput" 
-                    class="my-8"
-                > -->
+                    class="my-8 bg-blue"
+                    @keyup.enter="addNoteTagToSearchList($event)"
+                >
             </div>
+
+
+
+            <div class="flex flex-row space-x-2 flex-wrap">
+                <div v-if="searchNoteByTagsInput.length !== 0" v-for="(tag, index) in gameStore.gameNoteTagsListDisplay" class="border rounded p-1">
+                    <div class="" @click="addNoteTagToSearchList($event)">
+                        <span>{{tag.name}}</span>
+                    </div>
+                </div>
+                <div v-for="(tag, index) in gameStore.gameNoteSearchByTagsList" :key="index" class="">
+                    <div
+                        class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
+                    >
+                        <span>{{tag}}</span>
+                        <CloseIcon class="h-5 w-5" @click="removeNoteTagFromSearchList(tag)" />
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
                 <p class="font-bold text-xl text-center">Must be logged in to view {{modelName}} notes!</p>
             </div>
