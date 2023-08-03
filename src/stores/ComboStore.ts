@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useGameStore } from './GameStore';
 import { useAuthStore } from './AuthStore';
+import { useCharacterStore } from './CharacterStore';
 // import { addNotationToNotationDisplay } from '@/common/helpers';
 import trainingModeAPI from '../axios-http';
 
@@ -20,7 +21,15 @@ export const useComboStore = defineStore('ComboStore', {
 
         characterComboNotes: [],
         characterComboNoteListDisplay: [],
-        characterComboNoteSearchInputValue: '',
+        // characterComboNoteSearchInputValue: '',
+
+        characterComboNoteSearchByTextInputValue: '',
+        characterComboNoteSearchByTagInputValue: '',
+        
+        characterComboNoteTagsListDisplay: [],
+        characterComboNotesTags: [],
+        characterComboNotesFilteredByTagsList: [],
+        characterComboNoteSearchByTagsList: [],
     }),
     getters: {
         getCombos(state) {
@@ -310,8 +319,12 @@ export const useComboStore = defineStore('ComboStore', {
         async setCharacterCombo(comboId: number) {
             this.combo = this.combos.find(combo => combo.id === comboId);
             this.characterComboNotes = [...this.combo.notes];
+            localStorage.setItem('characterComboId', this.combo.id);
             this.updateCharacterComboNoteListDisplay();
         },
+
+
+
         async fetchCharacterComboNotes(gameId: string, characterId: string, comboId: number) {
             const authStore = useAuthStore();
             try {
@@ -321,7 +334,16 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 })
                 .then(response => {
-                    this.characterComboNotes = [...response.data]
+                    this.characterComboNotes = [...response.data];
+                    this.characterComboNotes.forEach(note => {
+                        console.log(note);
+                        note.tags.forEach(tag => {
+                            if(! this.characterComboNotesTags.find(characterComboNoteTag => characterComboNoteTag.name === tag.name )) {
+                                this.characterComboNotesTags.push(tag);
+
+                            }
+                        })
+                    });
                     this.updateCharacterComboNoteListDisplay();
                 })
             } catch (error) {
@@ -363,17 +385,116 @@ export const useComboStore = defineStore('ComboStore', {
             }
         },
 
-        async updateCharacterComboNoteSearchCriteria(input: string) {
-            this.characterComboNoteSearchInputValue = input;
+        async updateCharacterComboNoteSearchByTextCriteria(input: string) {
+            this.characterComboNoteSearchByTextInputValue = input;
         },
-        async updateCharacterComboNoteListDisplay() {
-            if(this.characterComboNoteSearchInputValue.length === 0) {
+        async updateCharacterComboNoteListDisplay(criteria?: 'text' | 'tags') {
+            let characterComboNoteListFilteredByTags: object[] = [];
+
+            // TODO Add an `if` here for if `criteria` is 'text'?
+            if(this.characterComboNoteSearchByTextInputValue.length === 0) {
                 this.characterComboNoteListDisplay = [...this.characterComboNotes];
-                console.log(this.characterComboNoteListDisplay);
             } else {
-                this.characterComboNoteListDisplay = this.characterComboNotes.filter(characterComboNote => characterComboNote.title.toLowerCase().includes(this.characterComboNoteSearchInputValue.toLowerCase()));
+                // TODO This will change once we remove note titles
+                this.characterComboNoteListDisplay = this.characterComboNotes.filter(characterComboNote => characterComboNote.title.toLowerCase().includes(this.characterComboNoteSearchByTextInputValue.toLowerCase()))
+            }
+
+            if(criteria === 'tags') {
+                if(this.characterComboNoteSearchByTagInputValue.length === 0) {
+                    this.resetCharacterComboNoteListDisplay();
+                    return;
+                }
+
+                this.characterComboNotes.forEach(note => {
+                    note.tags.forEach(tag => {
+                        if(this.characterComboNoteSearchByTagsList.includes(tag.name)) {
+                            characterComboNoteListFilteredByTags.push(note);
+                        }
+                    })
+                })
+                
+                this.characterComboNoteListDisplay = [...characterComboNoteListFilteredByTags];
+            }
+
+            
+        },
+        async updateSearchCharacterComboNoteByTagsCriteria(input: string) {
+            this.characterComboNoteSearchByTagInputValue = input;
+        },
+
+        async resetCharacterComboNoteListDisplay() {
+            this.characterComboNoteListDisplay = [...this.characterComboNotes];
+        },
+
+
+        async removeCharacterComboNoteTagFromSearchList(tag: object) {
+            this.characterComboNoteSearchByTagsList.splice(this.characterComboNoteSearchByTagsList.indexOf(tag), 1);
+        },
+
+        async updateCharacterComboNoteTagsListDisplay() {
+            if(this.characterComboNoteSearchByTagInputValue.length === 0) {
+                this.characterComboNoteTagsListDisplay = [];
+                return;
+            }
+            this.characterComboNoteTagsListDisplay = this.characterComboNotesTags.filter(tag => {
+                return tag.name.includes(this.characterComboNoteSearchByTagInputValue);
+            })
+        },
+        async addCharacterComboNoteTagToSearchList(tag: string) {
+            const gameStore = useGameStore();
+
+            const tagNamesArray = gameStore.tags.map(tag => tag.name);
+            const tagExists = tagNamesArray.includes(tag);
+
+            if(!this.characterComboNoteSearchByTagsList.includes(tag) && tagExists) {
+                this.characterComboNoteSearchByTagsList.push(tag);
+                this.updateCharacterComboNoteListDisplay('tags');
             }
         },
+
+        async addTagToCharacterComboNote(gameId: number, characterId: number, characterComboNoteId: string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('add tag to character note hit');
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes/${characterComboNoteId}/tags`, {
+                    tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log(response);
+                    gameStore.fetchTags(gameId);
+                    this.fetchCharacterCombos(gameId, characterId)
+                    this.fetchCharacterComboNotes(gameId, characterId, this.combo.id);
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async removeTagFromCharacterComboNote(gameId: string, characterComboNoteId: number, tagId: number) {
+            const authStore = useAuthStore();
+            const characterStore = useCharacterStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${characterComboNoteId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterComboNotes(gameId, characterStore.character.id, this.combo.id);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+
+
 
     }
 });

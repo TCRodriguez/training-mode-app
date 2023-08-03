@@ -383,6 +383,10 @@ export const useGameStore = defineStore('GameStore', {
             this.gameNoteSearchByTagInputValue = input;
         },
         async updateGameNoteTagsListDisplay() {
+            if(this.gameNoteSearchByTagInputValue.length === 0) {
+                this.gameNoteTagsListDisplay = [];
+                return;
+            }
             this.gameNoteTagsListDisplay = this.gameNotesTags.filter(tag => {
                 return tag.name.includes(this.gameNoteSearchByTagInputValue);
             })

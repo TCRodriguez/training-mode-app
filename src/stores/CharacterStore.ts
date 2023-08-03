@@ -91,8 +91,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async updateCharacterSearchCriteria(input: string) {
             this.characterSearchInputValue = input;
         },
-        async updateCharacterNoteSearchCriteria(input: string) {
-            // console.log('inside updateCharacterNoteSearchCriteria');
+        async updateCharacterNoteSearchByTextCriteria(input: string) {
             this.characterNoteSearchByTextInputValue = input;
         },
         async updateSearchCharacterNoteByTagsCriteria(input: string) {
@@ -198,6 +197,10 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
 
         async updateCharacterNoteTagsListDisplay() {
+            if(this.characterNoteSearchByTagInputValue.length === 0) {
+                this.characterNoteTagsListDisplay = [];
+                return;
+            }
             this.characterNoteTagsListDisplay = this.characterNotesTags.filter(tag => {
                 return tag.name.includes(this.characterNoteSearchByTagInputValue);
             })

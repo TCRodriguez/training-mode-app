@@ -67,9 +67,9 @@ export default {
                 'move': function () {
                     return characterMoveStore.characterMoveNoteTagsListDisplay;
                 },
-                // 'combo': function () {
-                //     return comboStore.characterComboNoteTagsListDisplay;
-                // }
+                'combo': function () {
+                    return comboStore.characterComboNoteTagsListDisplay;
+                }
             };
             return retrieveNoteTagsList[props.modelName]();
         });
@@ -85,9 +85,9 @@ export default {
                 'move': function () {
                     return characterMoveStore.characterMoveNoteSearchByTagsList;
                 },
-                // 'combo': function () {
-                //     return comboStore.characterComboNoteTagsListDisplay;
-                // }
+                'combo': function () {
+                    return comboStore.characterComboNoteSearchByTagsList;
+                }
             };
             return retrieveNoteTagsList[props.modelName]();
         })
@@ -224,17 +224,17 @@ export default {
                     searchNoteByTextInput.value = '';
                 },
                 'move': function () {
-                    characterMoveStore.resetCharacterMoveListDisplay();
-                    characterMoveSearchInput.value = '';
+                    characterMoveStore.resetCharacterMoveNoteListDisplay();
+                    searchNoteByTextInput.value = '';
                 },
                 'combo': function () {
-
+                    comboStore.resetCharacterComboNoteListDisplay();
+                    searchNoteByTextInput.value = '';
                 }
             }
-
+            resetNoteListDisplays[props.modelName]();
 
             searchByOptionSelection.value = option;
-            console.log(searchByOptionSelection.value);
         }
 
         const addNoteTagToSearchList = (event) => {
@@ -265,6 +265,15 @@ export default {
                     }
                     characterMoveStore.addCharacterMoveNoteTagToSearchList(searchNoteByTagsInput.value);
                     searchNoteByTagsInput.value = '';
+                },
+                'combo': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        comboStore.addCharacterComboNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    comboStore.addCharacterComboNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
                 }
             }
 
@@ -284,6 +293,10 @@ export default {
                 'move': function () {
                     characterMoveStore.removeCharacterMoveNoteTagFromSearchList(tag);
                     characterMoveStore.updateCharacterMoveNoteListDisplay('tags');
+                },
+                'combo': function () {
+                    comboStore.removeCharacterComboNoteTagFromSearchList(tag);
+                    comboStore.updateCharacterComboNoteListDisplay('tags');
                 }
             }
             updateNoteTagSearchList[props.modelName]();

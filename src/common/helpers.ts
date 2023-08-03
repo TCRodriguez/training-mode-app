@@ -53,6 +53,10 @@ export const getCharacterMoveId = () => {
     return localStorage.getItem('characterMoveId');
 }
 
+export const getCharacterComboId = () => {
+    return localStorage.getItem('characterComboId');
+}
+
 export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' | 'move' | 'combo', searchValue: string) => {
     const gameStore = useGameStore();
     const characterStore = useCharacterStore();
@@ -70,19 +74,19 @@ export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' |
                 });
             },
             'character': function () {
-                return characterStore.updateCharacterNoteSearchCriteria(searchValue)
+                return characterStore.updateCharacterNoteSearchByTextCriteria(searchValue)
                 .then(() => {
                     characterStore.updateCharacterNoteListDisplay();
                 });
             },
             'move': function () {
-                return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
+                return characterMoveStore.updateCharacterMoveNoteSearchByTextCriteria(searchValue)
                 .then(() => {
                     characterMoveStore.updateCharacterMoveNoteListDisplay();
                 })
             },
             'combo': function () {
-                return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
+                return comboStore.updateCharacterComboNoteSearchByTextCriteria(searchValue)
                 .then(() => {
                     comboStore.updateCharacterComboNoteListDisplay();
                 })
@@ -122,12 +126,12 @@ export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' |
                     characterMoveStore.updateCharacterMoveNoteTagsListDisplay();
                 })
             },
-            // 'combo': function () {
-            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         comboStore.updateCharacterComboNoteListDisplay();
-            //     })
-            // }
+            'combo': function () {
+                return comboStore.updateSearchCharacterComboNoteByTagsCriteria(searchValue)
+                .then(() => {
+                    comboStore.updateCharacterComboNoteTagsListDisplay();
+                })
+            }
         };
         updateNoteListDisplay[modelName]();
     }
@@ -140,6 +144,9 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
     const characterStore = useCharacterStore();
     const characterMoveStore = useCharacterMoveStore();
     const comboStore = useComboStore();
+    const characterId = getCharacterId();
+
+    const gameId = getGameId();
 
     const addNoteTag = () => {
         const addNoteTagActions = {
@@ -152,12 +159,9 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
             'move': function () {
                 return characterMoveStore.addTagToCharacterMoveNote(gameStore.game.id, resourceId, noteId, newTag)
             },
-            // 'combo': function () {
-            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         comboStore.updateCharacterComboNoteListDisplay();
-            //     })
-            // }
+            'combo': function () {
+                return comboStore.addTagToCharacterComboNote(gameId, characterId, noteId, newTag)
+            }
         };
         addNoteTagActions[modelName]();
     }
@@ -183,12 +187,9 @@ export const callRemoveTagFromNote = (modelName: 'game' | 'character' | 'move' |
             'move': function () {
                 return characterMoveStore.removeTagFromCharacterMoveNote(gameId, noteId, tagId);
             },
-            // 'combo': function () {
-            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         comboStore.updateCharacterComboNoteListDisplay();
-            //     })
-            // }
+            'combo': function () {
+                return comboStore.removeTagFromCharacterComboNote(gameId, noteId, tagId)
+            }
         };
         removeTagFromNoteActions[modelName]();
     }

@@ -11,9 +11,9 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         characterMoveNotes: [],
         characterMoveNoteListDisplay: [],
-        characterMoveNoteSearchInputValue: '',
+        characterMoveNoteSearchInputValue: '', // ? Do we still need this?
 
-        characterMoveNoteSearchByTextInputValue: '', // ? Do we still need this?
+        characterMoveNoteSearchByTextInputValue: '', 
 
         characterMoveNoteSearchByTagInputValue: '',
         characterMoveNoteTagsListDisplay: [],
@@ -263,7 +263,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    // console.log(response);
+                    console.log(response);
                     this.characterMoveNotes = [...response.data]
                     // console.log(this.characterMoveNotes);
                     this.characterMoveNotes.forEach(note => {
@@ -312,7 +312,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
             
         },
-        async updateCharacterMoveNoteSearchCriteria(input: string) {
+        async updateCharacterMoveNoteSearchByTextCriteria(input: string) {
             this.characterMoveNoteSearchByTextInputValue = input;
         },
 
@@ -348,6 +348,10 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         },
 
         async updateCharacterMoveNoteTagsListDisplay() {
+            if(this.characterMoveNoteSearchByTagInputValue.length === 0) {
+                this.characterMoveNoteTagsListDisplay = [];
+                return;
+            }
             this.characterMoveNoteTagsListDisplay = this.characterMoveNotesTags.filter(tag => {
                 return tag.name.includes(this.characterMoveNoteSearchByTagInputValue);
             })
@@ -380,6 +384,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     console.log('hello?');
                     console.log(response);
                     gameStore.fetchTags(gameId);
+                    this.fetchCharacterMoves(gameId, characterId);
                     this.fetchCharacterMoveNotes(gameId, characterId, this.characterMove.id);
                 })
 
