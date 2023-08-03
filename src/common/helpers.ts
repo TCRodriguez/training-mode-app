@@ -49,6 +49,10 @@ export const getCharacterId = () => {
     return localStorage.getItem('characterId');
 }
 
+export const getCharacterMoveId = () => {
+    return localStorage.getItem('characterMoveId');
+}
+
 export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' | 'move' | 'combo', searchValue: string) => {
     const gameStore = useGameStore();
     const characterStore = useCharacterStore();
@@ -112,12 +116,12 @@ export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' |
                     characterStore.updateCharacterNoteTagsListDisplay();
                 });
             },
-            // 'move': function () {
-            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
-            //     })
-            // },
+            'move': function () {
+                return characterMoveStore.updateSearchCharacterMoveNoteByTagsCriteria(searchValue)
+                .then(() => {
+                    characterMoveStore.updateCharacterMoveNoteTagsListDisplay();
+                })
+            },
             // 'combo': function () {
             //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
             //     .then(() => {
@@ -144,17 +148,10 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
             },
             'character': function () {
                 return characterStore.addTagToCharacterNote(gameStore.game.id, resourceId, noteId, newTag)
-                // .then(() => {
-                //     characterStore.updateCharacterNoteListDisplay();
-                // });
-                
             },
-            // 'move': function () {
-            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
-            //     })
-            // },
+            'move': function () {
+                return characterMoveStore.addTagToCharacterMoveNote(gameStore.game.id, resourceId, noteId, newTag)
+            },
             // 'combo': function () {
             //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
             //     .then(() => {
@@ -172,22 +169,20 @@ export const callRemoveTagFromNote = (modelName: 'game' | 'character' | 'move' |
     const characterStore = useCharacterStore();
     const characterMoveStore = useCharacterMoveStore();
     const comboStore = useComboStore();
+    const gameId = getGameId();
 
     const removeNoteTag = () => {
         const removeTagFromNoteActions = {
             'game': function () {
-                return gameStore.removeTagFromGameNote(resourceId, noteId, tagId)
+                return gameStore.removeTagFromGameNote(gameId, noteId, tagId)
             },
             'character': function () {
-                return characterStore.removeTagFromCharacterNote(resourceId, noteId, tagId)
+                return characterStore.removeTagFromCharacterNote(gameId, noteId, tagId)
 
             },
-            // 'move': function () {
-            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
-            //     })
-            // },
+            'move': function () {
+                return characterMoveStore.removeTagFromCharacterMoveNote(gameId, noteId, tagId);
+            },
             // 'combo': function () {
             //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
             //     .then(() => {

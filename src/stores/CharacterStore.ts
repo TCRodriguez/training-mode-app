@@ -12,7 +12,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
 
         characterNotes: [],
         characterNoteListDisplay: [],
-        characterNoteSearchByTextInputValue: '',
+        characterNoteSearchByTextInputValue: '', // ? Do we still need this?
 
         characterNoteSearchByTagInputValue: '',
         characterNoteTagsListDisplay: [],

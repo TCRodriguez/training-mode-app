@@ -9,7 +9,7 @@ export const useGameStore = defineStore('GameStore', {
 
         gameNotes: [],
         gameNoteListDisplay: [],
-        gameNoteSearchByTextInputValue: '',
+        gameNoteSearchByTextInputValue: '', // ? Do we still need this?
 
         gameNoteSearchByTagInputValue: '',
         gameNoteTagsListDisplay: [],
@@ -349,7 +349,7 @@ export const useGameStore = defineStore('GameStore', {
 
             
         },
-        
+
         async addGameNoteTagToSearchList(tag: string) {
             const gameNoteTagNamesArray = this.gameNotesTags.map(tag => tag.name);
             const gameNoteTagExists = gameNoteTagNamesArray.includes(tag);

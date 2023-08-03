@@ -64,9 +64,9 @@ export default {
                 'character': function () {
                     return characterStore.characterNoteTagsListDisplay;
                 },
-                // 'move': function () {
-                //     return characterMoveStore.characterMoveNoteTagsListDisplay;
-                // },
+                'move': function () {
+                    return characterMoveStore.characterMoveNoteTagsListDisplay;
+                },
                 // 'combo': function () {
                 //     return comboStore.characterComboNoteTagsListDisplay;
                 // }
@@ -82,9 +82,9 @@ export default {
                 'character': function () {
                     return characterStore.characterNoteSearchByTagsList;
                 },
-                // 'move': function () {
-                //     return characterMoveStore.characterMoveNoteTagsListDisplay;
-                // },
+                'move': function () {
+                    return characterMoveStore.characterMoveNoteSearchByTagsList;
+                },
                 // 'combo': function () {
                 //     return comboStore.characterComboNoteTagsListDisplay;
                 // }
@@ -224,8 +224,8 @@ export default {
                     searchNoteByTextInput.value = '';
                 },
                 'move': function () {
-                    // characterMoveStore.resetCharacterMoveListDisplay();
-                    // characterMoveSearchInput.value = '';
+                    characterMoveStore.resetCharacterMoveListDisplay();
+                    characterMoveSearchInput.value = '';
                 },
                 'combo': function () {
 
@@ -256,6 +256,15 @@ export default {
                     }
                     characterStore.addCharacterNoteTagToSearchList(searchNoteByTagsInput.value);
                     searchNoteByTagsInput.value = '';
+                },
+                'move': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        characterMoveStore.addCharacterMoveNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    characterMoveStore.addCharacterMoveNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
                 }
             }
 
@@ -271,6 +280,10 @@ export default {
                 'character': function () {
                     characterStore.removeCharacterNoteTagFromSearchList(tag);
                     characterStore.updateCharacterNoteListDisplay('tags');
+                },
+                'move': function () {
+                    characterMoveStore.removeCharacterMoveNoteTagFromSearchList(tag);
+                    characterMoveStore.updateCharacterMoveNoteListDisplay('tags');
                 }
             }
             updateNoteTagSearchList[props.modelName]();
