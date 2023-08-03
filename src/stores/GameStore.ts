@@ -349,14 +349,12 @@ export const useGameStore = defineStore('GameStore', {
             
         },
         async addGameNoteTagToSearchList(tag: string) {
-            // const gameStore = useGameStore();
-            console.log(tag);
-
             const gameNoteTagNamesArray = this.gameNotesTags.map(tag => tag.name);
             const gameNoteTagExists = gameNoteTagNamesArray.includes(tag);
 
-            if(!this.gameNoteSearchByTagsList.includes(tag) && gameNoteTagExists) {
+            if(this.gameNoteSearchByTagsList.includes(tag) === false && gameNoteTagExists === true) {
                 this.gameNoteSearchByTagsList.push(tag);
+                this.updateGameNoteListDisplay('tags');
             }
         },
         async removeGameNoteTagFromSearchList(tag: object) {
@@ -431,6 +429,21 @@ export const useGameStore = defineStore('GameStore', {
                     this.fetchGameNotes(gameId);
                 })
 
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async removeTagFromGameNote(gameId: string, gameNoteId: number, tagId: number) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${gameNoteId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchGameNotes(gameId);
+                })
             } catch (error) {
                 console.log(error);
             }

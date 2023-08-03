@@ -22,7 +22,8 @@ import {
     getCharacterId, 
     updateSearchNoteByTextCriteria, 
     updateSearchNoteByTagsCriteria, 
-    callAddTagToNote 
+    callAddTagToNote,
+    callRemoveTagFromNote
 } from '@/common/helpers';
 
 export default {
@@ -204,12 +205,10 @@ export default {
                 'game': function () {
                     if(event.target.tagName === 'SPAN') {
                         gameStore.addGameNoteTagToSearchList(event.target.textContent);
-                        gameStore.updateGameNoteListDisplay('tags');
                         searchNoteByTagsInput.value = '';
                         return;
                     }
                     gameStore.addGameNoteTagToSearchList(searchNoteByTagsInput.value);
-                    gameStore.updateGameNoteListDisplay('tags');
                     searchNoteByTagsInput.value = '';
 
                 }
@@ -256,8 +255,12 @@ export default {
 
         const addTagToNote = (tagName: string, noteId: string) => {
             console.log(`${tagName}, ${noteId}`);
-            // characterMoveStore.removeTagFromCharacterMove(route.params.game, route.params.character, moveId, tagId);
             callAddTagToNote(props.modelName, props.modelId, noteId, tagName);
+        };
+
+        const removeTagFromNote = (tagId: number, noteId: number) => {
+            console.log(`${tagId}`);
+            callRemoveTagFromNote(props.modelName, props.modelId, noteId, tagId);
         }
         return {
             authStore,
@@ -300,6 +303,7 @@ export default {
             removeNoteTagFromSearchList,
             toggleEditNoteTagsMode,
             addTagToNote,
+            removeTagFromNote
             
         }
     },
@@ -322,7 +326,7 @@ export default {
 </script>
 <template lang="">
     <div class="mt-8 px-2 w-full">
-        <div class="">
+        <div class="space-y-2">
             <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2">
 
                 <p>Search by:</p>
@@ -347,16 +351,16 @@ export default {
                 <input
                     v-if="searchByOptionSelection === 'text'"
                     type="text" 
-                    placeholder="Search notes" 
+                    placeholder="Enter title" 
                     v-model="searchNoteByTextInput" 
-                    class="my-8"
+                    class=""
                 >
                 <input
                     v-if="searchByOptionSelection === 'tags'"
                     type="text" 
-                    placeholder="Search tags" 
+                    placeholder="Enter tags" 
                     v-model="searchNoteByTagsInput" 
-                    class="my-8 bg-blue"
+                    class=""
                     @keyup.enter="addNoteTagToSearchList($event)"
                 >
             </div>
@@ -401,6 +405,7 @@ export default {
                                 :editTagsActive="editNoteTagsActive"
                                 :resourceId="note.id"
                                 @trigger-add-tag-to-resource="addTagToNote"
+                                @trigger-remove-tag-from-resource="removeTagFromNote"
                             />
                         </div>
                         <div>
