@@ -10,6 +10,7 @@ export const useGameStore = defineStore('GameStore', {
         gameNotes: [],
         gameNoteListDisplay: [],
         gameNoteSearchByTextInputValue: '',
+
         gameNoteSearchByTagInputValue: '',
         gameNoteTagsListDisplay: [],
         gameNotesTags: [],
@@ -29,7 +30,7 @@ export const useGameStore = defineStore('GameStore', {
         attackButtonNotations: [],
         attackButtonIconLinks: [],
 
-        tags: [],
+        tags: [], // Entire list of tags for game
         tagsListDisplay: [],
         tagSearchCriteria: '',
 
@@ -348,6 +349,7 @@ export const useGameStore = defineStore('GameStore', {
 
             
         },
+        
         async addGameNoteTagToSearchList(tag: string) {
             const gameNoteTagNamesArray = this.gameNotesTags.map(tag => tag.name);
             const gameNoteTagExists = gameNoteTagNamesArray.includes(tag);
@@ -360,32 +362,7 @@ export const useGameStore = defineStore('GameStore', {
         async removeGameNoteTagFromSearchList(tag: object) {
             this.gameNoteSearchByTagsList.splice(this.gameNoteSearchByTagsList.indexOf(tag), 1);
         },
-        // async updateCharacterMovesListDisplay(criteria: string = ''): Promise<void> {
-        //     let characterMoveListFilteredByTags: object[] = [];
- 
-        //     if(this.characterMoveNameSearchInputValue.length === 0) {
-        //         this.characterMoveListDisplay = [...this.characterMoves];
-        //     } else {
-        //         this.characterMoveListDisplay = this.characterMoves.filter(characterMove => characterMove.name.toLowerCase().includes(this.characterMoveNameSearchInputValue.toLowerCase()));
-        //     }
 
-        //     if(criteria === 'tags') {
-        //         if(this.searchByTagsList.length === 0) {
-        //             this.resetCharacterMoveListDisplay();
-        //             return;
-        //         }
-
-        //         this.characterMoves.forEach(move => {
-        //             move.tags.forEach(tag => {
-        //                 if(this.searchByTagsList.includes(tag.name)) {
-        //                     characterMoveListFilteredByTags.push(move);
-        //                 }
-        //             })
-        //         })
-                
-        //         this.characterMoveListDisplay = [...characterMoveListFilteredByTags];
-        //     }
-        // },        
         async updateTagsListDisplay() {
             this.tagsListDisplay = this.tags.filter(tag => {
                 return tag.name.includes(this.tagSearchCriteria);

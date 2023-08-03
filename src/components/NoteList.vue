@@ -54,6 +54,42 @@ export default {
                 }
             };
             return retrieveNoteList[props.modelName]();
+        });
+
+        const noteTagsListDisplay = computed(() => {
+            const retrieveNoteTagsList = {
+                'game': function () {
+                    return gameStore.gameNoteTagsListDisplay;
+                },
+                'character': function () {
+                    return characterStore.characterNoteTagsListDisplay;
+                },
+                // 'move': function () {
+                //     return characterMoveStore.characterMoveNoteTagsListDisplay;
+                // },
+                // 'combo': function () {
+                //     return comboStore.characterComboNoteTagsListDisplay;
+                // }
+            };
+            return retrieveNoteTagsList[props.modelName]();
+        });
+
+        const searchNoteByTagsList = computed(() => {
+            const retrieveNoteTagsList = {
+                'game': function () {
+                    return gameStore.gameNoteSearchByTagsList;
+                },
+                'character': function () {
+                    return characterStore.characterNoteSearchByTagsList;
+                },
+                // 'move': function () {
+                //     return characterMoveStore.characterMoveNoteTagsListDisplay;
+                // },
+                // 'combo': function () {
+                //     return comboStore.characterComboNoteTagsListDisplay;
+                // }
+            };
+            return retrieveNoteTagsList[props.modelName]();
         })
 
         const createNoteActive = ref(false);
@@ -184,7 +220,8 @@ export default {
                     searchNoteByTextInput.value = '';
                 },
                 'character': function () {
-
+                    characterStore.resetCharacterNoteListDisplay();
+                    searchNoteByTextInput.value = '';
                 },
                 'move': function () {
                     // characterMoveStore.resetCharacterMoveListDisplay();
@@ -210,7 +247,15 @@ export default {
                     }
                     gameStore.addGameNoteTagToSearchList(searchNoteByTagsInput.value);
                     searchNoteByTagsInput.value = '';
-
+                },
+                'character': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        characterStore.addCharacterNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    characterStore.addCharacterNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
                 }
             }
 
@@ -222,6 +267,10 @@ export default {
                 'game': function () {
                     gameStore.removeGameNoteTagFromSearchList(tag);
                     gameStore.updateGameNoteListDisplay('tags');
+                },
+                'character': function () {
+                    characterStore.removeCharacterNoteTagFromSearchList(tag);
+                    characterStore.updateCharacterNoteListDisplay('tags');
                 }
             }
             updateNoteTagSearchList[props.modelName]();
@@ -267,6 +316,8 @@ export default {
             characterStore,
             gameStore,
             notes,
+            noteTagsListDisplay,
+            searchNoteByTagsList,
             searchNoteByTextInput,
             searchNoteByTagsInput,
             createNoteActive,
@@ -367,13 +418,15 @@ export default {
 
 
 
+            <!-- ! It's hardcoded for games! -->
             <div class="flex flex-row space-x-2 flex-wrap">
-                <div v-if="searchNoteByTagsInput.length !== 0" v-for="(tag, index) in gameStore.gameNoteTagsListDisplay" class="border rounded p-1">
+                <div v-if="searchNoteByTagsInput.length !== 0" v-for="(tag, index) in noteTagsListDisplay" class="border rounded p-1">
                     <div class="" @click="addNoteTagToSearchList($event)">
                         <span>{{tag.name}}</span>
                     </div>
                 </div>
-                <div v-for="(tag, index) in gameStore.gameNoteSearchByTagsList" :key="index" class="">
+                            <!-- ! It's hardcoded for games! -->
+                <div v-for="(tag, index) in searchNoteByTagsList" :key="index" class="">
                     <div
                         class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
                     >

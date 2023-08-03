@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useAuthStore } from './AuthStore';
-import trainingModeApi from '../axios-http';
+import { useGameStore } from './GameStore';
+import trainingModeAPI from '../axios-http';
 
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
@@ -11,7 +12,13 @@ export const useCharacterStore = defineStore('CharacterStore', {
 
         characterNotes: [],
         characterNoteListDisplay: [],
-        characterNoteSearchInputValue: '',
+        characterNoteSearchByTextInputValue: '',
+
+        characterNoteSearchByTagInputValue: '',
+        characterNoteTagsListDisplay: [],
+        characterNotesTags: [],
+        characterNotesFilteredByTagsList: [],
+        characterNoteSearchByTagsList: [],
 
         characterSearchInputValue: '',
 
@@ -31,7 +38,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
             const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/guest` : `/games/${gameId}/characters`;
 
             try {
-                const data = await trainingModeApi.get(endpoint, {
+                const data = await trainingModeAPI.get(endpoint, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
@@ -59,13 +66,22 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async fetchCharacterNotes(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             try {
-                await trainingModeApi.get(`/games/${gameId}/characters/${characterId}/notes`, {
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/notes`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
                 .then(response => {
-                    this.characterNotes = [...response.data]
+                    this.characterNotes = [...response.data];
+                    this.characterNotes.forEach(note => {
+                        console.log(note);
+                        note.tags.forEach(tag => {
+                            if(! this.characterNotesTags.find(characterNoteTag => characterNoteTag.name === tag.name )) {
+                                this.characterNotesTags.push(tag);
+
+                            }
+                        })
+                    });
                     this.updateCharacterNoteListDisplay();
                 })
             } catch (error) {
@@ -77,7 +93,10 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         async updateCharacterNoteSearchCriteria(input: string) {
             // console.log('inside updateCharacterNoteSearchCriteria');
-            this.characterNoteSearchInputValue = input;
+            this.characterNoteSearchByTextInputValue = input;
+        },
+        async updateSearchCharacterNoteByTagsCriteria(input: string) {
+            this.characterNoteSearchByTagInputValue = input;
         },
 
         async updateCharacterListDisplay() {
@@ -87,21 +106,44 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 this.characterListDisplay = this.characters.filter(character => character.name.toLowerCase().includes(this.characterSearchInputValue.toLowerCase()))
             }
         },
-        async updateCharacterNoteListDisplay() {
-            // console.log('inside updateCharacterNoteListDisplay');
-            if(this.characterNoteSearchInputValue.length === 0) {
+        
+        async resetCharacterNoteListDisplay() {
+            this.characterNoteListDisplay = [...this.characterNotes];
+        },
+        async updateCharacterNoteListDisplay(criteria?: 'text' | 'tags') {
+            let characterNoteListFilteredByTags: object[] = [];
+
+            // TODO Add an `if` here for if `criteria` is 'text'?
+            if(this.characterNoteSearchByTextInputValue.length === 0) {
                 this.characterNoteListDisplay = [...this.characterNotes];
-                console.log(this.characterNoteListDisplay);
             } else {
-                // TODO This would be where we make the change from searching by 'title' to either 'body', 'both'
-                // TODO or for when we remove note titles completely if we do so.
-                this.characterNoteListDisplay = this.characterNotes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchInputValue.toLowerCase()))
+                // TODO This will change once we remove note titles
+                this.characterNoteListDisplay = this.characterNotes.filter(characterNote => characterNote.title.toLowerCase().includes(this.characterNoteSearchByTextInputValue.toLowerCase()))
             }
+
+            if(criteria === 'tags') {
+                if(this.characterNoteSearchByTagInputValue.length === 0) {
+                    this.resetCharacterNoteListDisplay();
+                    return;
+                }
+
+                this.characterNotes.forEach(note => {
+                    note.tags.forEach(tag => {
+                        if(this.characterNoteSearchByTagsList.includes(tag.name)) {
+                            characterNoteListFilteredByTags.push(note);
+                        }
+                    })
+                })
+                
+                this.characterNoteListDisplay = [...characterNoteListFilteredByTags];
+            }
+
+            
         },
         async saveCharacterNote(gameId: string, characterId: string, note: object) {
             const authStore = useAuthStore();
             try {
-                await trainingModeApi.post(`/games/${gameId}/characters/${characterId}/notes`, {
+                await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/notes`, {
                     'title': note.title,
                     'body': note.body
                     }, {
@@ -119,7 +161,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async updateCharacterNote(gameId: string, characterId: string, note: object) {
             const authStore = useAuthStore();
             try {
-                await trainingModeApi.put(`games/${gameId}/characters/${characterId}/notes/${note.id}`, {
+                await trainingModeAPI.put(`games/${gameId}/characters/${characterId}/notes/${note.id}`, {
                     'title': note.title,
                     'body': note.body
                 }, {
@@ -137,7 +179,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async deleteCharacterNote(gameId: string, characterId: string, noteId: string) {
             const authStore = useAuthStore();
             try {
-                await trainingModeApi.delete(`/games/${gameId}/characters/${characterId}/notes/${noteId}`, {
+                await trainingModeAPI.delete(`/games/${gameId}/characters/${characterId}/notes/${noteId}`, {
                     headers: {
                         'Authorization': `Bearer ${authStore.token}`
                     }
@@ -148,7 +190,73 @@ export const useCharacterStore = defineStore('CharacterStore', {
             } catch (error) {
                 console.log(error);
             }
-        }
+        },
+
+
+        async removeCharacterNoteTagFromSearchList(tag: object) {
+            this.characterNoteSearchByTagsList.splice(this.characterNoteSearchByTagsList.indexOf(tag), 1);
+        },
+
+        async updateCharacterNoteTagsListDisplay() {
+            this.characterNoteTagsListDisplay = this.characterNotesTags.filter(tag => {
+                return tag.name.includes(this.characterNoteSearchByTagInputValue);
+            })
+        },
+        async addCharacterNoteTagToSearchList(tag: string) {
+            const gameStore = useGameStore();
+
+            const tagNamesArray = gameStore.tags.map(tag => tag.name);
+            const tagExists = tagNamesArray.includes(tag);
+
+            if(!this.characterNoteSearchByTagsList.includes(tag) && tagExists) {
+                this.characterNoteSearchByTagsList.push(tag);
+                this.updateCharacterNoteListDisplay('tags');
+            }
+        },
+
+        async addTagToCharacterNote(gameId: number, characterId: number, characterNoteId: string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('add tag to character note hit');
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes/${characterNoteId}/tags`, {
+                    tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log('hello?');
+                    console.log(response);
+                    gameStore.fetchTags(gameId);
+                    this.fetchCharacterNotes(gameId, characterId);
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async removeTagFromCharacterNote(gameId: string, characterNoteId: number, tagId: number) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${characterNoteId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterNotes(gameId, this.character.id);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+
+
+
         
     }
 })
