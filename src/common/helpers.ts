@@ -130,3 +130,38 @@ export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' |
     updateNoteSearch();
 
 }
+
+export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'combo', resourceId: number, noteId: number, newTag: string) => {
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
+    const characterMoveStore = useCharacterMoveStore();
+    const comboStore = useComboStore();
+
+    const addNoteTag = () => {
+        const addNoteTagActions = {
+            'game': function () {
+                return gameStore.addTagToGameNote(resourceId, noteId, newTag)
+            },
+            // 'character': function () {
+            //     return characterStore.updateCharacterNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         characterStore.updateCharacterNoteListDisplay();
+            //     });
+            // },
+            // 'move': function () {
+            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
+            //     })
+            // },
+            // 'combo': function () {
+            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         comboStore.updateCharacterComboNoteListDisplay();
+            //     })
+            // }
+        };
+        addNoteTagActions[modelName]();
+    }
+    return addNoteTag();
+}

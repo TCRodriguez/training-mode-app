@@ -411,6 +411,29 @@ export const useGameStore = defineStore('GameStore', {
             this.gameNoteTagsListDisplay = this.gameNotesTags.filter(tag => {
                 return tag.name.includes(this.gameNoteSearchByTagInputValue);
             })
-        }
+        },
+        async addTagToGameNote(gameId: number, gameNoteId: string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('add tag to move hit');
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes/${gameNoteId}/tags`, {
+                    tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log('hello?');
+                    console.log(response);
+                    gameStore.fetchTags(gameId);
+                    this.fetchGameNotes(gameId);
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
     }
 });

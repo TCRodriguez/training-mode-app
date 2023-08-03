@@ -14,8 +14,17 @@ import NoteModal from './NoteModal.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
+import ResourceTagsList from './ResourceTagsList.vue';
+import ResourceOptionsBar from './ResourceOptionsBar.vue';
 
-import { getGameId, getCharacterId, updateSearchNoteByTextCriteria, updateSearchNoteByTagsCriteria } from '@/common/helpers';
+import {
+    getGameId, 
+    getCharacterId, 
+    updateSearchNoteByTextCriteria, 
+    updateSearchNoteByTagsCriteria, 
+    callAddTagToNote 
+} from '@/common/helpers';
+
 export default {
     setup(props) {
         const route = useRoute();
@@ -69,7 +78,8 @@ export default {
             }
 
             console.log(noteOptionsActive.value);
-        }
+        };
+        const editNoteTagsActive = ref([]);
 
         const openCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
@@ -218,6 +228,22 @@ export default {
             updateNoteTagSearchList[props.modelName]();
         }
 
+        const toggleEditNoteTagsMode = (noteId: number) => {
+            if(authStore.loggedInUser === null) {
+                showNotLoggedInMessage();
+                // setTimeout(() => {
+                //     hideNotLoggedInMessage();
+                // }, 3000);
+                return;
+            }
+
+            if(!editNoteTagsActive.value.includes(noteId)) {
+                editNoteTagsActive.value.push(noteId);
+            } else if(editNoteTagsActive.value.includes(noteId)) {
+                editNoteTagsActive.value.splice(editNoteTagsActive.value.indexOf(noteId), 1);
+            } 
+        }
+
         watch(searchNoteByTextInput, () => {
             updateSearchNoteByTextCriteria(props.modelName, searchNoteByTextInput.value);
         });
@@ -227,6 +253,12 @@ export default {
         watch(searchNoteByTagsInput, () => {
             updateSearchNoteByTagsCriteria(props.modelName, searchNoteByTagsInput.value);
         });
+
+        const addTagToNote = (tagName: string, noteId: string) => {
+            console.log(`${tagName}, ${noteId}`);
+            // characterMoveStore.removeTagFromCharacterMove(route.params.game, route.params.character, moveId, tagId);
+            callAddTagToNote(props.modelName, props.modelId, noteId, tagName);
+        }
         return {
             authStore,
             characterStore,
@@ -250,6 +282,7 @@ export default {
             updateEditNoteTitle,
             updateEditNoteBody,
             noteOptionsActive,
+            editNoteTagsActive,
             toggleNoteOptions,
             noteEditActive,
             deleteNote,
@@ -265,6 +298,9 @@ export default {
 
             addNoteTagToSearchList,
             removeNoteTagFromSearchList,
+            toggleEditNoteTagsMode,
+            addTagToNote,
+            
         }
     },
     components: {
@@ -273,7 +309,9 @@ export default {
         NoteModal,
         EllipsisIcon,
         CloseIcon,
-        AddIcon
+        AddIcon,
+        ResourceTagsList,
+        ResourceOptionsBar
     },
     props: {
         modelName: String,
@@ -353,21 +391,37 @@ export default {
             <div class="xs:h-[24rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
                     <li v-for="note in notes" :key="note.id">
-                        <div>
+                        <div class="border rounded p-2">
                             <Note 
                                 :note="note"
-                                class="border rounded p-2"
                                 @click="toggleViewNote(note)"
+                            />
+                            <ResourceTagsList
+                                :tags="note.tags" 
+                                :editTagsActive="editNoteTagsActive"
+                                :resourceId="note.id"
+                                @trigger-add-tag-to-resource="addTagToNote"
                             />
                         </div>
                         <div>
                             <div class="flex flex-row justify-end space-x-2">
+                                <!-- <ResourceOptionsBar
+                                    :resourceEditButton="true"
+                                    :resourceDeleteButton="true"
+                                    :resourceEditTagsButton="true"
+                                    :resourceOptionsActive="noteOptionsActive.includes(note.id)"
+                                    :resourceId="note.id"
+                                /> -->
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="deleteNote(note.id, modelName)">
                                     <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                                 </button>
+                                <button v-if="noteOptionsActive.includes(note.id)" @click="toggleEditNoteTagsMode(note.id)">
+                                    <span v-if="editNoteTagsActive.includes(note.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
+                                    <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
+                                </button>
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="toggleNoteOptions(note.id, $event)">
                                     <span v-if="noteEditActive === note.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit</span>
+                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit Note</span>
                                 </button>
                                 <CloseIcon v-if="noteOptionsActive.includes(note.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(note.id, $event)"/>
                                 <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(note.id, $event)" />
