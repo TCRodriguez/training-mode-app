@@ -106,12 +106,12 @@ export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' |
                     // gameStore.updateGameNoteListDisplay('tags');
                 });
             },
-            // 'character': function () {
-            //     return characterStore.updateCharacterNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         characterStore.updateCharacterNoteListDisplay();
-            //     });
-            // },
+            'character': function () {
+                return characterStore.updateSearchCharacterNoteByTagsCriteria(searchValue)
+                .then(() => {
+                    characterStore.updateCharacterNoteTagsListDisplay();
+                });
+            },
             // 'move': function () {
             //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
             //     .then(() => {
@@ -142,12 +142,13 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
             'game': function () {
                 return gameStore.addTagToGameNote(resourceId, noteId, newTag)
             },
-            // 'character': function () {
-            //     return characterStore.updateCharacterNoteSearchCriteria(searchValue)
-            //     .then(() => {
-            //         characterStore.updateCharacterNoteListDisplay();
-            //     });
-            // },
+            'character': function () {
+                return characterStore.addTagToCharacterNote(gameStore.game.id, resourceId, noteId, newTag)
+                // .then(() => {
+                //     characterStore.updateCharacterNoteListDisplay();
+                // });
+                
+            },
             // 'move': function () {
             //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
             //     .then(() => {
@@ -164,4 +165,37 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
         addNoteTagActions[modelName]();
     }
     return addNoteTag();
+}
+
+export const callRemoveTagFromNote = (modelName: 'game' | 'character' | 'move' | 'combo', resourceId: number, noteId: number, tagId: number) => {
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
+    const characterMoveStore = useCharacterMoveStore();
+    const comboStore = useComboStore();
+
+    const removeNoteTag = () => {
+        const removeTagFromNoteActions = {
+            'game': function () {
+                return gameStore.removeTagFromGameNote(resourceId, noteId, tagId)
+            },
+            'character': function () {
+                return characterStore.removeTagFromCharacterNote(resourceId, noteId, tagId)
+
+            },
+            // 'move': function () {
+            //     return characterMoveStore.updateCharacterMoveNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         characterMoveStore.updateCharacterMoveNoteListDisplay();
+            //     })
+            // },
+            // 'combo': function () {
+            //     return comboStore.updateCharacterComboNoteSearchCriteria(searchValue)
+            //     .then(() => {
+            //         comboStore.updateCharacterComboNoteListDisplay();
+            //     })
+            // }
+        };
+        removeTagFromNoteActions[modelName]();
+    }
+    return removeNoteTag();
 }
