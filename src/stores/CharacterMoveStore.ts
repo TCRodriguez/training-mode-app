@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { useGameStore } from './GameStore';
 import { useAuthStore } from './AuthStore';
 import trainingModeAPI from '../axios-http';
+import { useCharacterStore } from './CharacterStore';
 
 export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
     state: () => ({
@@ -10,7 +11,15 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         characterMoveNotes: [],
         characterMoveNoteListDisplay: [],
-        characterMoveNoteSearchInputValue: '',
+        characterMoveNoteSearchInputValue: '', // ? Do we still need this?
+
+        characterMoveNoteSearchByTextInputValue: '', 
+
+        characterMoveNoteSearchByTagInputValue: '',
+        characterMoveNoteTagsListDisplay: [],
+        characterMoveNotesTags: [],
+        characterMoveNotesFilteredByTagsList: [],
+        characterMoveNoteSearchByTagsList: [],
 
         characterMoveListDisplay: [],
         characterMoveListByTagDisplay: [],
@@ -144,9 +153,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         async updateCharacterMovesListDisplay(criteria: string = ''): Promise<void> {
             let characterMoveListFilteredByTags: object[] = [];
-
-
-            
+ 
             if(this.characterMoveNameSearchInputValue.length === 0) {
                 this.characterMoveListDisplay = [...this.characterMoves];
             } else {
@@ -189,6 +196,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async setCharacterMove(moveId: number) {
             this.characterMove = this.characterMoves.find(move => move.id === moveId);
             this.characterMoveNotes = [...this.characterMove.notes];
+            localStorage.setItem('characterMoveId', this.characterMove.id);
             this.updateCharacterMoveNoteListDisplay();
         },
 
@@ -255,7 +263,18 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
+                    console.log(response);
                     this.characterMoveNotes = [...response.data]
+                    // console.log(this.characterMoveNotes);
+                    this.characterMoveNotes.forEach(note => {
+                        console.log(note);
+                        note.tags.forEach(tag => {
+                            if(! this.characterMoveNotesTags.find(characterMoveNoteTag => characterMoveNoteTag.name === tag.name )) {
+                                this.characterMoveNotesTags.push(tag);
+
+                            }
+                        })
+                    });
                     this.updateCharacterMoveNoteListDisplay();
                 })
             } catch (error) {
@@ -263,17 +282,50 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             }
         },
 
-        async updateCharacterMoveNoteListDisplay() {
-            if(this.characterMoveNoteSearchInputValue.length === 0) {
+        async updateCharacterMoveNoteListDisplay(criteria?: 'text' | 'tags') {
+            let characterMoveNoteListFilteredByTags: object[] = [];
+
+            // TODO Add an `if` here for if `criteria` is 'text'?
+            if(this.characterMoveNoteSearchByTextInputValue.length === 0) {
                 this.characterMoveNoteListDisplay = [...this.characterMoveNotes];
-                console.log(this.characterMoveNoteListDisplay);
             } else {
-                this.characterMoveNoteListDisplay = this.characterMove.notes.filter(characterMoveNote => characterMoveNote.title.toLowerCase().includes(this.characterMoveNoteSearchInputValue.toLowerCase()));
+                // TODO This will change once we remove note titles
+                this.characterMoveNoteListDisplay = this.characterMoveNotes.filter(characterMoveNote => characterMoveNote.title.toLowerCase().includes(this.characterMoveNoteSearchByTextInputValue.toLowerCase()))
             }
+
+            if(criteria === 'tags') {
+                if(this.characterMoveNoteSearchByTagInputValue.length === 0) {
+                    this.resetCharacterMoveNoteListDisplay();
+                    return;
+                }
+
+                this.characterMoveNotes.forEach(note => {
+                    note.tags.forEach(tag => {
+                        if(this.characterMoveNoteSearchByTagsList.includes(tag.name)) {
+                            characterMoveNoteListFilteredByTags.push(note);
+                        }
+                    })
+                })
+                
+                this.characterMoveNoteListDisplay = [...characterMoveNoteListFilteredByTags];
+            }
+
+            
+        },
+        async updateCharacterMoveNoteSearchByTextCriteria(input: string) {
+            this.characterMoveNoteSearchByTextInputValue = input;
+        },
+
+        async updateSearchCharacterMoveNoteByTagsCriteria(input: string) {
+            this.characterMoveNoteSearchByTagInputValue = input;
         },
 
         async resetCharacterMoveListDisplay() {
             this.characterMoveListDisplay = [...this.characterMoves];
+        },
+
+        async resetCharacterMoveNoteListDisplay() {
+            this.characterMoveNoteListDisplay = [...this.characterMoveNotes];
         },
 
         async removeTagFromCharacterMove(gameId: string, characterId: string, moveId: string, tagId: string) {
@@ -291,5 +343,72 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 console.log(error);
             }
         },
+        async removeCharacterMoveNoteTagFromSearchList(tag: object) {
+            this.characterMoveNoteSearchByTagsList.splice(this.characterMoveNoteSearchByTagsList.indexOf(tag), 1);
+        },
+
+        async updateCharacterMoveNoteTagsListDisplay() {
+            if(this.characterMoveNoteSearchByTagInputValue.length === 0) {
+                this.characterMoveNoteTagsListDisplay = [];
+                return;
+            }
+            this.characterMoveNoteTagsListDisplay = this.characterMoveNotesTags.filter(tag => {
+                return tag.name.includes(this.characterMoveNoteSearchByTagInputValue);
+            })
+        },
+        async addCharacterMoveNoteTagToSearchList(tag: string) {
+            const gameStore = useGameStore();
+
+            const tagNamesArray = gameStore.tags.map(tag => tag.name);
+            const tagExists = tagNamesArray.includes(tag);
+
+            if(!this.characterMoveNoteSearchByTagsList.includes(tag) && tagExists) {
+                this.characterMoveNoteSearchByTagsList.push(tag);
+                this.updateCharacterMoveNoteListDisplay('tags');
+            }
+        },
+
+        async addTagToCharacterMoveNote(gameId: number, characterId: number, characterMoveNoteId: string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('add tag to character note hit');
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes/${characterMoveNoteId}/tags`, {
+                    tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log('hello?');
+                    console.log(response);
+                    gameStore.fetchTags(gameId);
+                    this.fetchCharacterMoves(gameId, characterId);
+                    this.fetchCharacterMoveNotes(gameId, characterId, this.characterMove.id);
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async removeTagFromCharacterMoveNote(gameId: string, characterMoveNoteId: number, tagId: number) {
+            const authStore = useAuthStore();
+            const characterStore = useCharacterStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${characterMoveNoteId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchCharacterMoveNotes(gameId, characterStore.character.id, this.characterMove.id);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        
     }
 });

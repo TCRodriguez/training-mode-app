@@ -43,7 +43,6 @@ const editNoteTitle = ref(null);
 const editNoteBody = ref(null);
 
 const updateCreateNoteTitle = (noteTitle: string) => {
-    console.log(noteTitle);
     createNoteTitle.value = noteTitle;
 };
 const updateCreateNoteBody = (noteBody: string) => {
