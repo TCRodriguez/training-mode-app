@@ -29,6 +29,7 @@ export const addNotationToNotationDisplay = (notation: string) => {
 
 export const getGameAbbreviation = () => {
     const gameStore = useGameStore();
+    
     if(localStorage.getItem('game') === null) {
         return gameStore.game.abbreviation;
     }

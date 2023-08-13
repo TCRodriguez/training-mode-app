@@ -261,7 +261,6 @@ export const useGameStore = defineStore('GameStore', {
             this.game.bread_crumb_type = 'game';
             this.gameNoteListDisplay = [...this.game.notes];
             localStorage.setItem('game', this.game.abbreviation);
-            
         },
         async saveGameNote(gameId: string, note: object) {
             const authStore = useAuthStore();
