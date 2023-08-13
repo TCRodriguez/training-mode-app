@@ -14,8 +14,18 @@ import NoteModal from './NoteModal.vue';
 import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
+import ResourceTagsList from './ResourceTagsList.vue';
+import ResourceOptionsBar from './ResourceOptionsBar.vue';
 
-import { getGameId, getCharacterId } from '@/common/helpers';
+import {
+    getGameId, 
+    getCharacterId, 
+    updateSearchNoteByTextCriteria, 
+    updateSearchNoteByTagsCriteria, 
+    callAddTagToNote,
+    callRemoveTagFromNote
+} from '@/common/helpers';
+
 export default {
     setup(props) {
         const route = useRoute();
@@ -26,7 +36,6 @@ export default {
         const gameStore = useGameStore();
         const characterMoveStore = useCharacterMoveStore();
         const comboStore = useComboStore();
-        console.log(props);
 
         const notes = computed(() => {
             const retrieveNoteList = {
@@ -45,9 +54,43 @@ export default {
                 }
             };
             return retrieveNoteList[props.modelName]();
-        })
+        });
 
-        const noteSearchInput = ref(null);
+        const noteTagsListDisplay = computed(() => {
+            const retrieveNoteTagsList = {
+                'game': function () {
+                    return gameStore.gameNoteTagsListDisplay;
+                },
+                'character': function () {
+                    return characterStore.characterNoteTagsListDisplay;
+                },
+                'move': function () {
+                    return characterMoveStore.characterMoveNoteTagsListDisplay;
+                },
+                'combo': function () {
+                    return comboStore.characterComboNoteTagsListDisplay;
+                }
+            };
+            return retrieveNoteTagsList[props.modelName]();
+        });
+
+        const searchNoteByTagsList = computed(() => {
+            const retrieveNoteTagsList = {
+                'game': function () {
+                    return gameStore.gameNoteSearchByTagsList;
+                },
+                'character': function () {
+                    return characterStore.characterNoteSearchByTagsList;
+                },
+                'move': function () {
+                    return characterMoveStore.characterMoveNoteSearchByTagsList;
+                },
+                'combo': function () {
+                    return comboStore.characterComboNoteSearchByTagsList;
+                }
+            };
+            return retrieveNoteTagsList[props.modelName]();
+        })
 
         const createNoteActive = ref(false);
         const createNoteTitle = ref(null);
@@ -65,14 +108,17 @@ export default {
         const noteOptionsActive = ref([]);
         const noteEditActive = ref(0);
         const toggleNoteOptions = (noteId: string) => {
+            if(editNoteTagsActive.value.includes(noteId)) {
+                toggleEditNoteTagsMode(noteId);
+            }
             if(!noteOptionsActive.value.includes(noteId)) {
                 noteOptionsActive.value.push(noteId);
             } else if(noteOptionsActive.value.includes(noteId)) {
                 noteOptionsActive.value.splice(noteOptionsActive.value.indexOf(noteId), 1);
             }
 
-            console.log(noteOptionsActive.value);
-        }
+        };
+        const editNoteTagsActive = ref([]);
 
         const openCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
@@ -80,37 +126,6 @@ export default {
         const closeCreateNoteModal = () => {
             createNoteActive.value = !createNoteActive.value;
         };
-
-        const saveNote = (modelName: 'game' | 'character' | 'combo') => {
-
-            const gameId = getGameId();
-            const characterId = getCharacterId();
-            const note = {
-                'title': createNoteTitle.value,
-                'body': createNoteBody.value
-            }
-            const createNoteStoreActions = {
-                'game': function () {
-                    return gameStore.saveGameNote(gameId, note);
-                },
-                'character': function () {
-                    return characterStore.saveCharacterNote(gameId, characterId, note)
-                },
-                'combo': function () {
-                    return comboStore.saveCharacterComboNote(gameId, characterId, comboId, note)
-                }
-            };
-            createNoteStoreActions[modelName]();
-
-            
-            // TODO This was after saving a character note
-            // .then(() => {
-            //     createNoteActive.value = !createNoteActive.value
-            //     createNoteTitle.value = null;
-            //     createNoteBody.value = null;
-            // });
-        };
-
         
         const openEditNoteModal = (note: object) => {
             editNoteActive.value = true;
@@ -175,19 +190,164 @@ export default {
             editNoteBody.value = noteBody;
         };
 
-        watch(noteSearchInput, () => {
+        const searchNoteByTextInput = ref('');
+        const searchByOptionSelection = ref('text');
 
-            characterStore.updateCharacterNoteSearchCriteria(noteSearchInput.value)
-                .then(() => {
-                    characterStore.updateCharacterNoteListDisplay();
-                });
+        const searchCharacterMoveInputValue = computed(() => characterMoveStore.characterMoveNameSearchInputValue);
+        const characterMoveSearchInput = ref('');
+        // const searchByTagsInput = ref('');
 
+
+        const notLoggedInMessageActive = ref(false);
+        const showNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = true;
+            setTimeout(() => {
+                hideNotLoggedInMessage();
+            }, 3000);
+        }
+        const hideNotLoggedInMessage = () => {
+            notLoggedInMessageActive.value = false;
+        }
+
+        const searchNoteByTagsInput = ref('');
+        const switchSearchByOption = (option: string) => {
+            if(option === 'tags' && authStore.loggedInUser === null) {
+                showNotLoggedInMessage();
+                return;
+            }
+
+            const resetNoteListDisplays = {
+                'game': function () {
+                    gameStore.resetGameNoteListDisplay();
+                    searchNoteByTextInput.value = '';
+                },
+                'character': function () {
+                    characterStore.resetCharacterNoteListDisplay();
+                    searchNoteByTextInput.value = '';
+                },
+                'move': function () {
+                    characterMoveStore.resetCharacterMoveNoteListDisplay();
+                    searchNoteByTextInput.value = '';
+                },
+                'combo': function () {
+                    comboStore.resetCharacterComboNoteListDisplay();
+                    searchNoteByTextInput.value = '';
+                }
+            }
+            resetNoteListDisplays[props.modelName]();
+
+            searchByOptionSelection.value = option;
+        }
+
+        const addNoteTagToSearchList = (event) => {
+            const updateNoteTagSearchlist = {
+                'game': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        gameStore.addGameNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    gameStore.addGameNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
+                },
+                'character': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        characterStore.addCharacterNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    characterStore.addCharacterNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
+                },
+                'move': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        characterMoveStore.addCharacterMoveNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    characterMoveStore.addCharacterMoveNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
+                },
+                'combo': function () {
+                    if(event.target.tagName === 'SPAN') {
+                        comboStore.addCharacterComboNoteTagToSearchList(event.target.textContent);
+                        searchNoteByTagsInput.value = '';
+                        return;
+                    }
+                    comboStore.addCharacterComboNoteTagToSearchList(searchNoteByTagsInput.value);
+                    searchNoteByTagsInput.value = '';
+                }
+            }
+
+            updateNoteTagSearchlist[props.modelName]();
+        }
+
+        const removeNoteTagFromSearchList = (tag) => {
+            const updateNoteTagSearchList = {
+                'game': function () {
+                    gameStore.removeGameNoteTagFromSearchList(tag);
+                    gameStore.updateGameNoteListDisplay('tags');
+                },
+                'character': function () {
+                    characterStore.removeCharacterNoteTagFromSearchList(tag);
+                    characterStore.updateCharacterNoteListDisplay('tags');
+                },
+                'move': function () {
+                    characterMoveStore.removeCharacterMoveNoteTagFromSearchList(tag);
+                    characterMoveStore.updateCharacterMoveNoteListDisplay('tags');
+                },
+                'combo': function () {
+                    comboStore.removeCharacterComboNoteTagFromSearchList(tag);
+                    comboStore.updateCharacterComboNoteListDisplay('tags');
+                }
+            }
+            updateNoteTagSearchList[props.modelName]();
+        }
+
+        const toggleEditNoteTagsMode = (noteId: number) => {
+            if(authStore.loggedInUser === null) {
+                showNotLoggedInMessage();
+                // setTimeout(() => {
+                //     hideNotLoggedInMessage();
+                // }, 3000);
+                return;
+            }
+
+            if(!editNoteTagsActive.value.includes(noteId)) {
+                editNoteTagsActive.value.push(noteId);
+            } else if(editNoteTagsActive.value.includes(noteId)) {
+                editNoteTagsActive.value.splice(editNoteTagsActive.value.indexOf(noteId), 1);
+            } 
+        }
+
+        watch(searchNoteByTextInput, () => {
+            updateSearchNoteByTextCriteria(props.modelName, searchNoteByTextInput.value);
         });
+
+
+
+        watch(searchNoteByTagsInput, () => {
+            updateSearchNoteByTagsCriteria(props.modelName, searchNoteByTagsInput.value);
+        });
+
+        const addTagToNote = (tagName: string, noteId: string) => {
+            console.log(`${tagName}, ${noteId}`);
+            callAddTagToNote(props.modelName, props.modelId, noteId, tagName);
+        };
+
+        const removeTagFromNote = (tagId: number, noteId: number) => {
+            console.log(`${tagId}`);
+            callRemoveTagFromNote(props.modelName, props.modelId, noteId, tagId);
+        }
         return {
             authStore,
             characterStore,
+            gameStore,
             notes,
-            noteSearchInput,
+            noteTagsListDisplay,
+            searchNoteByTagsList,
+            searchNoteByTextInput,
+            searchNoteByTagsInput,
             createNoteActive,
             openCreateNoteModal,
             closeCreateNoteModal,
@@ -198,13 +358,13 @@ export default {
             viewNoteTitle,
             viewNoteBody,
 
-            saveNote,
             toggleViewNote,
             updateCreateNoteTitle,
             updateCreateNoteBody,
             updateEditNoteTitle,
             updateEditNoteBody,
             noteOptionsActive,
+            editNoteTagsActive,
             toggleNoteOptions,
             noteEditActive,
             deleteNote,
@@ -213,7 +373,17 @@ export default {
             editNoteId,
             editNoteTitle,
             editNoteBody,
-            closeEditNoteModal
+            closeEditNoteModal,
+
+            switchSearchByOption,
+            searchByOptionSelection,
+
+            addNoteTagToSearchList,
+            removeNoteTagFromSearchList,
+            toggleEditNoteTagsMode,
+            addTagToNote,
+            removeTagFromNote
+            
         }
     },
     components: {
@@ -222,7 +392,9 @@ export default {
         NoteModal,
         EllipsisIcon,
         CloseIcon,
-        AddIcon
+        AddIcon,
+        ResourceTagsList,
+        ResourceOptionsBar
     },
     props: {
         modelName: String,
@@ -233,40 +405,109 @@ export default {
 </script>
 <template lang="">
     <div class="mt-8 px-2 w-full">
-        <div class="">
-            <!-- <div v-if="characterNotes.length !== 0" class="flex flex-row w-full items-center">
-                <MagnifyingGlass class="h-10 w-10" />
-                <input 
-                    type="text" 
-                    placeholder="Search notes" 
-                    v-model="noteSearchInput" 
-                    class="my-8"
+        <div class="space-y-2">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2">
+
+                <p>Search by:</p>
+                <button
+                    class="text-black p-1" 
+                    :class="{ 'border rounded': searchByOptionSelection === 'text'}"
+                    @click="switchSearchByOption('text')"
                 >
-            </div> -->
+                    <span>Text</span>
+                </button>
+                <button
+
+                    class="text-black p-1" 
+                    :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
+                    @click="switchSearchByOption('tags')"
+                >
+                    <span>Tags</span>
+                </button>
+            </div>
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center">
+                <MagnifyingGlass class="h-10 w-10" />
+                <input
+                    v-if="searchByOptionSelection === 'text'"
+                    type="text" 
+                    placeholder="Enter title" 
+                    v-model="searchNoteByTextInput" 
+                    class=""
+                >
+                <input
+                    v-if="searchByOptionSelection === 'tags'"
+                    type="text" 
+                    placeholder="Enter tags" 
+                    v-model="searchNoteByTagsInput" 
+                    class=""
+                    @keyup.enter="addNoteTagToSearchList($event)"
+                >
+            </div>
+
+
+
+            <!-- ! It's hardcoded for games! -->
+            <div class="flex flex-row space-x-2 flex-wrap">
+                <div v-if="searchNoteByTagsInput.length !== 0" v-for="(tag, index) in noteTagsListDisplay" class="border rounded p-1">
+                    <div class="" @click="addNoteTagToSearchList($event)">
+                        <span>{{tag.name}}</span>
+                    </div>
+                </div>
+                            <!-- ! It's hardcoded for games! -->
+                <div v-for="(tag, index) in searchNoteByTagsList" :key="index" class="">
+                    <div
+                        class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
+                    >
+                        <span>{{tag}}</span>
+                        <CloseIcon class="h-5 w-5" @click="removeNoteTagFromSearchList(tag)" />
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
-                <p class="font-bold text-xl text-center">Must be logged in to view character notes!</p>
+                <p class="font-bold text-xl text-center">Must be logged in to view {{modelName}} notes!</p>
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="notes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
             </div>
-            <div class="xs:h-[33rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
+            <div class="xs:h-[24rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
                     <li v-for="note in notes" :key="note.id">
-                        <div>
+                        <div class="border rounded p-2">
                             <Note 
                                 :note="note"
-                                class="border rounded p-2"
                                 @click="toggleViewNote(note)"
+                            />
+                            <ResourceTagsList
+                                :tags="note.tags" 
+                                :editTagsActive="editNoteTagsActive"
+                                :resourceId="note.id"
+                                @trigger-add-tag-to-resource="addTagToNote"
+                                @trigger-remove-tag-from-resource="removeTagFromNote"
                             />
                         </div>
                         <div>
                             <div class="flex flex-row justify-end space-x-2">
+                                <!-- <ResourceOptionsBar
+                                    :resourceEditButton="true"
+                                    :resourceDeleteButton="true"
+                                    :resourceEditTagsButton="true"
+                                    :resourceOptionsActive="noteOptionsActive.includes(note.id)"
+                                    :resourceId="note.id"
+                                /> -->
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="deleteNote(note.id, modelName)">
                                     <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
                                 </button>
+                                <button v-if="noteOptionsActive.includes(note.id)" @click="toggleEditNoteTagsMode(note.id)">
+                                    <span v-if="editNoteTagsActive.includes(note.id)" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
+                                    <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
+                                </button>
                                 <button v-if="noteOptionsActive.includes(note.id)" @click="toggleNoteOptions(note.id, $event)">
                                     <span v-if="noteEditActive === note.id" class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Done</span>
-                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit</span>
+                                    <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit Note</span>
                                 </button>
                                 <CloseIcon v-if="noteOptionsActive.includes(note.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(note.id, $event)"/>
                                 <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(note.id, $event)" />

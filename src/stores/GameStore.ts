@@ -9,7 +9,13 @@ export const useGameStore = defineStore('GameStore', {
 
         gameNotes: [],
         gameNoteListDisplay: [],
-        gameNoteSearchInputValue: '',
+        gameNoteSearchByTextInputValue: '', // ? Do we still need this?
+
+        gameNoteSearchByTagInputValue: '',
+        gameNoteTagsListDisplay: [],
+        gameNotesTags: [],
+        gameNotesFilteredByTagsList: [],
+        gameNoteSearchByTagsList: [],
 
         comingSoonList: [
             'Tekken 7',
@@ -24,7 +30,7 @@ export const useGameStore = defineStore('GameStore', {
         attackButtonNotations: [],
         attackButtonIconLinks: [],
 
-        tags: [],
+        tags: [], // Entire list of tags for game
         tagsListDisplay: [],
         tagSearchCriteria: '',
 
@@ -167,8 +173,11 @@ export const useGameStore = defineStore('GameStore', {
             }
         },
         async fetchGames() {
+            const authStore = useAuthStore();
+            const endpoint = authStore.loggedInUser === null ? `/games/guest` : `/games`;
+
             try {
-                const data = await trainingModeAPI.get('/games')
+                const data = await trainingModeAPI.get(endpoint)
                 
                 this.games = [...data.data];
             }
@@ -185,7 +194,16 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    this.gameNotes = [...response.data]
+                    this.gameNotes = [...response.data];
+                    // this.gameNotesTags = [...this.gameNotes.]
+                    this.gameNotes.forEach(note => {
+                        note.tags.forEach(tag => {
+                            if(! this.gameNotesTags.find(gameNoteTag => gameNoteTag.name === tag.name )) {
+                                this.gameNotesTags.push(tag);
+
+                            }
+                        })
+                    });
                     this.updateGameNoteListDisplay();
                 })
             } catch (error) {
@@ -243,7 +261,6 @@ export const useGameStore = defineStore('GameStore', {
             this.game.bread_crumb_type = 'game';
             this.gameNoteListDisplay = [...this.game.notes];
             localStorage.setItem('game', this.game.abbreviation);
-            
         },
         async saveGameNote(gameId: string, note: object) {
             const authStore = useAuthStore();
@@ -301,13 +318,50 @@ export const useGameStore = defineStore('GameStore', {
             }
         },
 
-        async updateGameNoteListDisplay() {
-            if(this.gameNoteSearchInputValue.length === 0) {
+        async updateGameNoteListDisplay(criteria?: 'text' | 'tags') {
+            let gameNoteListFilteredByTags: object[] = [];
+
+            // TODO Add an `if` here for if `criteria` is 'text'?
+            if(this.gameNoteSearchByTextInputValue.length === 0) {
                 this.gameNoteListDisplay = [...this.gameNotes];
             } else {
-                this.gameNoteListDisplay = this.game.notes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchInputValue.toLowerCase()))
+                // TODO This will change once we remove note titles
+                this.gameNoteListDisplay = this.gameNotes.filter(gameNote => gameNote.title.toLowerCase().includes(this.gameNoteSearchByTextInputValue.toLowerCase()))
             }
-        },        
+
+            if(criteria === 'tags') {
+                if(this.gameNoteSearchByTagInputValue.length === 0) {
+                    this.resetGameNoteListDisplay();
+                    return;
+                }
+
+                this.gameNotes.forEach(note => {
+                    note.tags.forEach(tag => {
+                        if(this.gameNoteSearchByTagsList.includes(tag.name)) {
+                            gameNoteListFilteredByTags.push(note);
+                        }
+                    })
+                })
+                
+                this.gameNoteListDisplay = [...gameNoteListFilteredByTags];
+            }
+
+            
+        },
+
+        async addGameNoteTagToSearchList(tag: string) {
+            const gameNoteTagNamesArray = this.gameNotesTags.map(tag => tag.name);
+            const gameNoteTagExists = gameNoteTagNamesArray.includes(tag);
+
+            if(this.gameNoteSearchByTagsList.includes(tag) === false && gameNoteTagExists === true) {
+                this.gameNoteSearchByTagsList.push(tag);
+                this.updateGameNoteListDisplay('tags');
+            }
+        },
+        async removeGameNoteTagFromSearchList(tag: object) {
+            this.gameNoteSearchByTagsList.splice(this.gameNoteSearchByTagsList.indexOf(tag), 1);
+        },
+
         async updateTagsListDisplay() {
             this.tagsListDisplay = this.tags.filter(tag => {
                 return tag.name.includes(this.tagSearchCriteria);
@@ -316,6 +370,63 @@ export const useGameStore = defineStore('GameStore', {
         },
         async updateTagSearchCriteria(input: string) {
             this.tagSearchCriteria = input;
-        }
+        },
+        async resetGameNoteListDisplay() {
+            this.gameNoteListDisplay = [...this.gameNotes];
+        },
+        async updateSearchGameNoteByTextCriteria(input: string) {
+            this.gameNoteSearchByTextInputValue = input;
+        },
+
+        async updateSearchGameNoteByTagsCriteria(input: string) {
+            this.gameNoteSearchByTagInputValue = input;
+        },
+        async updateGameNoteTagsListDisplay() {
+            if(this.gameNoteSearchByTagInputValue.length === 0) {
+                this.gameNoteTagsListDisplay = [];
+                return;
+            }
+            this.gameNoteTagsListDisplay = this.gameNotesTags.filter(tag => {
+                return tag.name.includes(this.gameNoteSearchByTagInputValue);
+            })
+        },
+        async addTagToGameNote(gameId: number, gameNoteId: string, newTag: string) {
+            const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            console.log('add tag to move hit');
+            try {
+                await trainingModeAPI.post(`/games/${gameId}/notes/${gameNoteId}/tags`, {
+                    tags: [newTag]
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    console.log('hello?');
+                    console.log(response);
+                    gameStore.fetchTags(gameId);
+                    this.fetchGameNotes(gameId);
+                })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async removeTagFromGameNote(gameId: string, gameNoteId: number, tagId: number) {
+            const authStore = useAuthStore();
+            try {
+                await trainingModeAPI.delete(`/games/${gameId}/notes/${gameNoteId}/tags/${tagId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authStore.token}`
+                    }
+                })
+                .then(response => {
+                    this.fetchGameNotes(gameId);
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
     }
 });

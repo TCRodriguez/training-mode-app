@@ -5,7 +5,7 @@ import { useCharacterStore } from "@/stores/CharacterStore";
 import { useGameStore } from "@/stores/GameStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
 import { useComboStore } from "@/stores/ComboStore";
-import { getGameId, getCharacterId } from '@/common/helpers';
+import { getGameId, getCharacterId, getCharacterMoveId, getCharacterComboId } from '@/common/helpers';
 
 export const useAuthStore = defineStore('AuthStore', {
     state: () => ({
@@ -38,7 +38,9 @@ export const useAuthStore = defineStore('AuthStore', {
 
                     const gameId = getGameId();
                     const characterId = characterStore.character.id === undefined ? getCharacterId() : characterStore.character.id;
-                    
+                    const characterMoveId = getCharacterMoveId();
+                    const characterComboId = getCharacterComboId();
+
                     gameStore.fetchGames()
                     .then(() => {
                         gameStore.setGame(gameId);
@@ -47,7 +49,9 @@ export const useAuthStore = defineStore('AuthStore', {
                     characterStore.fetchCharacters(gameId);
                     characterStore.fetchCharacterNotes(gameId, characterId);
                     characterMoveStore.fetchCharacterMoves(gameId, characterId);
+                    characterMoveStore.fetchCharacterMoveNotes(gameId, characterId, characterMoveId);
                     comboStore.fetchCharacterCombos(gameId, characterId);
+                    comboStore.fetchCharacterComboNotes(gameId, characterId, characterComboId);
                     return response;
                 });
             } catch (error) {
