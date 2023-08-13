@@ -108,13 +108,15 @@ export default {
         const noteOptionsActive = ref([]);
         const noteEditActive = ref(0);
         const toggleNoteOptions = (noteId: string) => {
+            if(editNoteTagsActive.value.includes(noteId)) {
+                toggleEditNoteTagsMode(noteId);
+            }
             if(!noteOptionsActive.value.includes(noteId)) {
                 noteOptionsActive.value.push(noteId);
             } else if(noteOptionsActive.value.includes(noteId)) {
                 noteOptionsActive.value.splice(noteOptionsActive.value.indexOf(noteId), 1);
             }
 
-            console.log(noteOptionsActive.value);
         };
         const editNoteTagsActive = ref([]);
 
