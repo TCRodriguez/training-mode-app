@@ -43,12 +43,13 @@ export default {
 
 <template>
     <main class="flex justify-center">
-      <div class="bg-gray w-full xs:h-screen sm:h-full lg:h-screen relative">
-        <!-- <NavBar v-if="loginStore.loggedInUser !== null"></NavBar> -->
-        <NavBar></NavBar>
-        <RouterView />
+      <div id="main" class="bg-apex-blue text-white w-full xs:h-screen sm:h-full lg:h-screen relative">
+        <div id="#overlay" class="absolute z-0 bg-apex-blue w-full h-full opacity-[.98]"></div>
+        <div class="z-50 absolute">
+          <NavBar></NavBar>
+          <RouterView />
+        </div>
       </div>
-      <!-- <div class="bg-black fixed opacity-80 w-full h-screen mt-24">test</div> -->
     </main>
   <!-- <header>
     <img
@@ -71,6 +72,13 @@ export default {
 </template>
 
 <style scoped>
+#main {
+  background-image: url('src/assets/art_bg_001.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 /* header {
   line-height: 1.5;
   max-height: 100vh;
