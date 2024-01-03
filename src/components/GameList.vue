@@ -5,6 +5,7 @@
     import { useRouter } from 'vue-router';
     import GameBanner from './GameBanner.vue';
     import MagnifyingGlass from './icons/MagnifyingGlass.vue';
+    import SearchBar from './SearchBar.vue';
     export default {
         setup() {
             const gameStore = useGameStore();
@@ -29,11 +30,17 @@
                 localStorage.setItem('gameId', gameId);
             }
 
+            const updateGameSearchInput = (searchInput: string) => {
+                // gameStore.setGameNoteSearchInput(searchInput);
+                // TODO: Implement search functionality
+            }
+
             return {
                 gameStore,
                 navigationStore,
                 router,
-                goToCharacterSelect
+                goToCharacterSelect,
+                updateGameSearchInput
             }
         },
         created() {
@@ -44,7 +51,8 @@
         },
         components: {
             GameBanner,
-            MagnifyingGlass
+            MagnifyingGlass,
+            SearchBar
         }
     }
 </script>
@@ -58,19 +66,22 @@
                 type="text" 
                 placeholder="Search Games"
             >
+            <SearchBar @trigger-update-search-input="updateGameSearchInput" />
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="space-y-4 xs:h-96 lg:h-[45rem]">
+            <ul class="grid grid-cols-2 space-y-4 xs:h-96 lg:h-[45rem]">
+            <!-- <ul class="flex flex-row space-y-4 xs:h-96 lg:h-[45rem]"> -->
                 <li 
                     v-for="game in gameStore.getGames"
                     :key="game.id"
                     @click="goToCharacterSelect(game.id)"
+                    class="flex flex-col justify-center"
                 >
-                    <div class="relative flex flex-col items-center">
-                        <div class="absolute w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-5xl z-10">
+                    <div class="flex flex-col items-center">
+                        <GameBanner class="flex justify-center lg:w-4/6" :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
+                        <div class="w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-2xl z-10">
                             <p v-if="gameStore.comingSoonList.includes(game.title)" class="">Support coming soon...</p>
                         </div>
-                        <GameBanner :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
                     </div>
                 </li>
             </ul>

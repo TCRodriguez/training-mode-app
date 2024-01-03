@@ -26,7 +26,7 @@ export default {
         <div class="flex flex-row px-2">
             <div v-for="item in dashboardItems" :key="item" class="border rounded">
                 <RouterLink :to="item.link">
-                    <DashboardItem :name="item.name" :icon="item.icon" class="p-4" />
+                    <DashboardItem :name="item.name" :icon="item.icon" class="p-4 fill-white" />
                 </RouterLink>
 
             </div>

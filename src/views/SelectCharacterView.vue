@@ -57,13 +57,13 @@ export default {
 </script>
 <template lang="">
     <div class="flex flex-col items-center">
-        <GameBanner class="h-1/2 w-1/2" :game="getGameAbbreviation()" />
+        <GameBanner class="xs:w-2/3 flex justify-center lg:w-1/5" :game="getGameAbbreviation()" />
         <nav>
             <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
                 <li 
                     v-for="(_, tab) in tabs" 
                     :key="tab"
-                    :class="{ 'border-b-2 border-b-blue': currentTab === tab }"
+                    :class="{ 'border-b-2 border-b-apex-yellow': currentTab === tab }"
                     @click="currentTab = tab"
                 >
                     {{ tab }}
