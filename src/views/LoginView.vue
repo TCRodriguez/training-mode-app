@@ -37,7 +37,7 @@ export default {
                     <Field name="password" type="password" placeholder="Password" />
                 </div>
                 <div class="flex flex-row justify-center">
-                    <button class="rounded p-2 text-white bg-blue w-1/3">Login</button>
+                    <button class="rounded p-2 text-white bg-apex-blue w-1/3">Login</button>
                 </div>
             </Form>
         </div>

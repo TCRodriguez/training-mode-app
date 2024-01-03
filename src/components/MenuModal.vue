@@ -22,6 +22,10 @@ const authStore = useAuthStore();
                 <ExitOutlineIcon v-if="authStore.loggedInUser !== null" class="h-10 w-10" @click="authStore.logout()" />
                 <p v-if="authStore.loggedInUser !== null">Logout</p>
             </div>
+            <div>
+                <p>Want to help beta test TrainingMode?</p>
+                <p>Join us on <a href="https://discord.gg/zPkf2fXPtc" class="text-yellow">Discord!</a></p>
+            </div>
             <!-- <div>
                 <p>Register</p>
             </div>
