@@ -9,11 +9,13 @@ export default {
         const authStore = useAuthStore();
         const loginFailedMessage = ref('');
         const onSubmit = (values: {email: string, password: string}) => {
-            console.log(values);
             const { email, password } = values;
             authStore.login(email, password)
             .then(response => {
-                const responseMessage = response.response.data.message;
+                let responseMessage;
+                if(response.response) {
+                    responseMessage = response.response.data.message;
+                }
                 if(responseMessage === 'The provided credentials are incorrect.') {
                     loginFailedMessage.value = 'Incorrect email or password';
                     loginFailed.value = true;
@@ -46,20 +48,20 @@ export default {
                     <CloseIcon class="h-10 w-10" @click="$emit('triggerToggleLoginModal'), resetForm()" />
                 </div>
                 <div class="flex flex-row justify-center">
-                    <div class="flex flex-row itens-center space-x-1">
+                    <div class="flex flex-row itens-center space-x-1 justify-center">
                         <div class="flex items-center">
                             <p class="">Log into</p>
                         </div>
-                        <p class="font-bold text-lg">TrainingMode</p>
-                    </div>
-                    <div>
-                        <p class="text-xs">TM</p>
+                        <img class="w-1/2 h-auto" src="/src/assets/Training_Mode_Logo_White.png" alt="">
+                        <div>
+                            <p class="text-xs font-bold">TM</p>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-4">
-                    <Field name="email" type="email" placeholder="Email" rules="required|email" :validateOnBlur="false" :validateOnChange="true" />
+                    <Field name="email" type="email" placeholder="Email" rules="required|email" :validateOnBlur="false" :validateOnChange="true" class="bg-apex-blue" />
                     <ErrorMessage name="email" class="text-red"/>
-                    <Field name="password" type="password" placeholder="Password" rules="required" :validateOnBlur="false" :validateOnChange="true" />
+                    <Field name="password" type="password" placeholder="Password" rules="required" :validateOnBlur="false" :validateOnChange="true" class="bg-apex-blue" />
                     <ErrorMessage name="password" class="text-red" />
                     <div v-if="loginFailed">
                         <p class="text-red">{{ loginFailedMessage }}</p>
@@ -72,6 +74,8 @@ export default {
         </div>
     </div>
 </template>
-<style lang="">
-    
+<style scoped>
+    input::placeholder {
+        @apply text-white;
+    }
 </style>

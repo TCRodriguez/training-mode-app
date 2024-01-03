@@ -14,6 +14,7 @@ import GameNotationGroup from './GameNotationGroup.vue';
 import CharacterCombo from './CharacterCombo.vue';
 import LegendOverlay from './LegendOverlay.vue';
 import CharacterComboShowModal from './CharacterComboShowModal.vue';
+import SearchBar from './SearchBar.vue';
 
 import { useAuthStore } from '@/stores/AuthStore';
 import { useComboStore } from '@/stores/ComboStore';
@@ -188,6 +189,9 @@ export default {
 
         const selectedCharacterComboId = ref(null);
 
+        const updateSearchByTagsInput = (searchValue: string) => {
+            searchByTagsInput.value = searchValue;
+        }
         watch(searchByTagsInput, () => {
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
@@ -233,7 +237,9 @@ export default {
             openCharacterComboModal,
             closeCharacterComboModal,
             showCharacterComboModal,
-            selectedCharacterComboId
+            selectedCharacterComboId,
+
+            updateSearchByTagsInput
         }
     },
     components: {
@@ -250,16 +256,21 @@ export default {
         CharacterCombo,
         HelpCircleOutlineIcon,
         LegendOverlay,
-        CharacterComboShowModal
+        CharacterComboShowModal,
+        SearchBar
     }
 }
 </script>
 <template lang="">
     <div class="mt-8">
-        <div class="flex flex-col space-y-2 px-2">
-            <div v-if="comboList.length !== 0" class="flex flex-row items-center">
-                <MagnifyingGlass class="h-10 w-10" />
-                <input type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)">
+        <div class="flex flex-col space-y-2 px-2 lg:px-80">
+            <div v-if="comboList.length !== 0" class="flex flex-row items-center ml-5">
+                <SearchBar 
+                    :placeholder="'Enter tag'" 
+                    :searchType="'tags'" 
+                    @trigger-update-search-by-tags-input="updateSearchByTagsInput" 
+                    @trigger-add-tag-to-search-list="addTagToSearchList" 
+                />
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
@@ -283,7 +294,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[28rem] lg:h-96 pb-24">
+            <ul class="space-y-2 overflow-y-auto xs:h-[26rem] lg:h-96 pb-24">
                 <li v-for="(combo, index) in comboList" 
                     :key="combo.id"
                     class="flex flex-col"
@@ -292,7 +303,7 @@ export default {
                         <div class="flex flex-row items-center space-x-2">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
-                                class="border rounded p-2 overflow-x-auto w-full"
+                                class="border rounded p-2 overflow-x-auto w-full bg-white text-black"
                                 @save-tag="addTagToCharacterCombo"
                                 @trigger-remove-tag="removeTagFromCharacterCombo"
                                 :inputs="combo.inputs"
@@ -313,7 +324,7 @@ export default {
                                 <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Add Tags</span>
                             </button>
                             <CloseIcon v-if="characterComboOptionsActive.includes(combo.id)" class="h-10 w-10" aria-labelledby="Close move options" @click="toggleComboOptions(combo.id, $event)"/>
-                            <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open move options" @click="toggleComboOptions(combo.id, $event)" />
+                            <EllipsisIcon v-else class="h-10 w-10 fill-white" aria-labelledby="Open move options" @click="toggleComboOptions(combo.id, $event)" />
                             <div class="flex justify-center items-center">
                                 <OpenOutlineIcon class="h-10 w-10" @click="openCharacterComboModal(combo.id, combo.inputs)" />
                             </div>

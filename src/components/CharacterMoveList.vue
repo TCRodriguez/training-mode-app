@@ -13,6 +13,7 @@ import EllipsisIcon from './icons/EllipsisIcon.vue';
 import CloseIcon from './icons/CloseIcon.vue';
 import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
 import OpenOutlineIcon from './icons/OpenOutlineIcon.vue';
+import SearchBar from './SearchBar.vue';
 
 import LegendOverlay from './LegendOverlay.vue';
 
@@ -149,12 +150,20 @@ export default {
 
         const selectedCharacterMoveId = ref(null);
 
+        const updateCharacterMoveSearchInput = (searchValue: string) => {
+            characterMoveSearchInput.value = searchValue;
+
+        }
         watch(characterMoveSearchInput, () => {
             characterMoveStore.updateCharacterMoveSearchCriteria(characterMoveSearchInput.value)
                 .then(() => {
                     characterMoveStore.updateCharacterMovesListDisplay();
                 })
         });
+
+        const updateSearchByTagsInput = (searchValue: string) => {
+            searchByTagsInput.value = searchValue;
+        }
 
         watch(searchByTagsInput, () => {
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
@@ -200,12 +209,14 @@ export default {
 
             openLegendOverlay,
             closeLegendOverlay,
-            showLegendOverlay
+            showLegendOverlay,
+
+            updateCharacterMoveSearchInput,
+            updateSearchByTagsInput
         }
     },
     created() {
         this.characterMoveStore.fetchCharacterMoves(this.route.params.game, this.route.params.character);
-        console.log(this.characterMoveStore.characterMoves);
     },
     components: {
         CharacterMove,
@@ -215,20 +226,21 @@ export default {
         CloseIcon,
         OpenOutlineIcon,
         HelpCircleOutlineIcon,
-        LegendOverlay
+        LegendOverlay,
+        SearchBar
     }
 
 }
 </script>
 <template lang="">
-    <div class="px-2">
+    <div class="px-2 lg:px-80">
         <div class="my-2 flex flex-col space-x-2">
             <div class="flex flex-row items-center justify-between space-x-2 my-2">
                 <div class="flex flex-row items-center space-x-2">
 
                     <p>Search by:</p>
                     <button
-                        class="text-black p-1" 
+                        class="text-white p-1" 
                         :class="{ 'border rounded': searchByOptionSelection === 'name'}"
                         @click="switchSearchByOption('name')"
                     >
@@ -236,7 +248,7 @@ export default {
                     </button>
                     <button
     
-                        class="text-black p-1" 
+                        class="text-white p-1" 
                         :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
                         @click="switchSearchByOption('tags')"
                     >
@@ -247,7 +259,7 @@ export default {
                     <p class="text-black rounded bg-yellow p-1 xs:text-xs lg:text-lg">Log in to search by tags!</p>
                 </div>
                 <div>
-                    <HelpCircleOutlineIcon class="h-10 w-10" @click="openLegendOverlay()" />
+                    <HelpCircleOutlineIcon class="h-10 w-10 fill-white" @click="openLegendOverlay()" />
                     <LegendOverlay
                         :showLegendOverlay="showLegendOverlay === true"
                         :showGameNotations="false"
@@ -260,9 +272,19 @@ export default {
                 </div>
             </div>
             <div class="flex flex-row items-center">
-                <MagnifyingGlass class="h-10 w-10" />
-                <input v-if="searchByOptionSelection === 'name'" type="text" placeholder="Search by name" v-model="characterMoveSearchInput">
-                <input v-if="searchByOptionSelection === 'tags'" type="text" placeholder="Enter tag" v-model="searchByTagsInput" @keyup.enter="addTagToSearchList($event)">
+                <SearchBar 
+                    v-if="searchByOptionSelection === 'name'"
+                    :placeholder="'Enter move name'"
+                    :searchType="'title'"
+                    @trigger-update-search-input="updateCharacterMoveSearchInput"
+                />
+                <SearchBar 
+                    v-if="searchByOptionSelection === 'tags'"
+                    :placeholder="'Enter tags'"
+                    :searchType="'tags'"
+                    @trigger-update-search-by-tags-input="updateSearchByTagsInput" 
+                    @trigger-add-tag-to-search-list="addTagToSearchList" 
+                />
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
@@ -281,7 +303,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[27rem] lg:h-[26rem] overflow-y-auto space-y-2 pb-8">
+            <ul class="xs:h-[25rem] lg:h-[26rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
@@ -299,7 +321,7 @@ export default {
                             :inputs="move.inputs" 
                             :tags="move.tags"
                             :editTagsActive="characterMoveEditTagsActive"
-                            class="border rounded p-2 w-full"
+                            class="border rounded p-2 w-full bg-white text-black"
                         />
                     </div>
                     <div v-if="authStore.loggedInUser !== null" class="flex flex-row justify-end items-center space-x-2">
@@ -309,7 +331,7 @@ export default {
                             <span v-else class="border border-yellow rounded p-2 bg-yellow font-bold text-black">Edit Tags</span>
                         </button>
                         <CloseIcon v-if="characterMoveOptionsActive.includes(move.id)" class="h-10 w-10" aria-labelledby="Close move options" @click="toggleMoveOptions(move.id, $event)" />
-                        <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open move options" @click="toggleMoveOptions(move.id, $event)" />
+                        <EllipsisIcon v-else class="h-10 w-10 fill-white" aria-labelledby="Open move options" @click="toggleMoveOptions(move.id, $event)" />
                         <div>
                             <OpenOutlineIcon class="h-10 w-10" @click="openCharacterMoveModal(move.id, move.inputs)" />
                         </div>

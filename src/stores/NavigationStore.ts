@@ -9,7 +9,9 @@ export const useNavigationStore = defineStore('NavigationStore', {
                 icon: 'GameControllerIcon',
                 link: '/games'
             },
-        ]
+        ],
+        menuModalContainerActive: false,
+        menuModalItemsActive: false,
     }),
     getters: {
 
@@ -24,6 +26,12 @@ export const useNavigationStore = defineStore('NavigationStore', {
         async popCharacterNavItem() {
             this.navItems.pop();
             console.log(this.navItems);
+        },
+        async toggleMenuModalContainer() {
+            this.menuModalContainerActive = !this.menuModalContainerActive;
+        },
+        async toggleMenuModalItems() {
+            this.menuModalItemsActive = !this.menuModalItemsActive;
         }
     }
 });

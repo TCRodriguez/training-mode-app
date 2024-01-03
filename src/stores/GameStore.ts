@@ -19,6 +19,8 @@ export const useGameStore = defineStore('GameStore', {
 
         comingSoonList: [
             'Tekken 7',
+            'Tekken 8',
+            'Mortal Kombat 1'
         ],
         gameNotations: [],
 
@@ -174,12 +176,14 @@ export const useGameStore = defineStore('GameStore', {
         },
         async fetchGames() {
             const authStore = useAuthStore();
-            const endpoint = authStore.loggedInUser === null ? `/games/guest` : `/games`;
-
+            // const endpoint = authStore.loggedInUser === null ? `/games/guest` : `/games`;
+            const endpoint = '/games/guest';
+            
             try {
                 const data = await trainingModeAPI.get(endpoint)
                 
                 this.games = [...data.data];
+                this.games = this.games.filter(game => game.abbreviation !== 't7');
             }
             catch(error) {
                 console.log(error);
@@ -259,7 +263,9 @@ export const useGameStore = defineStore('GameStore', {
         async setGame(gameId: string) {
             this.game = this.games.find(game => game.id == gameId);
             this.game.bread_crumb_type = 'game';
-            this.gameNoteListDisplay = [...this.game.notes];
+            if(this.game.notes) {
+                this.gameNoteListDisplay = [...this.game.notes];
+            }
             localStorage.setItem('game', this.game.abbreviation);
         },
         async saveGameNote(gameId: string, note: object) {

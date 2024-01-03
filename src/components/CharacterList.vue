@@ -6,6 +6,7 @@
     import { ref, computed, watch } from 'vue';
     import CharacterCard from './CharacterCard.vue';
     import MagnifyingGlass from './icons/MagnifyingGlass.vue';
+    import SearchBar from './SearchBar.vue';
     import { getGameId } from '@/common/helpers';
     export default {
         setup(params) {
@@ -37,6 +38,9 @@
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);
             const characterSearchInput = ref('');
+            const updateCharacterSearchInput = (searchValue: string) => {
+                characterSearchInput.value = searchValue;
+            }
             let inputHasFocusBool = ref(false);
             const showCharacterList = () => {
                 inputHasFocusBool.value = !inputHasFocusBool.value
@@ -65,7 +69,8 @@
                 characterSearchInput,
                 inputHasFocusBool,
                 showCharacterList,
-                hideCharacterList
+                hideCharacterList,
+                updateCharacterSearchInput
             }
         },
         created() {
@@ -76,25 +81,22 @@
         },
         components: {
             CharacterCard,
-            MagnifyingGlass
+            MagnifyingGlass,
+            SearchBar
         }
     }
 </script>
 <template lang="">
-    <div class="w-full p-2">
+    <div class="w-full p-2 lg:px-80">
         <div class="flex flex-row items-center justify-center">
-            <div class="flex flex-row xs:w-full items-center lg:w-1/3">
-                <MagnifyingGlass class="h-10 w-10" />
-                <input 
-                    type="text" 
-                    placeholder="Enter character name" 
-                    v-model="characterSearchInput" 
-                    class="my-8"
-                >
-            </div>
+                <SearchBar 
+                    :placeholder="'Enter character name'" 
+                    :searchType="'title'" 
+                    @trigger-update-search-input="updateCharacterSearchInput" 
+                />
         </div>
         <div class="xs:h-[27.5rem] lg:h-[23rem] overflow-y-auto">
-            <ul class="space-y-2 divide-y-2">
+            <ul class="space-y-4">
                 <li
                     v-for="character in characterStore.characterListDisplay"
                     :key="character.id"
@@ -106,6 +108,8 @@
         </div>
     </div>
 </template>
-<style lang="">
-    
+<style scoped>
+    input::placeholder {
+        @apply text-black;
+    }
 </style>

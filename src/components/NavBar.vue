@@ -4,6 +4,9 @@ import ExitOutlineIcon from "@/components/icons/ExitOutlineIcon.vue";
 import PersonOutlineIcon from "./icons/PersonOutlineIcon.vue";
 import LoginOutlineIcon from "./icons/LoginOutlineIcon.vue";
 import ChevronBackOutlineIcon from "./icons/ChevronBackOutlineIcon.vue";
+import MenuIcon from "./icons/MenuIcon.vue";
+import CloseIcon from "./icons/CloseIcon.vue";
+import MenuModal from "./MenuModal.vue";
 import LoginModal from "@/components/LoginModal.vue"
 import { useAuthStore } from "@/stores/AuthStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
@@ -48,6 +51,14 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 authStore.toggleLoginModal();
             }
 
+            const toggleMenuModal = () => {
+                navigationStore.toggleMenuModalContainer();
+            }
+
+            const toggleMenuModalItems = () => {
+                navigationStore.toggleMenuModalItems();
+            }
+
             const env = window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1') ? 'develop' : 'production';
 
             return {
@@ -62,6 +73,8 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 toggleLoginModal,
                 loginModalActive,
                 env,
+                toggleMenuModal,
+                toggleMenuModalItems
             }
         },
         components: {
@@ -71,6 +84,9 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
             PersonOutlineIcon,
             LoginOutlineIcon,
             LoginModal,
+            MenuIcon,
+            CloseIcon,
+            MenuModal
         }
     }
 </script>
@@ -83,8 +99,13 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="flex flex-row">
-                        <router-link to="/" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link>
-                        <p class="text-[.50rem]">TM</p>
+                        <!-- <router-link to="/" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link> -->
+                        <router-link to="/" class="font-bold text-xl flex justify-center" @click="clearBreadCrumbs()">
+                            <div class="flex flex-row justify-center">
+                                <img src="/src/assets/Training_Mode_Logo_White.png" alt="" class="xs:w-5/6 lg:w-1/3">
+                                <p class="text-[.50rem] font-bold">TM</p>
+                            </div>
+                        </router-link>
                     </div>
                     <div v-if="authStore.loggedInUser?.username === 'NiGHTBass'" class="flex flex-row">
                         <p>{{env}}</p>
@@ -100,19 +121,25 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
 
                 </div>
                 <div class="">
-                    <LoginOutlineIcon v-if="authStore.loggedInUser === null" class="h-10 w-10" @click="toggleLoginModal()"/>
-                    <ExitOutlineIcon v-else @click="logout()" class="h-10 w-10" />
+                    <MenuIcon class="h-10 w-10" @click="toggleMenuModal(), toggleMenuModalItems()" />
+                    <!-- <MenuModal :class="{ 'hidden': navigationStore.menuModalActive === false }" /> -->
+                    <!-- <CloseIcon class="h-10 w-10" /> -->
+                    <!-- <LoginOutlineIcon v-if="authStore.loggedInUser === null" class="h-10 w-10" @click="toggleLoginModal()"/>
+                    <ExitOutlineIcon v-else @click="logout()" class="h-10 w-10" /> -->
                 </div>
             </div>
             <div class="hidden">
             </div>
+            <!-- TODO Get rid of this BreadCrumb component -->
             <BreadCrumb class="hidden" />
-            <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0 z-40" :class="{ 'hidden': loginModalActive === false }"></div>
+            <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0 z-40" :class="{ 'hidden': navigationStore.menuModalContainerActive === false }"></div>
             <div class="">
-                <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between justify-center" :class="{'hidden': loginModalActive === false }">
-                    <div class="h-full flex flex-col justify-center items-center m-2">
-                        <div class="bg-gray z-50 lg:w-1/2">
-                            <LoginModal class="p-2 m-2" @trigger-toggle-login-modal="toggleLoginModal()" />
+                <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between justify-center" :class="{'hidden': navigationStore.menuModalContainerActive === false }">
+                    <div class="h-full flex flex-col justify-center items-center m-2 z-50">
+                        <!-- TODO Should we move these stylings into the LoginModal component? -->
+                        <MenuModal v-if="navigationStore.menuModalItemsActive" @trigger-toggle-login-modal="toggleLoginModal(), toggleMenuModalItems()" />
+                        <div :class="{'hidden': loginModalActive === false }" class="z-50 lg:w-1/2">
+                            <LoginModal class="p-2 m-2 bg-apex-blue" @trigger-toggle-login-modal="toggleLoginModal(), toggleMenuModal()" />
                         </div>
                     </div>
                 </div>

@@ -30,7 +30,10 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         getCharacterMoveTags(state) {
             return function (moveId: string) {
                 let characterMove = state.characterMoveListDisplay.find(move => move.id === moveId);
-                let tags = [...characterMove?.tags];
+                let tags = [];
+                if(characterMove?.tags) {
+                    tags = [...characterMove?.tags];
+                }
                 
                 return tags;
             }
@@ -265,7 +268,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 .then(response => {
                     console.log(response);
                     this.characterMoveNotes = [...response.data]
-                    // console.log(this.characterMoveNotes);
                     this.characterMoveNotes.forEach(note => {
                         console.log(note);
                         note.tags.forEach(tag => {
