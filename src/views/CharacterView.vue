@@ -76,7 +76,7 @@ export default {
                 <li 
                     v-for="(_, tab) in tabs" 
                     :key="tab"
-                    :class="{ 'border-b-2 border-b-blue': currentTab === tab }"
+                    :class="{ 'border-b-2 border-b-apex-yellow': currentTab === tab }"
                     @click="currentTab = tab"
                 >
                     {{ tab }}

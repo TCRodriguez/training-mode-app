@@ -21,26 +21,28 @@ export const useAuthStore = defineStore('AuthStore', {
             this.loginFormActive = !this.loginFormActive;
         },
         async login(email: string, password: string) {
+            const navigationStore = useNavigationStore();
             const gameStore = useGameStore();
             const characterStore = useCharacterStore();
             const characterMoveStore = useCharacterMoveStore();
             const comboStore = useComboStore();
+            let apiResponse = null;
             try {
                 await trainingModeApi.post('/login', {
                     email: email,
                     password: password,
                 })
                 .then(response => {
-                    console.log(response);
                     this.toggleLoginModal();
                     this.token = response.data.token;
-                    this.loggedInUser = response.data.user
+                    this.loggedInUser = response.data.user;
+                    navigationStore.toggleMenuModalContainer();
 
                     const gameId = getGameId();
                     const characterId = characterStore.character.id === undefined ? getCharacterId() : characterStore.character.id;
                     const characterMoveId = getCharacterMoveId();
                     const characterComboId = getCharacterComboId();
-
+                    
                     gameStore.fetchGames()
                     .then(() => {
                         gameStore.setGame(gameId);
@@ -52,12 +54,16 @@ export const useAuthStore = defineStore('AuthStore', {
                     characterMoveStore.fetchCharacterMoveNotes(gameId, characterId, characterMoveId);
                     comboStore.fetchCharacterCombos(gameId, characterId);
                     comboStore.fetchCharacterComboNotes(gameId, characterId, characterComboId);
+                    apiResponse = response;
                     return response;
                 });
             } catch (error) {
                 console.log(error);
+                apiResponse = error;
                 return error;
             }
+
+            return apiResponse;
         },
         async logout() {
             this.clearPiniaState();

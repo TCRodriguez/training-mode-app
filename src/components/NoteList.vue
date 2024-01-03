@@ -16,6 +16,7 @@ import CloseIcon from './icons/CloseIcon.vue';
 import AddIcon from './icons/AddIcon.vue';
 import ResourceTagsList from './ResourceTagsList.vue';
 import ResourceOptionsBar from './ResourceOptionsBar.vue';
+import SearchBar from './SearchBar.vue';
 
 import {
     getGameId, 
@@ -320,12 +321,19 @@ export default {
             } 
         }
 
+        const updateSearchNoteByTextInput = (searchValue: string) => {
+            searchNoteByTextInput.value = searchValue;
+        }
+
         watch(searchNoteByTextInput, () => {
             updateSearchNoteByTextCriteria(props.modelName, searchNoteByTextInput.value);
         });
 
 
 
+        const updateSearchNoteByTagsInput = (searchValue: string) => {
+            searchNoteByTagsInput.value = searchValue;
+        }
         watch(searchNoteByTagsInput, () => {
             updateSearchNoteByTagsCriteria(props.modelName, searchNoteByTagsInput.value);
         });
@@ -382,7 +390,10 @@ export default {
             removeNoteTagFromSearchList,
             toggleEditNoteTagsMode,
             addTagToNote,
-            removeTagFromNote
+            removeTagFromNote,
+
+            updateSearchNoteByTextInput,
+            updateSearchNoteByTagsInput
             
         }
     },
@@ -394,7 +405,8 @@ export default {
         CloseIcon,
         AddIcon,
         ResourceTagsList,
-        ResourceOptionsBar
+        ResourceOptionsBar,
+        SearchBar
     },
     props: {
         modelName: String,
@@ -404,13 +416,13 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8 px-2 w-full">
-        <div class="space-y-2">
+    <div class="mt-8 px-2 w-full lg:px-80">
+        <div class="">
             <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2">
 
                 <p>Search by:</p>
                 <button
-                    class="text-black p-1" 
+                    class="text-white p-1" 
                     :class="{ 'border rounded': searchByOptionSelection === 'text'}"
                     @click="switchSearchByOption('text')"
                 >
@@ -418,7 +430,7 @@ export default {
                 </button>
                 <button
 
-                    class="text-black p-1" 
+                    class="text-white p-1" 
                     :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
                     @click="switchSearchByOption('tags')"
                 >
@@ -426,7 +438,7 @@ export default {
                 </button>
             </div>
             <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center">
-                <MagnifyingGlass class="h-10 w-10" />
+                <!-- <MagnifyingGlass class="h-10 w-10" />
                 <input
                     v-if="searchByOptionSelection === 'text'"
                     type="text" 
@@ -441,7 +453,21 @@ export default {
                     v-model="searchNoteByTagsInput" 
                     class=""
                     @keyup.enter="addNoteTagToSearchList($event)"
-                >
+                > -->
+                <SearchBar
+                    v-if="searchByOptionSelection === 'text'"
+                    :placeholder="'Enter title'" 
+                    :searchType="'title'"
+                    @trigger-update-search-input="updateSearchNoteByTextInput" 
+                />
+                <SearchBar
+                    v-if="searchByOptionSelection === 'tags'"
+                    :placeholder="'Enter tags'"
+                    :searchType="'tags'"
+                    @trigger-update-search-by-tags-input="updateSearchNoteByTagsInput" 
+                    @trigger-add-tag-to-search-list="addNoteTagToSearchList" 
+                
+                />
             </div>
 
 
@@ -459,7 +485,7 @@ export default {
                         class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
                     >
                         <span>{{tag}}</span>
-                        <CloseIcon class="h-5 w-5" @click="removeNoteTagFromSearchList(tag)" />
+                        <CloseIcon class="h-5 w-5 fill-white" @click="removeNoteTagFromSearchList(tag)" />
                     </div>
                 </div>
             </div>
@@ -510,7 +536,7 @@ export default {
                                     <span v-else class="border border-blue rounded p-2 bg-blue font-bold text-white" @click="openEditNoteModal(note)">Edit Note</span>
                                 </button>
                                 <CloseIcon v-if="noteOptionsActive.includes(note.id)" class="h-10 w-10" aria-labelledby="Close note options" @click="toggleNoteOptions(note.id, $event)"/>
-                                <EllipsisIcon v-else class="h-10 w-10" aria-labelledby="Open note options" @click="toggleNoteOptions(note.id, $event)" />
+                                <EllipsisIcon v-else class="h-10 w-10 fill-white" aria-labelledby="Open note options" @click="toggleNoteOptions(note.id, $event)" />
                             </div>
                         </div>
                     </li>
@@ -553,7 +579,7 @@ export default {
         <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
-                class="h-20 w-20 absolute bottom-4 right-4 fill-green"
+                class="h-20 w-20 absolute bottom-4 lg:bottom-8 right-4 fill-green"
                 :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
                 @click="openCreateNoteModal()" 
             />
