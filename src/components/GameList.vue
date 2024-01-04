@@ -1,6 +1,7 @@
 <script lang="ts">
     import { storeToRefs } from 'pinia';
     import { useGameStore } from '../stores/GameStore';
+    import { useCharacterStore } from '@/stores/CharacterStore';
     import { useNavigationStore } from '@/stores/NavigationStore';
     import { useRouter } from 'vue-router';
     import GameBanner from './GameBanner.vue';
@@ -10,6 +11,7 @@
         setup() {
             const gameStore = useGameStore();
             const navigationStore = useNavigationStore();
+            const characterStore = useCharacterStore();
             const router = useRouter();
             const goToCharacterSelect = (gameId: string) => {
                 const game = gameStore.findGame(gameId);
@@ -23,11 +25,18 @@
                     link: `/games/${gameId}/characters`,
                     type: 'game'
                 };
-                router.push(navItem.link)
-
-                navigationStore.addNavigationItem(navItem)
-
-                localStorage.setItem('gameId', gameId);
+                
+                characterStore.fetchCharacters(gameId)
+                .then(() => {
+                    router.push(navItem.link)
+    
+                    navigationStore.addNavigationItem(navItem)
+    
+                    localStorage.setItem('gameId', gameId);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
             }
 
             const updateGameSearchInput = (searchInput: string) => {

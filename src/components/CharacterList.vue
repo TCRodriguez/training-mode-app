@@ -17,7 +17,6 @@
             const route = useRoute();
 
             const game = gameStore.game.abbreviation === undefined ? localStorage.getItem('game') : gameStore.game.abbreviation;
-
             const loadCharacterData = (characterId: string) => {
                 const gameId = getGameId();
                 
@@ -72,12 +71,6 @@
                 hideCharacterList,
                 updateCharacterSearchInput
             }
-        },
-        created() {
-            this.characterStore.fetchCharacters(this.route.params.game)
-            .catch(error => {
-                console.log(error);
-            })
         },
         components: {
             CharacterCard,
