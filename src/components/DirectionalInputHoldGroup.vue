@@ -40,7 +40,12 @@ export default {
             :key="direction.id"
             @click="renderDirectionalInput(direction)"
         >
-            <DirectionalInput :iconFileName="getInputImgFilename(direction.direction)" :game="getGameAbbreviation()" class="h-20 w-20"/>
+            <DirectionalInput 
+                :iconFileName="getInputImgFilename(direction.direction)" 
+                :game="getGameAbbreviation()" 
+                :direction="direction" 
+                class="h-20 w-20"
+            />
         </div>
     </div>
 </template>
