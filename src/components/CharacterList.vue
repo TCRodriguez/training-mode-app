@@ -17,7 +17,6 @@
             const route = useRoute();
 
             const game = gameStore.game.abbreviation === undefined ? localStorage.getItem('game') : gameStore.game.abbreviation;
-
             const loadCharacterData = (characterId: string) => {
                 const gameId = getGameId();
                 
@@ -73,12 +72,6 @@
                 updateCharacterSearchInput
             }
         },
-        created() {
-            this.characterStore.fetchCharacters(this.route.params.game)
-            .catch(error => {
-                console.log(error);
-            })
-        },
         components: {
             CharacterCard,
             MagnifyingGlass,
@@ -95,7 +88,7 @@
                     @trigger-update-search-input="updateCharacterSearchInput" 
                 />
         </div>
-        <div class="xs:h-[27.5rem] lg:h-[23rem] overflow-y-auto">
+        <div class="xs:h-[24rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-4">
                 <li
                     v-for="character in characterStore.characterListDisplay"

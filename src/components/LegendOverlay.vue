@@ -43,6 +43,7 @@ const props = defineProps({
                                 <AttackButton
                                     :iconFileName="attackButton.icon_file_name" 
                                     :game="gameStore.game.abbreviation" 
+                                    :attack="attackButton"
                                     class="h-10 w-10" 
                                 />
                                 <span>:</span>

@@ -19,8 +19,6 @@ export const useGameStore = defineStore('GameStore', {
 
         comingSoonList: [
             'Tekken 7',
-            'Tekken 8',
-            'Mortal Kombat 1'
         ],
         gameNotations: [],
 

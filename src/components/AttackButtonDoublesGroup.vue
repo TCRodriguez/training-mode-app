@@ -32,7 +32,11 @@ export default {
             :key="attackButton.id"
             @click="renderAttackInput(attackButton)"
         >
-            <AttackButton :iconFileName="getInputImgFilename(attackButton.name)" :game="getGameAbbreviation()" class="h-20 w-20" />
+            <AttackButton 
+                :iconFileName="getInputImgFilename(attackButton.name)" 
+                :game="getGameAbbreviation()" class="h-20 w-20" 
+                :attack="attackButton"
+            />
         </div>
     </div>
 </template>

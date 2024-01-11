@@ -234,7 +234,7 @@ export default {
 </script>
 <template lang="">
     <div class="px-2 lg:px-80">
-        <div class="my-2 flex flex-col space-x-2">
+        <div class="my-2 flex flex-col space-x-2" :class="{'hidden': characterMoveStore.characterMoves.length === 0 }">
             <div class="flex flex-row items-center justify-between space-x-2 my-2">
                 <div class="flex flex-row items-center space-x-2">
 
@@ -302,8 +302,14 @@ export default {
                 </div>
             </div>
         </div>
+        <div v-if="characterMoveStore.characterMoves.length === 0" class="mt-32">
+            <div class="flex flex-col items-center justify-center space-y-8">
+                <p class="text-white text-4xl">Move list coming soon...</p>
+                <p class="text-white text-2xl">If you'd like to help with adding move data, send a DM to <a href="discord://discordapp.com/users/606732350256054282" class="pointer text-apex-yellow">@NiGHTBass</a> on Discord</p>
+            </div>
+        </div>
         <div class="">
-            <ul class="xs:h-[25rem] lg:h-[26rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
+            <ul class="xs:h-[23rem] lg:h-[18rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
