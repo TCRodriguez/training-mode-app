@@ -137,12 +137,12 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
         <div class="">
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-16 px-4" :class="{'hidden': viewCondition === false }">
                 <div v-if="mode === 'create'" class="flex flex-col">
-                    <input type="text" :value="noteTitle" @input="updateCreateNoteTitle($event.target.value)" class="bg-white" placeholder="Enter note title...">
-                    <textarea name="" :value="noteBody" @input="updateCreateNoteBody($event.target.value)" id="" class="bg-white" cols="30" rows="10"></textarea>
+                    <input type="text" :value="noteTitle" @input="updateCreateNoteTitle($event.target.value)" class="bg-white text-black" placeholder="Enter note title...">
+                    <textarea name="" :value="noteBody" @input="updateCreateNoteBody($event.target.value)" id="" class="bg-white text-black" cols="30" rows="10"></textarea>
                 </div>
                 <div v-if="mode === 'edit'" class="flex flex-col">
-                    <input type="text" :value="noteTitle" @input="updateEditNoteTitle($event.target.value)" class="bg-white" placeholder="Enter note title...">
-                    <textarea name="" :value="noteBody" @input="updateEditNoteBody($event.target.value)" id="" class="bg-white" cols="30" rows="10"></textarea>
+                    <input type="text" :value="noteTitle" @input="updateEditNoteTitle($event.target.value)" class="bg-white text-black" placeholder="Enter note title...">
+                    <textarea name="" :value="noteBody" @input="updateEditNoteBody($event.target.value)" id="" class="bg-white text-black" cols="30" rows="10"></textarea>
                 </div>
                 <div v-if="mode === 'view'" class="flex flex-col text-white space-y-2">
                     <h3 class="text-3xl">{{ noteTitle }}</h3>

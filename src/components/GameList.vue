@@ -25,7 +25,7 @@
                     link: `/games/${gameId}/characters`,
                     type: 'game'
                 };
-                
+
                 characterStore.fetchCharacters(gameId)
                 .then(() => {
                     router.push(navItem.link)
@@ -78,7 +78,7 @@
             <SearchBar @trigger-update-search-input="updateGameSearchInput" />
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="grid grid-cols-2 space-y-4 xs:h-96 lg:h-[45rem]">
+            <ul class="sm:flex sm:flex-row md:grid md:grid-cols-2  xs:space-y-12 md:space-y-4 xs:h-[35rem] lg:h-[40rem]">
             <!-- <ul class="flex flex-row space-y-4 xs:h-96 lg:h-[45rem]"> -->
                 <li 
                     v-for="game in gameStore.getGames"

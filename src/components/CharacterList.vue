@@ -88,7 +88,7 @@
                     @trigger-update-search-input="updateCharacterSearchInput" 
                 />
         </div>
-        <div class="xs:h-[27.5rem] lg:h-[23rem] overflow-y-auto">
+        <div class="xs:h-[24rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-4">
                 <li
                     v-for="character in characterStore.characterListDisplay"
