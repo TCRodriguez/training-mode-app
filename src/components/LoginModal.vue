@@ -2,14 +2,18 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import { Form, Field, ErrorMessage, configure } from 'vee-validate';
 import CloseIcon from './icons/CloseIcon.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
     setup() {
         const authStore = useAuthStore();
-        const loginFailedMessage = ref('');
+        const loginFailedMessage = computed(() => authStore.loginFailedMessage);
+        const loginFailed = ref(false);
+        const emailForResendingVerificationLink = ref('');
         const onSubmit = (values: {email: string, password: string}) => {
             const { email, password } = values;
+            emailForResendingVerificationLink.value = email;
+            
             authStore.login(email, password)
             .then(response => {
                 let responseMessage;
@@ -17,19 +21,40 @@ export default {
                     responseMessage = response.response.data.message;
                 }
                 if(responseMessage === 'The provided credentials are incorrect.') {
-                    loginFailedMessage.value = 'Incorrect email or password';
+                    authStore.updateLoginFailedMessage('Incorrect email or password');
+                    loginFailed.value = true;
+                    return;
+                } else if (responseMessage === 'Email not yet verified.') {
+                    authStore.updateLoginFailedMessage(`Email not yet verified. Please check your inbox for a verification link.`);
+                    authStore.updateCredentialsCorrect(true);
                     loginFailed.value = true;
                     return;
                 }
             })
         }
 
-        const loginFailed = ref(false);
+        const handleResendVerificationLink = (email: string) => {
+            authStore.resendVerificationLink(email)
+            .then(response => {
+                console.log(response);
+                if(response.status === 200) {
+                    authStore.updateLoginFormMessage('Verification link sent. Please check your inbox.');
+                    return;
+                } else if(response.response.data.message === "Too Many Attempts.") {
+                    authStore.updateLoginFailedMessage('Too many attempts. Please try again later.');
+                    return;
+                }
+            })
+        }
+
 
         return {
+            authStore,
             onSubmit,
             loginFailed,
-            loginFailedMessage
+            loginFailedMessage,
+            handleResendVerificationLink,
+            emailForResendingVerificationLink
         }
     },
     components: {
@@ -44,7 +69,11 @@ export default {
     <div>
         <div>
             <Form @submit="onSubmit" v-slot="{ resetForm }">
-                <div class="flex justify-end">
+                <div class="flex justify-between">
+                    <CloseIcon class="h-10 w-10 invisible" />
+                    <div v-if="authStore.loginFormMessage.length > 0">
+                        <p class="text-green">{{ authStore.loginFormMessage }}</p>
+                    </div>
                     <CloseIcon class="h-10 w-10" @click="$emit('triggerToggleLoginModal'), resetForm()" />
                 </div>
                 <div class="flex flex-row justify-center">
@@ -71,6 +100,9 @@ export default {
                     <button class="rounded border p-2 text-white bg-apex-blue w-1/3">Login</button>
                 </div>
             </Form>
+            <div class="flex flex-row justify-center">
+                <button class="rounded border p-2 text-white bg-apex-blue w-1/3" :class="{ 'hidden': !authStore.credentialsCorrect }" @click="handleResendVerificationLink(emailForResendingVerificationLink)">Resend verification link</button>
+            </div>
         </div>
     </div>
 </template>

@@ -12,6 +12,10 @@ export const useAuthStore = defineStore('AuthStore', {
         token: null,
         loggedInUser: null,
         loginFormActive: false,
+        loginFormMessage: '',
+        loginFailedMessage: '',
+        credentialsCorrect: false,
+        emailVerificationMessage: null,
     }),
     getters: {
 
@@ -19,6 +23,12 @@ export const useAuthStore = defineStore('AuthStore', {
     actions: {
         async toggleLoginModal() {
             this.loginFormActive = !this.loginFormActive;
+        },
+        async openLoginForm() {
+            this.loginFormActive = true;
+        },
+        async closeLoginForm() {
+            this.loginFormActive = false;
         },
         async login(email: string, password: string) {
             const navigationStore = useNavigationStore();
@@ -68,6 +78,37 @@ export const useAuthStore = defineStore('AuthStore', {
         async logout() {
             this.clearPiniaState();
         },
+        async updateLoginFailedMessage(message: string) {
+            this.loginFailedMessage = message;
+            setTimeout(() => {
+                this.loginFailedMessage = '';
+            }, 3000);
+        },
+        async resendVerificationLink(email: string) {
+            let apiResponse = null;
+            try {
+                await trainingModeApi.post(`/email/resend-verification-email`, {
+                    email: email,
+                })
+                .then(response => {
+                    apiResponse = response;
+                    this.updateLoginFailedMessage('');
+                    this.updateLoginFormMessage(response.data.message);
+                    this.loginFormMessage = response.data.message;
+                    setTimeout(() => {
+                        this.updateLoginFormMessage('');
+                    }, 3000);
+
+                    return response;
+                });
+            } catch (error) {
+                console.log(error);
+                apiResponse = error;
+                return error;
+            }
+
+            return apiResponse;
+        },
         async clearPiniaState () {
             const characterMoveStore = useCharacterMoveStore();
             const characterStore = useCharacterStore();
@@ -83,6 +124,40 @@ export const useAuthStore = defineStore('AuthStore', {
             gameStore.$reset();
             navigationStore.$reset();
             comboStore.$reset(); 
-        }
+        },
+        async registerUser(username: string, email: string, password: string, returnURL: string) {
+            let apiResponse = null;
+            try {
+                await trainingModeApi.post('/users/register', {
+                    username: username,
+                    email: email,
+                    password: password,
+                    returnURL: returnURL,
+                })
+                .then(response => {
+                    apiResponse = response;
+                    this.updateLoginFormMessage(response.data.message);
+                    this.loginFormMessage = response.data.message;
+                    setTimeout(() => {
+                        this.updateLoginFormMessage('');
+                    }, 3000);
+
+                    return response;
+                });
+            } catch (error) {
+                console.log(error);
+                apiResponse = error;
+                return error;
+            }
+
+            return apiResponse;
+        },
+        async updateLoginFormMessage(message: string) {
+            this.loginFormMessage = message;
+        },
+
+        async updateCredentialsCorrect(credentialsCorrect: boolean) {
+            this.credentialsCorrect = credentialsCorrect;
+        },
     }
 });
