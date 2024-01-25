@@ -20,6 +20,9 @@ export default {
     const router = useRouter();
 
     const handleClickOutsideMenuModal = (event: any) => {
+      if(authStore.passwordResetFormActive === true) {
+        return;
+      }
       if (event.target.id === 'menu-overlay') {
         closeMenu();
       }
@@ -35,10 +38,32 @@ export default {
   
     watch(route, (to, from) => {
       // Check for `status` and `message` query parameters
+      console.log(to.query);
+      if(to.query['password-reset-token']) {
+        console.log('pass tokeen ');
+        navigationStore.openMenuModalContainer();
+        authStore.openResetPasswordForm();
+        return;
+      }
+
+      if(to.query.category === 'oauth_callback') {
+        authStore.handleOAuthCallback(to.query.access_token, to.query.token_type)
+        .then(() => {
+          toast.success("Login via Discord successful!", {
+            autoClose: 3000,
+            position: toast.POSITION.TOP_CENTER,
+            onClose: () => {
+              return router.replace({ query: {} });
+            }
+          } as ToastOptions);
+        })
+      }
+
+
       if (to.query.status && to.query.message) {
         if (to.query.status === 'success' && to.query.message === 'Email successfully verified.') {
           toast.success("Email verification successful! You may now log in.", {
-            autoClose: 5000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_CENTER,
             onClose: () => {
               return router.replace({ path: to.path, query: {} });
@@ -47,12 +72,32 @@ export default {
           navigationStore.openMenuModalContainer();
           authStore.openLoginForm();
         } else if (to.query.status === 'failed') {
-          showToast('There was a problem with the email verification.', 5000, 'error');
+          showToast('There was a problem with the email verification. ', 5000, 'error');
+        }
+      } else if (to.query.error) {
+        if (to.query.error?.includes('users.users_email_unique')) {
+          // showToast('The email associated with your Discord is already in use. Please login with your email and password.', 5000, 'error');
+          toast.error("The email associated with your Discord is already in use. Please login with your email and password.", {
+            autoClose: 10000,
+            position: toast.POSITION.TOP_CENTER,
+            onClose: () => {
+              return router.replace({ query: {} });
+            }
+          } as ToastOptions);
+        } else if(to.query.error?.includes('Discord username already in use')) {
+          toast.error("The username associated with your Discord is already in use. Please login with your email and password.", {
+            autoClose: 10000,
+            position: toast.POSITION.TOP_CENTER,
+            onClose: () => {
+              return router.replace({ query: {} });
+            }
+          } as ToastOptions);
         }
       }
     });
 
     return {
+      authStore,
       gameStore,
       characterStore,
       getGameId
@@ -63,10 +108,16 @@ export default {
     RouterView
   },
   created() {
+    const authToken = localStorage.getItem('authToken');
+    if(authToken) {
+      // this.authStore.loggedInUser = 
+      // this.authStore.$dispose
+      this.authStore.validateTokenAndFetchUser(authToken);
+    }
     const gameId = getGameId();
     const characterId = getCharacterId();
 
-    this.gameStore.fetchGames()
+    this.gameStore.fetchGames(true)
     .then(() => {
       this.gameStore.setGame(gameId);
     })
