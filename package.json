@@ -15,6 +15,7 @@
     "@vee-validate/i18n": "^4.9.6",
     "@vee-validate/rules": "^4.9.6",
     "axios": "^1.2.6",
+    "dompurify": "^3.0.8",
     "pinia": "^2.0.28",
     "vee-validate": "^4.9.6",
     "vue": "^3.2.45",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
+    "@types/dompurify": "^3.0.5",
     "@types/jsdom": "^20.0.1",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
