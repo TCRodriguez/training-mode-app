@@ -57,7 +57,7 @@ export default {
 </script>
 <template lang="">
     <div class="flex flex-col items-center space-y-4 mt-8">
-        <GameBanner class="xs:w-2/3 flex justify-center lg:w-2/5" :class="{ 'lg:w-1/5': getGameAbbreviation() === 'sf6'}" :game="getGameAbbreviation()" />
+        <GameBanner class="xs:w-2/3 flex justify-center md:w-2/5" :class="{ 'lg:w-1/5': getGameAbbreviation() === 'sf6'}" :game="getGameAbbreviation()" />
         <nav>
             <ul class="flex flex-row font-bold space-x-4 text-2xl justify-center">
                 <li 
