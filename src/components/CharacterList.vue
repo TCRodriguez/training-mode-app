@@ -83,12 +83,13 @@
     <div class="w-full p-2 lg:px-80">
         <div class="flex flex-row items-center justify-center">
                 <SearchBar 
-                    :placeholder="'Enter character name'" 
+                    placeholder="Enter character name" 
                     :searchType="'title'" 
-                    @trigger-update-search-input="updateCharacterSearchInput" 
+                    @trigger-update-search-input="updateCharacterSearchInput"
+                    class="placeholder:text-black"
                 />
         </div>
-        <div class="xs:h-[24rem] lg:h-[23rem] overflow-y-auto">
+        <div class="xs:h-[27rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-4">
                 <li
                     v-for="character in characterStore.characterListDisplay"
