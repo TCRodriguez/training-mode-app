@@ -127,8 +127,8 @@ export const useAuthStore = defineStore('AuthStore', {
         },
         async oAuthLogin(provider: 'discord') {
             const redirectURL = window.location.href;
-            const state = crypto.randomUUID();
-            window.location.href = `http://127.0.0.1:8000/v1/oauth/login/${provider}?redirectURL=${redirectURL}`;
+            window.location.href = `https://api.trainingmode.gg/v1/oauth/login/${provider}?redirectURL=${redirectURL}`;
+            // window.location.href = `http://127.0.0.1:8000/v1/oauth/login/${provider}?redirectURL=${redirectURL}`;
         },
         async handleOAuthCallback(access_token: string, token_type: string) {
             if(token_type === 'Bearer') {
