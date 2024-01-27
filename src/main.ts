@@ -6,7 +6,8 @@ import {
     email,
     min,
     max,
-    regex
+    regex,
+    confirmed,
 } from '@vee-validate/rules';
 import { localize } from '@vee-validate/i18n';
 import App from "./App.vue";
@@ -20,23 +21,34 @@ defineRule('email', email);
 defineRule('min', min);
 defineRule('max', max);
 defineRule('regex', regex);
+defineRule('confirmed', confirmed);
 
 configure({
     generateMessage: context => {
         const fieldName = context.field;
-        // console.log(context);
         const capitalizeFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
 
-        return context.rule.name === 'required' ? `${capitalizeFieldName} is required` 
-            : context.rule.name === 'min' ? `The ${context.field} must be at least ${context.rule.params[0]} characters`
-            : context.rule.name === 'max' ? `The ${context.field} must be no longer than ${context.rule.params[0]} characters`
-            : context.rule.name === 'regex' ? `Password must include at least one uppercase letter and one character special character from [!, @, #].`
-            : context.rule.name === context.field ? `Must be a valid ${context.field}` 
-            :`The ${context.field} is invalid.`;
+        if(context.rule.name === 'required') {
+            if(context.field === 'betaTerms') {
+                return `Acknowledgement is required`
+            } else {
+                return `${capitalizeFieldName} is required`;
+            }
+        } else if (context.rule.name === 'min') {
+            return `The ${context.field} must be at least ${context.rule.params[0]} characters`;
+        } else if(context.rule.name === 'max') {
+            return `The ${context.field} must be no longer than ${context.rule.params[0]} characters`;
+        } else if(context.rule.name === 'regex') {
+            if(context.name === 'username') {
+                return `Username cannot include a # character`;
+            } else {
+                return `Password must include at least one uppercase letter and one character special character from [!, @, #].`;
+            }
+        } else if(context.rule.name === 'email') {
+            return `Must be a valid email address.`;
+        }
     }
 });
-
-
 
 const app = createApp(App);
 
