@@ -5,12 +5,7 @@ import { useCharacterStore } from "@/stores/CharacterStore";
 import { useGameStore } from "@/stores/GameStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
 import { useComboStore } from "@/stores/ComboStore";
-
-// const authStore = useAuthStore();
-// const characterMoveStore = useCharacterMoveStore();
-// const characterStore = useCharacterStore();
-// const gameStore = useGameStore();
-// const navigationStore = useNavigationStore();
+import { toast, type ToastOptions } from "vue3-toastify";
 
 export const renderComboInput = (input: string) => {
     const comboStore = useComboStore();
@@ -37,7 +32,6 @@ export const getGameAbbreviation = () => {
 }
 
 export const getInputImgFilename = (inputName: string) => {
-    // console.log(inputName);
     return localStorage.getItem(inputName);
 }
 
@@ -66,9 +60,7 @@ export const updateSearchNoteByTextCriteria = (modelName: 'game' | 'character' |
     const characterStore = useCharacterStore();
     const characterMoveStore = useCharacterMoveStore();
     const comboStore = useComboStore();
-
     
-    console.log(modelName);
     const updateNoteSearch = () => {
         const updateNoteListDisplay = {
             'game': function () {
@@ -106,9 +98,7 @@ export const updateSearchNoteByTagsCriteria = (modelName: 'game' | 'character' |
     const characterStore = useCharacterStore();
     const characterMoveStore = useCharacterMoveStore();
     const comboStore = useComboStore();
-
     
-    console.log(modelName);
     const updateNoteSearch = () => {
         const updateNoteListDisplay = {
             'game': function () {
@@ -198,4 +188,47 @@ export const callRemoveTagFromNote = (modelName: 'game' | 'character' | 'move' |
         removeTagFromNoteActions[modelName]();
     }
     return removeNoteTag();
+}
+
+export const showToast = (message: string, timeout: number, type: 'success' | 'error' | 'warn' | 'info') => {
+    switch(type) {
+        case 'success':
+            return toast.success(message, {
+                autoClose: timeout,
+                position: toast.POSITION.TOP_CENTER,
+            } as ToastOptions );
+        case 'error':
+            return toast.error(message, {
+                autoClose: timeout,
+                position: toast.POSITION.TOP_CENTER,
+            } as ToastOptions );
+        case 'warn':
+            return toast.warn(message, {
+                autoClose: timeout,
+                position: toast.POSITION.TOP_CENTER,
+            } as ToastOptions );
+        case 'info':
+            return toast.info(message, {
+                autoClose: timeout,
+                position: toast.POSITION.TOP_CENTER,
+            } as ToastOptions );
+    }
+};
+
+export const closeMenu = () => {
+    const navigationStore = useNavigationStore();
+    const authStore = useAuthStore();
+    navigationStore.closeMenuModalContainer();
+    navigationStore.closeMenuModalItems();
+    navigationStore.closeRegistrationForm();
+    authStore.closeLoginForm();
+    authStore.updateCredentialsCorrect(false);
+    authStore.updateLoginFailedMessage('');
+    authStore.closeRequestPasswordResetForm();
+    authStore.closeResetPasswordForm();
+};
+
+export const getQueryParam = (param: string) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
 }
