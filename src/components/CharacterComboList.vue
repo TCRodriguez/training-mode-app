@@ -63,23 +63,17 @@ export default {
         };
 
         const saveCharacterCombo = () => {
-            console.log(characterStore.character);
             if(comboStore.comboInputsDisplay.length === 0 ) {
                 alert('Please input a combo.')
                 return;
             }
             if(Object.keys(characterStore.character).length === 0) {
-                console.log('character not set');
                 alert('Please select a character first.')
                 return;
             }
-            console.log(comboStore.comboInputsDisplay);
 
             const game = gameStore.getGame;
             const character = characterStore.getCharacter;
-            console.log(game?.id);
-            console.log(character?.id);
-            console.log(characterStore.character);
             comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboInputsDisplay)
             .then(() => {
                 comboStore.clearComboInputsDisplay();
@@ -102,7 +96,6 @@ export default {
             if(comboInputs.length !== 0) {
                 comboStore.populateComboInputsDisplay(comboInputs);
             }
-            console.log(comboStore.comboInputsDisplay);
             
         }
 
@@ -117,7 +110,6 @@ export default {
 
         const toggleComboOptions = (comboId: number, event) => {
             if(event.target.__vueParentComponent !== undefined) {
-                console.log(event.target.__vueParentComponent.attrs['aria-labelledby']);
                 if(event.target.__vueParentComponent.attrs['aria-labelledby'] === 'Close move options') {
                     characterComboOptionsActive.value.splice(characterComboOptionsActive.value.indexOf(comboId), 1);
                     if(characterComboEditTagsActive.value.includes(comboId)) {
@@ -141,7 +133,6 @@ export default {
                 characterComboEditTagsActive.value.splice(characterComboEditTagsActive.value.indexOf(comboId), 1);
             }
 
-            console.log(characterComboOptionsActive.value);
         }
 
         const addTagToCharacterCombo = (newTag, comboId) => {
@@ -149,8 +140,6 @@ export default {
         }
 
         const removeTagFromCharacterCombo = (tagId: string, comboId: string) => {
-            console.log(tagId);
-            console.log(comboId);
             comboStore.removeTagFromCharacterCombo(route.params.game, route.params.character, comboId, tagId);
         }
 
@@ -182,7 +171,6 @@ export default {
         const closeCharacterComboModal = (comboId: number) => {
             showCharacterComboModal.value = false;
             selectedCharacterComboId.value = null;
-            console.log(comboId);
         }
 
         const showCharacterComboModal = ref(false);
@@ -382,7 +370,7 @@ export default {
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
-                    class="h-20 w-20 absolute bottom-4 right-4 fill-green"
+                    class="h-20 w-20 absolute xs:bottom[-7rem] lg:bottom-4 right-4 fill-green"
                     :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true }" 
                     @click="openCreateComboModal()" 
                 />

@@ -12,6 +12,7 @@ export const useNavigationStore = defineStore('NavigationStore', {
         ],
         menuModalContainerActive: false,
         menuModalItemsActive: false,
+        registrationFormActive: false,
     }),
     getters: {
 
@@ -25,13 +26,38 @@ export const useNavigationStore = defineStore('NavigationStore', {
         },
         async popCharacterNavItem() {
             this.navItems.pop();
-            console.log(this.navItems);
         },
         async toggleMenuModalContainer() {
             this.menuModalContainerActive = !this.menuModalContainerActive;
         },
         async toggleMenuModalItems() {
             this.menuModalItemsActive = !this.menuModalItemsActive;
-        }
+        },
+
+        async openMenuModalItems() {
+            this.menuModalItemsActive = true;
+        },
+
+        async closeMenuModalItems() {
+            this.menuModalItemsActive = false;
+        },
+        async toggleRegistrationModal() {
+            this.registrationFormActive = !this.registrationFormActive;
+        },
+        
+        async openMenuModalContainer() {
+            this.menuModalContainerActive = true;
+        },
+
+        async closeMenuModalContainer() {
+            this.menuModalContainerActive = false;
+        },
+
+        async openRegistrationForm() {
+            this.registrationFormActive = true;
+        },
+        async closeRegistrationForm() {
+            this.registrationFormActive = false;
+        },
     }
 });

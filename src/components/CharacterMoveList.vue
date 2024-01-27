@@ -98,7 +98,6 @@ export default {
                 characterMoveOptionsActive.value.splice(characterMoveOptionsActive.value.indexOf(moveId), 1);
             }
 
-            console.log(characterMoveOptionsActive.value);
         }
         
 
@@ -233,7 +232,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="px-2 lg:px-80">
+    <div class="lg:px-80">
         <div class="my-2 flex flex-col space-x-2" :class="{'hidden': characterMoveStore.characterMoves.length === 0 }">
             <div class="flex flex-row items-center justify-between space-x-2 my-2">
                 <div class="flex flex-row items-center space-x-2">
@@ -294,7 +293,7 @@ export default {
                 </div>
                 <div v-for="(tag, index) in characterMoveStore.searchByTagsList" :key="index" class="">
                     <div
-                        class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
+                        class="flex flex-row items-center bg-apex-yellow text-black rounded p-1 space-x-1"
                     >
                         <span>{{tag}}</span>
                         <CloseIcon class="h-5 w-5" @click="removeTagFromSearchList(tag)" />
@@ -304,12 +303,12 @@ export default {
         </div>
         <div v-if="characterMoveStore.characterMoves.length === 0" class="mt-32">
             <div class="flex flex-col items-center justify-center space-y-8">
-                <p class="text-white text-4xl">Move list coming soon...</p>
-                <p class="text-white text-2xl">If you'd like to help with adding move data, send a DM to <a href="discord://discordapp.com/users/606732350256054282" class="pointer text-apex-yellow">@NiGHTBass</a> on Discord</p>
+                <p class="text-white text-4xl">Move list not yet added.</p>
+                <p class="text-white text-xl px-2">If you'd like to help with adding move data, let us know on <a href="https://discord.gg/VBdTfJyddy" class="pointer text-apex-yellow" target="_blank">Discord</a>!. You can also send us an email at <a href="mailto:support@trainingmode.gg" class="text-apex-yellow">support@trainingmode.gg</a>.</p>
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[23rem] lg:h-[18rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
+            <ul class="xs:h-[23rem] lg:h-[18rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8 px-2">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"

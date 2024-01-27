@@ -12,7 +12,7 @@ const props = defineProps({
 
 </script>
 <template lang="">
-    <div class="flex flex-row border-2 rounded bg-white my-2 xs:w-full items-center lg:w-1/3">
+    <div class="flex flex-row border-2 rounded bg-white my-2 xs:w-full items-center">
         <MagnifyingGlass class="h-10 w-10 text-black border-black-300" />
         <input
             v-if="searchType === 'title'" 

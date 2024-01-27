@@ -3,7 +3,7 @@ import trainingModeAPI from '../axios-http';
 
 export const useAppMetadataStore = defineStore('AppMedadataStore', {
     state: () => ({
-        appVersion: '0.4.0',
+        appVersion: '0.6.0',
         latestCommitHash: null,
     }),
     actions: {
@@ -13,6 +13,6 @@ export const useAppMetadataStore = defineStore('AppMedadataStore', {
             } catch (error) {
                 
             }
-        }
+        },
     }
 })

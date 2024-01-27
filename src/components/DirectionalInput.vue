@@ -1,6 +1,25 @@
 <script lang="ts">
 
+
+
+
+
 export default {
+    setup(props) {
+        let directionalInputFileName;
+
+        if (props.game === 'gbvsr' && props.direction.game_shorthand === 'uh') {
+            directionalInputFileName = 'uph';
+        } else {
+            directionalInputFileName = props.direction.game_shorthand;
+        }
+
+
+        return {
+            directionalInputFileName
+        }
+        
+    },
     props: {
         iconFileName: String,
         direction: {
@@ -16,10 +35,12 @@ export default {
         :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${iconFileName}`" 
         alt=""
     > -->
-    <img
-        :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${game}-${direction.game_shorthand}.svg`" 
-        :alt="direction.direction"
-    >
+    <button>
+        <img
+            :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${game}-${directionalInputFileName }.svg`" 
+            :alt="direction.direction"
+        >
+    </button>
 </template>
 <style lang="">
     
