@@ -8,11 +8,8 @@ export default {
         const navigationStore = useNavigationStore();
         const router = useRouter();
         const goToBreadCrumb = (type: string, link: string) => {
-            console.log(link);
-            console.log(type);
             router.replace(link);
             if(type === 'game' && navigationStore.navItems.length !== 1) {
-                console.log('yes game');
                 navigationStore.popCharacterNavItem();
             }
         }
