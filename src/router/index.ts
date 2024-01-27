@@ -66,25 +66,5 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  // Check for `status` and `message` query parameters
-  if (to.query.status && to.query.message) {
-    // Handle the notification based on the status
-    if (to.query.status === 'success') {
-      // NotificationService.showSuccess(to.query.message);
-      alert(to.query.message);
-    } else if (to.query.status === 'failed') {
-      // NotificationService.showError(to.query.message);
-    }
-
-    // Remove the query parameters and proceed to the route
-    let newQuery = {...to.query};
-    delete newQuery.status;
-    delete newQuery.message;
-    next({ path: to.path, query: newQuery });
-  } else {
-    next(); // Proceed as normal if no relevant query parameters
-  }
-});
 
 export default router;
