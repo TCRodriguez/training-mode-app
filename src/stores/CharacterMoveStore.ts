@@ -129,7 +129,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async addTagToCharacterMove(gameId: string, characterId:string, characterMoveId:string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
-            console.log('add tag to move hit');
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
@@ -139,8 +138,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    console.log('hello?');
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
                 })
@@ -224,7 +221,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         },
         async updateCharacterMoveNote(gameId: string, characterId: string, moveId: number, note: object) {
             const authStore = useAuthStore();
-            console.log(note);
             try {
                 await trainingModeAPI.put(`games/${gameId}/characters/${characterId}/moves/${moveId}/notes/${note.id}`, {
                     'title': note.title,
@@ -266,10 +262,8 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     this.characterMoveNotes = [...response.data]
                     this.characterMoveNotes.forEach(note => {
-                        console.log(note);
                         note.tags.forEach(tag => {
                             if(! this.characterMoveNotesTags.find(characterMoveNoteTag => characterMoveNoteTag.name === tag.name )) {
                                 this.characterMoveNotesTags.push(tag);
@@ -373,7 +367,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async addTagToCharacterMoveNote(gameId: number, characterId: number, characterMoveNoteId: string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
-            console.log('add tag to character note hit');
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes/${characterMoveNoteId}/tags`, {
                     tags: [newTag]
@@ -383,8 +376,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                     }
                 })
                 .then(response => {
-                    console.log('hello?');
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
                     this.fetchCharacterMoveNotes(gameId, characterId, this.characterMove.id);
@@ -411,6 +402,5 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 console.log(error);
             }
         },
-        
     }
 });

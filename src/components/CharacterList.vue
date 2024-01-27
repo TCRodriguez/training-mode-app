@@ -43,11 +43,9 @@
             let inputHasFocusBool = ref(false);
             const showCharacterList = () => {
                 inputHasFocusBool.value = !inputHasFocusBool.value
-                console.log(inputHasFocusBool.value);
             }
             const hideCharacterList = () => {
                 inputHasFocusBool.value = !inputHasFocusBool.value
-                console.log(inputHasFocusBool.value);
             }
 
             watch(characterSearchInput, () => {
