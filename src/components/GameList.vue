@@ -53,10 +53,14 @@
             }
         },
         created() {
-            this.gameStore.fetchGames()
-            .catch(error => {
-                console.log(error);
-            })
+            if(this.gameStore.games.length > 0) {
+                return;
+            } else {
+                this.gameStore.fetchGames()
+                .catch(error => {
+                    console.log(error);
+                })
+            }
         },
         components: {
             GameBanner,
