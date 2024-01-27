@@ -167,9 +167,7 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 });
                 this.combos = data.data;
-                // console.log(data);
                 this.updateCharacterComboListDisplay();
-                // this.characterComboNotes = data.data
 
                 for (let i = 0; i < this.combos.length; i++) {
                     const combo = this.combos[i];
@@ -336,7 +334,6 @@ export const useComboStore = defineStore('ComboStore', {
                 .then(response => {
                     this.characterComboNotes = [...response.data];
                     this.characterComboNotes.forEach(note => {
-                        console.log(note);
                         note.tags.forEach(tag => {
                             if(! this.characterComboNotesTags.find(characterComboNoteTag => characterComboNoteTag.name === tag.name )) {
                                 this.characterComboNotesTags.push(tag);
@@ -352,7 +349,6 @@ export const useComboStore = defineStore('ComboStore', {
         },
         async updateCharacterComboNote(gameId: string, characterId: string, comboId: number, note: object) {
             const authStore = useAuthStore();
-            console.log(note);
             try {
                 await trainingModeAPI.put(`games/${gameId}/characters/${characterId}/combos/${comboId}/notes/${note.id}`, {
                     'title': note.title,
@@ -455,7 +451,6 @@ export const useComboStore = defineStore('ComboStore', {
         async addTagToCharacterComboNote(gameId: number, characterId: number, characterComboNoteId: string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
-            console.log('add tag to character note hit');
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes/${characterComboNoteId}/tags`, {
                     tags: [newTag]
@@ -465,7 +460,6 @@ export const useComboStore = defineStore('ComboStore', {
                     }
                 })
                 .then(response => {
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterCombos(gameId, characterId)
                     this.fetchCharacterComboNotes(gameId, characterId, this.combo.id);

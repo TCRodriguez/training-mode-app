@@ -28,7 +28,7 @@ const props = defineProps({
                     <div v-for="notation in gameStore.gameNotations" :key="notation.id" :class="descriptionsStyles">
                         <div class="flex flex-row space-x-2">
                             <p class="font-bold">
-                                "<span class="text-green">{{ `${notation.notation}` }}</span>":
+                                "<span class="text-apex-yellow">{{ `${notation.notation}` }}</span>":
                             </p>
                             <p>
                                 {{ notation.description }}
@@ -43,6 +43,7 @@ const props = defineProps({
                                 <AttackButton
                                     :iconFileName="attackButton.icon_file_name" 
                                     :game="gameStore.game.abbreviation" 
+                                    :attack="attackButton"
                                     class="h-10 w-10" 
                                 />
                                 <span>:</span>

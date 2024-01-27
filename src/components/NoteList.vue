@@ -50,7 +50,6 @@ export default {
                     return characterMoveStore.characterMoveNoteListDisplay;
                 },
                 'combo': function () {
-                    console.log(comboStore.characterComboNoteListDisplay);
                     return comboStore.characterComboNoteListDisplay;
                 }
             };
@@ -98,8 +97,9 @@ export default {
         const createNoteBody = ref(null);
         
         const viewNoteActive = ref(false);
-        const viewNoteTitle = ref(null);
-        const viewNoteBody = ref(null);
+        const viewNoteTitle = ref('');
+        const viewNoteBody = ref('');
+        const viewNoteId = ref(0);
 
         const editNoteActive = ref(false);
         const editNoteId = ref(0);
@@ -128,11 +128,11 @@ export default {
             createNoteActive.value = !createNoteActive.value;
         };
         
-        const openEditNoteModal = (note: object) => {
+        const openEditNoteModal = (note: object, noteId?: number | string) => {
             editNoteActive.value = true;
-            console.log(note);
             if(editNoteActive.value) {
-                editNoteId.value = note.id;
+
+                editNoteId.value = note.id ?? noteId;
                 editNoteTitle.value = note.title;
                 editNoteBody.value = note.body;
             }
@@ -169,15 +169,15 @@ export default {
 
         const toggleViewNote = (note: object) => {
             viewNoteActive.value = !viewNoteActive.value;
-
+            
             if(viewNoteActive.value) {
                 viewNoteTitle.value = note.title;
                 viewNoteBody.value = note.body;
+                viewNoteId.value = note.id;
             }
         };
 
         const updateCreateNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             createNoteTitle.value = noteTitle;
         };
         const updateCreateNoteBody = (noteBody: string) => {
@@ -190,6 +190,10 @@ export default {
         const updateEditNoteBody = (noteBody: string) => {
             editNoteBody.value = noteBody;
         };
+        const handleNoteWasUpdated = (updatedNote: {newTitle: string, newBody: string}) => {
+            viewNoteTitle.value = updatedNote.newTitle;
+            viewNoteBody.value = updatedNote.newBody;
+        }
 
         const searchNoteByTextInput = ref('');
         const searchByOptionSelection = ref('text');
@@ -339,12 +343,10 @@ export default {
         });
 
         const addTagToNote = (tagName: string, noteId: string) => {
-            console.log(`${tagName}, ${noteId}`);
             callAddTagToNote(props.modelName, props.modelId, noteId, tagName);
         };
 
         const removeTagFromNote = (tagId: number, noteId: number) => {
-            console.log(`${tagId}`);
             callRemoveTagFromNote(props.modelName, props.modelId, noteId, tagId);
         }
         return {
@@ -365,6 +367,7 @@ export default {
             viewNoteActive,
             viewNoteTitle,
             viewNoteBody,
+            viewNoteId,
 
             toggleViewNote,
             updateCreateNoteTitle,
@@ -382,6 +385,7 @@ export default {
             editNoteTitle,
             editNoteBody,
             closeEditNoteModal,
+            handleNoteWasUpdated,
 
             switchSearchByOption,
             searchByOptionSelection,
@@ -416,9 +420,9 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8 px-2 w-full lg:px-80">
+    <div class="mt-8 px-2 w-full lg:px-[20rem] xl:px-[30rem]">
         <div class="">
-            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2" :class="{ 'hidden': notes.length === 0 }">
 
                 <p>Search by:</p>
                 <button
@@ -458,7 +462,8 @@ export default {
                     v-if="searchByOptionSelection === 'text'"
                     :placeholder="'Enter title'" 
                     :searchType="'title'"
-                    @trigger-update-search-input="updateSearchNoteByTextInput" 
+                    @trigger-update-search-input="updateSearchNoteByTextInput"
+                    :class="{ 'hidden': notes.length === 0 }"
                 />
                 <SearchBar
                     v-if="searchByOptionSelection === 'tags'"
@@ -466,6 +471,7 @@ export default {
                     :searchType="'tags'"
                     @trigger-update-search-by-tags-input="updateSearchNoteByTagsInput" 
                     @trigger-add-tag-to-search-list="addNoteTagToSearchList" 
+                    :class="{ 'hidden': notes.length === 0 }"
                 
                 />
             </div>
@@ -560,6 +566,8 @@ export default {
             :mode="'view'"
             :noteTitle="viewNoteTitle" 
             :noteBody="viewNoteBody"
+            :noteId="viewNoteId"
+            @trigger-open-edit-note-modal="openEditNoteModal"
             @trigger-create-note-modal="toggleViewNote()"
             @trigger-close-note-modal="toggleViewNote()"
         />
@@ -570,6 +578,7 @@ export default {
             :noteTitle="editNoteTitle" 
             :noteBody="editNoteBody"
             :noteId="editNoteId"
+            @trigger-note-was-updated="handleNoteWasUpdated"
             @trigger-create-note-modal="openEditNoteModal()"
             @trigger-close-note-modal="closeEditNoteModal()"
             @trigger-update-note="updateCharacterNote()"
@@ -579,7 +588,7 @@ export default {
         <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
-                class="h-20 w-20 absolute bottom-4 lg:bottom-8 right-4 fill-green"
+                class="h-20 w-20 absolute xs:bottom-[-7rem] lg:bottom-8 right-4 fill-green"
                 :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
                 @click="openCreateNoteModal()" 
             />

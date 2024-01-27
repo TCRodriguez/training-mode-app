@@ -127,6 +127,7 @@ export default {
                 v-if="comboInput.category === 'attack-buttons'" 
                 :iconFileName="getInputImgFilename(comboInput.name)"
                 :game="getGameAbbreviation()"
+                :attack="comboInput"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
 
             />
@@ -134,6 +135,7 @@ export default {
                 v-else-if="comboInput.category === 'directional-inputs'" 
                 :iconFileName="getInputImgFilename(comboInput.direction)"
                 :game="getGameAbbreviation()"
+                :direction="comboInput"
                 :class="{ 'h-96 w-96': fullScreenActiveHorizontalBool, 'h-12 w-12': !fullScreenActiveHorizontalBool}"
             />
             <CharacterNotation 
@@ -159,12 +161,16 @@ export default {
         <div class="flex flex-row items-center" v-for="segment in comboStore.notationSegments" :key="segment.id">
             <div class="shrink-0" v-for="notation in segment" @click="getInput(notation.notation, notation.category)">
                 <AttackButton 
-                    v-if="notation.category === 'attack-buttons'" :iconFileName="notation.icon_file_name"
+                    v-if="notation.category === 'attack-buttons'" 
+                    :iconFileName="notation.icon_file_name"
+                    :attack="notation"
                     :class="{ 'h-96 w-96': fullScreenActiveVerticalBool, 'h-12 w-12': !fullScreenActiveVerticalBool}"
 
                 />
                 <DirectionalInput 
-                    v-else-if="notation.category === 'directional-inputs'" :iconFileName="notation.icon_file_name"
+                    v-else-if="notation.category === 'directional-inputs'" 
+                    :iconFileName="notation.icon_file_name"
+                    :direction="notation"
                     :class="{ 'h-96 w-96': fullScreenActiveVerticalBool, 'h-12 w-12': !fullScreenActiveVerticalBool}"
                 />
                 <CharacterNotation 

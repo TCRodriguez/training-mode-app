@@ -16,7 +16,7 @@ export default {
             <CharacterPortrait :game="game" :characterName="characterName" />
         </div>
         <div class="text-xl">
-            <p class="text-black uppercase text-2xl">{{ characterName }}</p>
+            <p class="text-black uppercase text-2xl">{{ characterName === 'Bedman' ? 'Bedman?' : characterName }}</p>
         </div>
     </div>
 </template>

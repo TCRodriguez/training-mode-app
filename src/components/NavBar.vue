@@ -8,11 +8,15 @@ import MenuIcon from "./icons/MenuIcon.vue";
 import CloseIcon from "./icons/CloseIcon.vue";
 import MenuModal from "./MenuModal.vue";
 import LoginModal from "@/components/LoginModal.vue"
+import RegistrationModal from "./RegistrationModal.vue";
+import RequestResetPasswordModal from "./RequestResetPasswordModal.vue";
+import ResetPasswordForm from "./ResetPasswordForm.vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useNavigationStore } from "@/stores/NavigationStore";
 import { useRouter, useRoute, createWebHistory } from "vue-router";
 import { computed } from "vue";
 import { useAppMetadataStore } from "@/stores/AppMetadataStore";
+import { closeMenu } from "@/common/helpers";
     export default {
         setup() {
             const authStore = useAuthStore();
@@ -46,9 +50,14 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
             }
 
             const loginModalActive = computed(() => authStore.loginFormActive);
+            const registrationFormActive = computed(() => navigationStore.registrationFormActive);
 
             const toggleLoginModal = () => {
                 authStore.toggleLoginModal();
+            }
+
+            const openLoginForm = () => {
+                authStore.openLoginForm();
             }
 
             const toggleMenuModal = () => {
@@ -56,6 +65,16 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
             }
 
             const toggleMenuModalItems = () => {
+                navigationStore.toggleMenuModalItems();
+            }
+
+            const handleCloseRegistrationForm = (userRegistered: boolean) => {
+                navigationStore.closeRegistrationForm();
+            }
+
+            const handleOpenRegistrationForm = () => {
+                navigationStore.openRegistrationForm();
+                authStore.closeLoginForm();
                 navigationStore.toggleMenuModalItems();
             }
 
@@ -74,7 +93,13 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 loginModalActive,
                 env,
                 toggleMenuModal,
-                toggleMenuModalItems
+                toggleMenuModalItems,
+                registrationFormActive,
+                handleCloseRegistrationForm,
+                closeMenu,
+                handleOpenRegistrationForm,
+                openLoginForm
+
             }
         },
         components: {
@@ -86,7 +111,11 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
             LoginModal,
             MenuIcon,
             CloseIcon,
-            MenuModal
+            MenuModal,
+            RegistrationModal,
+            RequestResetPasswordModal,
+            ResetPasswordForm
+
         }
     }
 </script>
@@ -99,11 +128,13 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="flex flex-row">
-                        <!-- <router-link to="/" class="font-bold text-xl" @click="clearBreadCrumbs()">TrainingMode</router-link> -->
-                        <router-link to="/" class="font-bold text-xl flex justify-center" @click="clearBreadCrumbs()">
+                        <router-link to="/" class="font-bold text-xl flex flex-col justify-center items-center" @click="clearBreadCrumbs()">
                             <div class="flex flex-row justify-center">
                                 <img src="/src/assets/Training_Mode_Logo_White.png" alt="" class="xs:w-5/6 lg:w-1/3">
                                 <p class="text-[.50rem] font-bold">TM</p>
+                            </div>
+                            <div>
+                                <p class="text-sm">( Beta v{{ appMetadataStore.appVersion }} )</p>
                             </div>
                         </router-link>
                     </div>
@@ -112,11 +143,10 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
                         <p class="px-1">{{'-'}}</p>
                         <p>v{{ appMetadataStore.appVersion }}</p>
                     </div>
-                    <div class="flex justify-center items-center space-x-1">
-                        <!-- TODO Show username here if logged in -->
+                    <div class="flex justify-center items-center space-x-1 mt-2 text-lg">
                         <PersonOutlineIcon class="h-5 w-5" />
                         <p v-if="authStore.loggedInUser === null">Guest</p>
-                        <p v-else>{{ authStore.loggedInUser.username }}</p>
+                        <p v-else>{{ authStore.loggedInUser.username.includes('#') ? authStore.loggedInUser.username.split('#')[0] : authStore.loggedInUser.username }}</p>
                     </div>
 
                 </div>
@@ -135,12 +165,37 @@ import { useAppMetadataStore } from "@/stores/AppMetadataStore";
             <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0 z-40" :class="{ 'hidden': navigationStore.menuModalContainerActive === false }"></div>
             <div class="">
                 <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between justify-center" :class="{'hidden': navigationStore.menuModalContainerActive === false }">
-                    <div class="h-full flex flex-col justify-center items-center m-2 z-50">
+                    <div id="menu-overlay" class="h-full flex flex-col justify-center items-center m-2 z-50">
                         <!-- TODO Should we move these stylings into the LoginModal component? -->
-                        <MenuModal v-if="navigationStore.menuModalItemsActive" @trigger-toggle-login-modal="toggleLoginModal(), toggleMenuModalItems()" />
+                        <MenuModal 
+                            v-if="navigationStore.menuModalItemsActive" 
+                            @trigger-toggle-login-modal="toggleLoginModal(), toggleMenuModalItems()" 
+                            @trigger-open-registration-form="handleOpenRegistrationForm()"
+                        />
                         <div :class="{'hidden': loginModalActive === false }" class="z-50 lg:w-1/2">
                             <LoginModal class="p-2 m-2 bg-apex-blue" @trigger-toggle-login-modal="toggleLoginModal(), toggleMenuModal()" />
                         </div>
+                        <div :class="{'hidden': registrationFormActive === false }" class="z-50 lg:w-1/2">
+                            <RegistrationModal 
+                                class="p-2 m-2 bg-apex-blue" 
+                                @trigger-open-login-form="openLoginForm()"
+                                @trigger-close-registration-form="handleCloseRegistrationForm" 
+                                @trigger-close-menu="closeMenu()" 
+                            />
+                        </div>
+                        <div :class="{'hidden': authStore.requestPasswordResetFormActive === false }" class="z-50 lg:w-1/2">
+                            <RequestResetPasswordModal
+                                @trigger-close-menu="closeMenu()"
+                                class="p-2 m-2 bg-apex-blue" 
+                            />
+                        </div>
+                        <div :class="{'hidden': authStore.passwordResetFormActive === false }" class="z-50 lg:w-1/2">
+                            <ResetPasswordForm
+                                @trigger-close-menu="closeMenu()"
+                                class="p-2 m-2 bg-apex-blue" 
+                            />
+                        </div>
+                        
                     </div>
                 </div>
             </div>

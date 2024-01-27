@@ -52,16 +52,22 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         async setCharacter(characterId: string) {
             const authStore = useAuthStore();
+            const gameStore = useGameStore();
+            const gameId = localStorage.getItem('gameId') === null ? gameStore.game.id : localStorage.getItem('gameId');
 
             this.character = this.characters.find(character => character.id == characterId);
             if(authStore.loggedInUser !== null) {
-                this.fetchCharacterNotes(characterId);
-                this.characterNoteListDisplay = [...this.character.notes];
+                this.fetchCharacterNotes(gameId, characterId);
+                if(this.character.notes !== undefined) {
+                    this.characterNoteListDisplay = [...this.character.notes];
+                }
             }
-            this.characterNotations = this.character.notations;
+            this.characterNotations = this.character !== undefined ? this.character.notations : [];
             this.characterSearchInputValue = '';
-            localStorage.setItem('character', `${this.character.name}`);
-            localStorage.setItem('characterId', `${this.character.id}`);
+            if(this.character) {
+                localStorage.setItem('character', `${this.character.name}`);
+                localStorage.setItem('characterId', `${this.character.id}`);
+            }
         },
         async fetchCharacterNotes(gameId: string, characterId: string) {
             const authStore = useAuthStore();
@@ -74,7 +80,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 .then(response => {
                     this.characterNotes = [...response.data];
                     this.characterNotes.forEach(note => {
-                        console.log(note);
                         note.tags.forEach(tag => {
                             if(! this.characterNotesTags.find(characterNoteTag => characterNoteTag.name === tag.name )) {
                                 this.characterNotesTags.push(tag);
@@ -220,7 +225,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async addTagToCharacterNote(gameId: number, characterId: number, characterNoteId: string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
-            console.log('add tag to character note hit');
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes/${characterNoteId}/tags`, {
                     tags: [newTag]
@@ -230,8 +234,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
                     }
                 })
                 .then(response => {
-                    console.log('hello?');
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterNotes(gameId, characterId);
                 })

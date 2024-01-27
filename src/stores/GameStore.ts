@@ -19,8 +19,6 @@ export const useGameStore = defineStore('GameStore', {
 
         comingSoonList: [
             'Tekken 7',
-            'Tekken 8',
-            'Mortal Kombat 1'
         ],
         gameNotations: [],
 
@@ -77,9 +75,9 @@ export const useGameStore = defineStore('GameStore', {
                 '3 + 4',
             ]
             const attackButtonDoublesArray: any[] = [];
-
+            
             state.attackButtons.forEach(attackButton => {
-                if(attackButton.notations[0] !== undefined && attackButtonDoublesNotations.includes(attackButton.notations[0].notation)) {
+                if(attackButton.notations[0] !== undefined && attackButtonDoublesNotations.includes(attackButton.game_shorthand)) {
                     attackButtonDoublesArray.push(attackButton)
                 }
             });
@@ -114,7 +112,7 @@ export const useGameStore = defineStore('GameStore', {
             return inputs;
         },
         getDirectionalInputHolds(state) {
-            const inputs = state.directionalInputs.filter(input => input.direction.includes('(hold)'));
+            const inputs = state.directionalInputs.filter(input => input.direction.includes('(hold)') || input.direction === 'Neutral');
 
             return inputs;
         },
@@ -174,11 +172,9 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
-        async fetchGames() {
+        async fetchGames(guest?: boolean) {
             const authStore = useAuthStore();
-            // const endpoint = authStore.loggedInUser === null ? `/games/guest` : `/games`;
-            const endpoint = '/games/guest';
-            
+            const endpoint = guest ? `/games/guest` : `/games`;
             try {
                 const data = await trainingModeAPI.get(endpoint)
                 
@@ -399,7 +395,6 @@ export const useGameStore = defineStore('GameStore', {
         async addTagToGameNote(gameId: number, gameNoteId: string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
-            console.log('add tag to move hit');
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes/${gameNoteId}/tags`, {
                     tags: [newTag]
@@ -409,8 +404,6 @@ export const useGameStore = defineStore('GameStore', {
                     }
                 })
                 .then(response => {
-                    console.log('hello?');
-                    console.log(response);
                     gameStore.fetchTags(gameId);
                     this.fetchGameNotes(gameId);
                 })
