@@ -9,7 +9,6 @@ import { ref } from 'vue';
 const showNoteModal = ref(false);
 const noteModalMode = ref('');
 const openNoteModal = (mode: 'create' | 'view' | 'update') => {
-    console.log(mode);
     noteModalMode.value = mode;
     showNoteModal.value = true;
 }

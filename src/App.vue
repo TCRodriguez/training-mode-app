@@ -38,9 +38,7 @@ export default {
   
     watch(route, (to, from) => {
       // Check for `status` and `message` query parameters
-      console.log(to.query);
       if(to.query['password-reset-token']) {
-        console.log('pass tokeen ');
         navigationStore.openMenuModalContainer();
         authStore.openResetPasswordForm();
         return;
