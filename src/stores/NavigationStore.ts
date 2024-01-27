@@ -26,7 +26,6 @@ export const useNavigationStore = defineStore('NavigationStore', {
         },
         async popCharacterNavItem() {
             this.navItems.pop();
-            console.log(this.navItems);
         },
         async toggleMenuModalContainer() {
             this.menuModalContainerActive = !this.menuModalContainerActive;
