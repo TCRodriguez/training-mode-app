@@ -20,7 +20,7 @@
      
         /* Handle */
         ::-webkit-scrollbar-thumb {
-            @apply bg-gray;
+            @apply bg-white;
             border-radius: 5px;
             /* @apply p-8; */
         }
@@ -37,10 +37,10 @@ input {
     @apply border;
     @apply rounded;
     @apply p-2;
-    @apply placeholder:text-black;
+    /* @apply placeholder:text-white; */
     @apply placeholder:font-bold;
     @apply placeholder:text-lg;
-    @apply placeholder:opacity-50;
+    @apply placeholder:opacity-75;
     @apply w-full;
     @apply my-2;
 }
