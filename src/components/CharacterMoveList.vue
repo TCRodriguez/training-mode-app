@@ -65,7 +65,6 @@ export default {
 
         const addTagToSearchList = (event) => {
             if(event.target.tagName === 'SPAN' || event.target.tagName === 'DIV') {
-                console.log('test');
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');
                 searchByTagsInput.value = '';
