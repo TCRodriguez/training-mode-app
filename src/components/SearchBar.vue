@@ -6,7 +6,8 @@ const searchInput = ref('');
 
 const props = defineProps({
     placeholder: String,
-    searchType: String
+    searchType: String,
+    value: String
 })
 
 
@@ -24,7 +25,8 @@ const props = defineProps({
         <input
             v-if="searchType === 'tags'" 
             type="text" 
-            :placeholder="placeholder" 
+            :placeholder="placeholder"
+            :value="value"
             class="bg-white text-black border-none m-0"
             @input="$emit('triggerUpdateSearchByTagsInput', $event.target.value)"
             @keyup.enter="$emit('triggerAddTagToSearchList', $event)"

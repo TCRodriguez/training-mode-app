@@ -36,7 +36,6 @@ export default {
                 gameNoteOptionsActive.value.splice(gameNoteOptionsActive.value.indexOf(noteId), 1);
             }
 
-            console.log(gameNoteOptionsActive.value);
         }
 
         const createNoteActive = ref(false);
@@ -73,7 +72,6 @@ export default {
         const viewNoteTitle = ref(null);
         const viewNoteBody = ref(null);
         const toggleViewGameNote = (gameNote: object) => {
-            console.log(gameNote);
             viewNoteActive.value = !viewNoteActive.value;
 
             if(viewNoteActive.value) {

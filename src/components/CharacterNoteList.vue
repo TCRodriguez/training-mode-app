@@ -45,7 +45,6 @@ export default {
                 characterNoteOptionsActive.value.splice(characterNoteOptionsActive.value.indexOf(noteId), 1);
             }
 
-            console.log(characterNoteOptionsActive.value);
         }
 
         const openCreateNoteModal = () => {
@@ -127,7 +126,6 @@ export default {
         };
 
         const updateCreateNoteTitle = (noteTitle: string) => {
-            // console.log(noteTitle);
             createNoteTitle.value = noteTitle;
         };
         const updateCreateNoteBody = (noteBody: string) => {

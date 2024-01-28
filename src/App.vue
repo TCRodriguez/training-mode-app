@@ -3,17 +3,20 @@ import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import NavBar from './components/NavBar.vue';
 import { useAuthStore } from "./stores/AuthStore";
 import { useGameStore } from "./stores/GameStore";
+import { useComboStore } from "./stores/ComboStore";
 import { useCharacterStore } from "./stores/CharacterStore";
 import { getCharacterId, getGameId, closeMenu } from "./common/helpers";
 import { watch, onMounted, onUnmounted } from "vue";
 import { showToast } from "./common/helpers";
 import { toast, type ToastOptions } from 'vue3-toastify';
 import { useNavigationStore } from "./stores/NavigationStore";
+import trainingModeApi from './axios-http';
 
 export default {
   setup() {
     const authStore = useAuthStore();
     const gameStore = useGameStore();
+    const comboStore = useComboStore();
     const characterStore = useCharacterStore();
     const navigationStore = useNavigationStore();
     const route = useRoute();
@@ -38,9 +41,7 @@ export default {
   
     watch(route, (to, from) => {
       // Check for `status` and `message` query parameters
-      console.log(to.query);
       if(to.query['password-reset-token']) {
-        console.log('pass tokeen ');
         navigationStore.openMenuModalContainer();
         authStore.openResetPasswordForm();
         return;
@@ -99,6 +100,7 @@ export default {
     return {
       authStore,
       gameStore,
+      comboStore,
       characterStore,
       getGameId
     }
@@ -108,14 +110,16 @@ export default {
     RouterView
   },
   created() {
-    const authToken = localStorage.getItem('authToken');
-    if(authToken) {
-      // this.authStore.loggedInUser = 
-      // this.authStore.$dispose
-      this.authStore.validateTokenAndFetchUser(authToken);
-    }
     const gameId = getGameId();
     const characterId = getCharacterId();
+    const authToken = localStorage.getItem('authToken');
+    if(authToken) {
+      this.authStore.validateTokenAndFetchUser(authToken)
+      .then(() => {
+        this.characterStore.fetchCharacterNotes(gameId, characterId);
+        this.comboStore.fetchCharacterCombos(gameId, characterId);
+      })
+    }
 
     this.gameStore.fetchGames(true)
     .then(() => {

@@ -365,6 +365,10 @@ export const useGameStore = defineStore('GameStore', {
         },
 
         async updateTagsListDisplay() {
+            if(this.tagSearchCriteria.length === 0) {
+                this.tagsListDisplay = [];
+                return;
+            }
             this.tagsListDisplay = this.tags.filter(tag => {
                 return tag.name.includes(this.tagSearchCriteria);
             })

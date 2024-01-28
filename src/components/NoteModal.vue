@@ -147,17 +147,17 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                     </div>
                     <div v-if="mode === 'edit'" class="flex flex-col">
                         <input type="text" :value="noteTitle" @input="updateEditNoteTitle($event.target.value)" class="bg-white text-black" placeholder="Enter note title...">
-                        <textarea name="" :value="noteBody" @input="updateEditNoteBody($event.target.value)" id="" class="bg-white text-black" cols="30" rows="10"></textarea>
+                        <textarea name="" :value="noteBody" @input="updateEditNoteBody($event.target.value)" id="" class="bg-white text-black p-2" cols="30" rows="10"></textarea>
                     </div>
                     <div v-if="mode === 'view'" class="flex flex-col text-white space-y-2">
-                        <h3 class="text-3xl">{{ noteTitle }}</h3>
-                        <p v-html="formattedNoteBody"></p>
+                        <h3 class="text-3xl text-apex-yellow">{{ noteTitle }}</h3>
+                        <p v-html="formattedNoteBody" class="p-1"></p>
                     </div>
                 </div>
                 <div class="flex flex-row justify-end">
                     <div class="flex flex-col items-center" v-if="mode === 'view'">
                         <EditNoteIcon 
-                            class="h-20 w-20 fill-green"
+                            class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
                             @click="$emit('triggerOpenEditNoteModal', ({id: props.noteId, title: props.noteTitle , body: props.noteBody}))"
                         />
@@ -165,7 +165,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                     </div>
                     <div class="flex flex-col items-center" v-if="mode === 'create'">
                         <CheckmarkIcon 
-                            class="h-20 w-20 fill-green"
+                            class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
                             @click="saveNote(props.model), $emit('triggerCloseNoteModal')"
                         />
@@ -173,7 +173,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                     </div>
                     <div class="flex flex-col items-center" v-if="mode === 'edit'">
                         <CheckmarkIcon
-                            class="h-20 w-20 fill-green"
+                            class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
                             @click="updateNote(props.model), $emit('triggerCloseNoteModal')"
                         />
@@ -181,7 +181,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                     </div>
                     <div class="flex flex-col items-center">
                         <CloseIcon
-                            class="h-20 w-20 text-red"
+                            class="h-12 w-12 text-red"
                             :class="{ 'hidden': viewCondition === false }"
                             @click="$emit('triggerCloseNoteModal')"
                         />

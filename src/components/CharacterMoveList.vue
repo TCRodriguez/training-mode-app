@@ -64,7 +64,7 @@ export default {
         }
 
         const addTagToSearchList = (event) => {
-            if(event.target.tagName === 'SPAN') {
+            if(event.target.tagName === 'SPAN' || event.target.tagName === 'DIV') {
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');
                 searchByTagsInput.value = '';
@@ -168,7 +168,11 @@ export default {
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
                 gameStore.updateTagsListDisplay();
-            })
+            });
+
+            if(searchByTagsInput.value.length === 0) {
+                gameStore.updateTagsListDisplay();
+            }
         });
 
         return {
@@ -270,7 +274,7 @@ export default {
                     />
                 </div>
             </div>
-            <div class="flex flex-row items-center">
+            <div class="flex flex-row items-center px-2">
                 <SearchBar 
                     v-if="searchByOptionSelection === 'name'"
                     :placeholder="'Enter move name'"
@@ -281,14 +285,17 @@ export default {
                     v-if="searchByOptionSelection === 'tags'"
                     :placeholder="'Enter tags'"
                     :searchType="'tags'"
+                    :value="searchByTagsInput"
                     @trigger-update-search-by-tags-input="updateSearchByTagsInput" 
                     @trigger-add-tag-to-search-list="addTagToSearchList" 
                 />
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
                 <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
-                    <div class="" @click="addTagToSearchList($event)">
-                        <span>{{tag.name}}</span>
+                    <div class="" @click="addTagToSearchList($event)" @keydown.enter="addTagToSearchList($event)" tabindex="0">
+                        <button>
+                            <span>{{tag.name}}</span>
+                        </button>
                     </div>
                 </div>
                 <div v-for="(tag, index) in characterMoveStore.searchByTagsList" :key="index" class="">
@@ -299,6 +306,9 @@ export default {
                         <CloseIcon class="h-5 w-5" @click="removeTagFromSearchList(tag)" />
                     </div>
                 </div>
+                <div v-if="gameStore.tagsListDisplay.length !== 0" class="flex flex-row items-center italic">
+                    <p class="opacity-50">*Click tag to add*</p>
+                </div>
             </div>
         </div>
         <div v-if="characterMoveStore.characterMoves.length === 0" class="mt-32">
@@ -308,7 +318,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[23rem] lg:h-[18rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8 px-2">
+            <ul class="xs:h-[18rem] lg:h-[24rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"

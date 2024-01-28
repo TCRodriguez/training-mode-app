@@ -4,9 +4,7 @@ import { useAuthStore } from './stores/AuthStore';
 import { useNavigationStore } from './stores/NavigationStore';
 
 const trainingModeAPI = axios.create({
-    baseURL: 'https://api.trainingmode.gg/v1'
-    // baseURL: 'http://127.0.0.1:8000/v1'
-
+    baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 trainingModeAPI.interceptors.response.use(response => {

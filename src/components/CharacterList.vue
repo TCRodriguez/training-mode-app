@@ -87,7 +87,7 @@
                     class="placeholder:text-black"
                 />
         </div>
-        <div class="xs:h-[27rem] lg:h-[23rem] overflow-y-auto">
+        <div class="xs:h-[20rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-4">
                 <li
                     v-for="character in characterStore.characterListDisplay"
