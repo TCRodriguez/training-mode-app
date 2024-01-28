@@ -73,16 +73,15 @@
 <template lang="">
     <div class="flex flex-col">
         <div class="flex flex-row w-full items-center hidden">
-            <MagnifyingGlass class="h-10 w-10" />
-            <input 
-                class="my-8"
-                type="text" 
-                placeholder="Search Games"
-            >
-            <SearchBar @trigger-update-search-input="updateGameSearchInput" />
+            <SearchBar 
+                class=""
+                :searchType="'title'" 
+                placeholder="Enter title" 
+                @trigger-update-search-input="updateGameSearchInput" 
+            />
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="sm:flex sm:flex-row md:grid md:grid-cols-2  xs:space-y-12 md:space-y-4 xs:h-[35rem] lg:h-[40rem]">
+            <ul class="sm:flex sm:flex-row md:grid md:grid-cols-2  xs:space-y-12 md:space-y-4 xs:h-[28.5rem] lg:h-[40rem]">
             <!-- <ul class="flex flex-row space-y-4 xs:h-96 lg:h-[45rem]"> -->
                 <li 
                     v-for="game in gameStore.getGames"

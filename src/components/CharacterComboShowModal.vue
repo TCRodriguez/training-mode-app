@@ -9,7 +9,6 @@ import { ref } from 'vue';
 const showNoteModal = ref(false);
 const noteModalMode = ref('');
 const openNoteModal = (mode: 'create' | 'view' | 'update') => {
-    console.log(mode);
     noteModalMode.value = mode;
     showNoteModal.value = true;
 }
@@ -28,7 +27,7 @@ const props = defineProps({
 <template lang="">
     <div>
         <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0"></div>
-        <div class="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center">
+        <div class="absolute top-0 bottom-[-4rem] right-0 left-0 flex justify-center items-center">
             <div class="w-full h-full flex flex-col justify-center items-center">
                 <div class="p-2 w-[90%] bg-apex-blue flex flex-col justify-between rounded">
                     <div>

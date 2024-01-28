@@ -231,4 +231,32 @@ export const closeMenu = () => {
 export const getQueryParam = (param: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
-}
+};
+
+export const sortList = (list: any[], sortType: 'asc' | 'desc', sortProperty: string) => {
+    const sortList = {
+        'desc': function () {
+            return list.sort((a, b) => {
+                if (a[sortProperty] > b[sortProperty]) {
+                    return -1;
+                }
+                if (a[sortProperty] < b[sortProperty]) {
+                    return 1;
+                }
+                return 0;
+            });
+        },
+        'asc': function () {
+            return list.sort((a, b) => {
+                if (a[sortProperty] > b[sortProperty]) {
+                    return 1;
+                }
+                if (a[sortProperty] < b[sortProperty]) {
+                    return -1;
+                }
+                return 0;
+            });
+        }
+    };
+    return sortList[sortType]();
+};
