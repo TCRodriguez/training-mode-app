@@ -43,7 +43,6 @@ export default {
             const notations = [...comboStore.notationsDisplay];
             const notationsArrayLength = notations.length;
             const nextNotationIndices = [];
-            console.log(notations);
 
 
             for (let i = 0; i < notations.length; i++) {
@@ -74,7 +73,6 @@ export default {
                 k -= 1;
             }
             notationChunks.forEach(chunk => comboStore.addNotationSegments(chunk));
-            console.log(comboStore.notationSegments);
         }
 
         const presentComboVertically = () => {

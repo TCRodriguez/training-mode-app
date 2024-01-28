@@ -21,21 +21,26 @@ export default {
             authStore.login(username, password)
             .then(response => {
                 let responseMessage;
+
                 if(response.response) {
                     responseMessage = response.response.data.message;
                 }
+
                 if(responseMessage === 'The provided credentials are incorrect.') {
                     authStore.updateLoginFailedMessage('Incorrect email or password');
                     loginFailed.value = true;
+
                     return;
                 } else if (responseMessage === 'Email not yet verified.') {
                     authStore.updateLoginFailedMessage(`Email not yet verified. Please check your inbox for a verification link.`);
                     authStore.updateCredentialsCorrect(true);
                     loginFailed.value = true;
+
                     return;
                 } else if(responseMessage.includes('Too Many Attempts.')) {
                     authStore.updateLoginFailedMessage('Too many attempts. Please try again later.');
                     loginFailed.value = true;
+                    
                     return;
                 }
             })
