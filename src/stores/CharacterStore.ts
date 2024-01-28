@@ -72,11 +72,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async fetchCharacterNotes(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             try {
-                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/notes`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/notes`)
                 .then(response => {
                     this.characterNotes = [...response.data];
                     this.characterNotes.forEach(note => {
