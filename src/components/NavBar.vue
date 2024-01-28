@@ -78,7 +78,7 @@ import { closeMenu } from "@/common/helpers";
                 navigationStore.toggleMenuModalItems();
             }
 
-            const env = window.location.href.includes('localhost') || window.location.href.includes('127.0.0.1') ? 'develop' : 'production';
+            const env = import.meta.env.VITE_APP_ENV;
 
             return {
                 authStore,
@@ -136,12 +136,12 @@ import { closeMenu } from "@/common/helpers";
                             <div>
                                 <p class="text-sm">( Beta v{{ appMetadataStore.appVersion }} )</p>
                             </div>
+                            <div v-if="authStore.loggedInUser && authStore.loggedInUser.username === 'nightbass_'" >
+                                <div>
+                                    <p class="text-xs">{{ env }}</p>
+                                </div>
+                            </div>
                         </router-link>
-                    </div>
-                    <div v-if="authStore.loggedInUser?.username === 'NiGHTBass'" class="flex flex-row">
-                        <p>{{env}}</p>
-                        <p class="px-1">{{'-'}}</p>
-                        <p>v{{ appMetadataStore.appVersion }}</p>
                     </div>
                     <div class="flex justify-center items-center space-x-1 mt-2 text-lg">
                         <PersonOutlineIcon class="h-5 w-5" />
