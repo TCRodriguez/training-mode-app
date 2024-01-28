@@ -90,7 +90,7 @@ export default {
                         @keyup.enter="$emit('saveTag', addTagInput.value, comboId), addTagInput.value = ''"
                         type="text" 
                         placeholder="Enter Tag..."
-                        class="border w-min"
+                        class="border w-min bg-apex-blue text-white rounded p-2"
                     >
                 </div>
             </div>

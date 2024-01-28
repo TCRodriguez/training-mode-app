@@ -268,7 +268,7 @@ export default {
                 </div>
                 <div v-for="(tag, index) in comboStore.searchByTagsList" :key="index" class="">
                     <div
-                        class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
+                        class="flex flex-row items-center bg-apex-yellow text-black rounded p-1 space-x-1"
                         
                     >
                         <span>{{tag}}</span>

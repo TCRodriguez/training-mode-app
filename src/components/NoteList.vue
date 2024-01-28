@@ -423,10 +423,10 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8 px-2 w-full lg:px-[20rem] xl:px-[30rem]">
+    <div class="mt-4 px-2 w-full lg:px-[20rem] xl:px-[30rem]">
         <div class="">
             <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2 justify-between" :class="{ 'hidden': notes.length === 0 }">
-                <div class="flex flex-row items-center">
+                <div class="flex flex-row items-center space-x-2 my-2">
                     <p>Search by:</p>
                     <button
                         class="text-white p-1" 
@@ -445,7 +445,7 @@ export default {
                     </button>
                 </div>
             </div>
-            <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center my-2">
                 <SearchBar
                     v-if="searchByOptionSelection === 'text'"
                     :placeholder="'Enter title'" 
@@ -467,7 +467,7 @@ export default {
 
 
             <!-- ! It's hardcoded for games! -->
-            <div class="flex flex-row space-x-2 flex-wrap">
+            <div class="flex flex-row space-x-2 flex-wrap mb-2">
                 <div v-if="searchNoteByTagsInput.length !== 0" v-for="(tag, index) in noteTagsListDisplay" class="border rounded p-1">
                     <div class="" @click="addNoteTagToSearchList($event)">
                         <span>{{tag.name}}</span>
@@ -476,7 +476,7 @@ export default {
                             <!-- ! It's hardcoded for games! -->
                 <div v-for="(tag, index) in searchNoteByTagsList" :key="index" class="">
                     <div
-                        class="flex flex-row items-center bg-blue text-white rounded p-1 space-x-1"
+                        class="flex flex-row items-center bg-apex-yellow text-black rounded p-1 space-x-1"
                     >
                         <span>{{tag}}</span>
                         <CloseIcon class="h-5 w-5 fill-white" @click="removeNoteTagFromSearchList(tag)" />
@@ -493,7 +493,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="notes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
             </div>
-            <div class="xs:h-[18rem] lg:h-[26rem] overflow-y-auto space-y-2 ">
+            <div class="xs:h-[17rem] lg:h-[25rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
                     <li v-for="note in notes" :key="note.id">
                         <div class="border rounded p-2">
