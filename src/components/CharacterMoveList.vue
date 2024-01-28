@@ -270,7 +270,7 @@ export default {
                     />
                 </div>
             </div>
-            <div class="flex flex-row items-center">
+            <div class="flex flex-row items-center px-8">
                 <SearchBar 
                     v-if="searchByOptionSelection === 'name'"
                     :placeholder="'Enter move name'"
@@ -308,7 +308,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[23rem] lg:h-[18rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8 px-2">
+            <ul class="xs:h-[18rem] lg:h-[24rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"
