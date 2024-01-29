@@ -48,4 +48,5 @@ input {
 body {
     /* font-family: 'Inter', sans-serif; */
     font-family: 'Play', sans-serif;
+    @apply bg-apex-blue;
 }
