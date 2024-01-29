@@ -282,7 +282,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto xs:h-[15rem] lg:h-96 pb-[3rem]">
+            <ul class="space-y-2 overflow-y-auto h-[14rem] xs:h-[14rem] lg:h-96 pb-[3rem]">
                 <li v-for="(combo, index) in comboList" 
                     :key="combo.id"
                     class="flex flex-col"
@@ -291,7 +291,7 @@ export default {
                         <div class="flex flex-row items-center space-x-2 w-full">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
-                                class="border rounded p-2 xs:w-[23.5rem] sm:w-full md:w-[61.75rem] lg:w-[67rem] overflow-x-auto bg-white text-black"
+                                class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-[67rem] overflow-x-auto bg-white text-black"
                                 @save-tag="addTagToCharacterCombo"
                                 @trigger-remove-tag="removeTagFromCharacterCombo"
                                 :inputs="combo.inputs"
@@ -370,7 +370,7 @@ export default {
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
-                    class="h-20 w-20 absolute xs:bottom-[-3rem] lg:bottom-4 right-4 fill-green"
+                    class="h-20 w-20 absolute bottom-[-3rem] xs:bottom-[-3rem] lg:bottom-4 right-4 fill-green"
                     :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true }" 
                     @click="openCreateComboModal()" 
                 />
