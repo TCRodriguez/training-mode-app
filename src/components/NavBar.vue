@@ -79,6 +79,7 @@ import { closeMenu } from "@/common/helpers";
             }
 
             const env = import.meta.env.VITE_APP_ENV;
+            const appVersion = import.meta.env.VITE_APP_VERSION;
 
             return {
                 authStore,
@@ -92,6 +93,7 @@ import { closeMenu } from "@/common/helpers";
                 toggleLoginModal,
                 loginModalActive,
                 env,
+                appVersion,
                 toggleMenuModal,
                 toggleMenuModalItems,
                 registrationFormActive,
@@ -134,7 +136,7 @@ import { closeMenu } from "@/common/helpers";
                                 <p class="text-[.50rem] font-bold">TM</p>
                             </div>
                             <div>
-                                <p class="text-sm">( Beta v{{ appMetadataStore.appVersion }} )</p>
+                                <p class="text-sm">( Beta v{{ appVersion }} )</p>
                             </div>
                             <div v-if="authStore.loggedInUser && authStore.loggedInUser.username === 'nightbass_'" >
                                 <div>

@@ -38,7 +38,7 @@ const props = defineProps({
                                 :comboId="comboId"
                             />
                         </div>
-                        <div class="mt-8 space-y-2">
+                        <div class="mt-4 space-y-2">
                             <h3 class="font-bold text-2xl">Notes</h3>
                             <!-- <CharacterComboNoteList :comboId="comboId" :comboNotes="comboNotes" class="mt-2" /> -->
                             <NoteList :modelId="comboId" :modelName="'combo'" class="mt-2" />
