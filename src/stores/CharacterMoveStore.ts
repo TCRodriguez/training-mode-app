@@ -195,8 +195,15 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         async setCharacterMove(moveId: number) {
             this.characterMove = this.characterMoves.find(move => move.id === moveId);
-            this.characterMoveNotes = [...this.characterMove.notes];
+
+            if(this.characterMove.notes !== undefined) {
+                this.characterMoveNotes = [...this.characterMove.notes];
+            } else {
+                this.characterMoveNotes = [];
+            }
+
             localStorage.setItem('characterMoveId', this.characterMove.id);
+            
             this.updateCharacterMoveNoteListDisplay();
         },
 
