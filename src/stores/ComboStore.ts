@@ -161,11 +161,7 @@ export const useComboStore = defineStore('ComboStore', {
                 return;
             }
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                });
+                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`);
                 this.combos = data.data;
                 this.updateCharacterComboListDisplay();
 
@@ -326,11 +322,7 @@ export const useComboStore = defineStore('ComboStore', {
         async fetchCharacterComboNotes(gameId: string, characterId: string, comboId: number) {
             const authStore = useAuthStore();
             try {
-                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/combos/${comboId}/notes`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/combos/${comboId}/notes`)
                 .then(response => {
                     this.characterComboNotes = [...response.data];
                     this.characterComboNotes.forEach(note => {

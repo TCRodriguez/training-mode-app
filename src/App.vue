@@ -3,19 +3,22 @@ import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 import NavBar from './components/NavBar.vue';
 import { useAuthStore } from "./stores/AuthStore";
 import { useGameStore } from "./stores/GameStore";
+import { useCharacterMoveStore } from "./stores/CharacterMoveStore";
 import { useComboStore } from "./stores/ComboStore";
 import { useCharacterStore } from "./stores/CharacterStore";
-import { getCharacterId, getGameId, closeMenu } from "./common/helpers";
+import { getCharacterId, getGameId, closeMenu, getCharacterMoveId, getCharacterComboId } from "./common/helpers";
 import { watch, onMounted, onUnmounted } from "vue";
 import { showToast } from "./common/helpers";
 import { toast, type ToastOptions } from 'vue3-toastify';
 import { useNavigationStore } from "./stores/NavigationStore";
 import trainingModeApi from './axios-http';
 
+
 export default {
   setup() {
     const authStore = useAuthStore();
     const gameStore = useGameStore();
+    const characterMoveStore = useCharacterMoveStore();
     const comboStore = useComboStore();
     const characterStore = useCharacterStore();
     const navigationStore = useNavigationStore();
@@ -100,9 +103,13 @@ export default {
     return {
       authStore,
       gameStore,
+      characterMoveStore,
       comboStore,
       characterStore,
-      getGameId
+      getGameId,
+      getCharacterId,
+      getCharacterMoveId,
+      getCharacterComboId
     }
   },
   components: {
@@ -112,12 +119,18 @@ export default {
   created() {
     const gameId = getGameId();
     const characterId = getCharacterId();
+    const moveId = getCharacterMoveId();
+    const comboId = getCharacterComboId();
+
     const authToken = localStorage.getItem('authToken');
     if(authToken) {
       this.authStore.validateTokenAndFetchUser(authToken)
       .then(() => {
+        this.gameStore.fetchGameNotes(gameId);
         this.characterStore.fetchCharacterNotes(gameId, characterId);
+        this.characterMoveStore.fetchCharacterMoveNotes(gameId, characterId, moveId);
         this.comboStore.fetchCharacterCombos(gameId, characterId);
+        this.comboStore.fetchCharacterComboNotes(gameId, characterId, comboId);
       })
     }
 
