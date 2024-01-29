@@ -81,8 +81,7 @@
             />
         </div>
         <div class="h-full overflow-y-auto">
-            <ul class="sm:flex sm:flex-row md:grid md:grid-cols-2  xs:space-y-12 md:space-y-4 xs:h-[28.5rem] lg:h-[40rem]">
-            <!-- <ul class="flex flex-row space-y-4 xs:h-96 lg:h-[45rem]"> -->
+            <ul class="sm:flex sm:flex-row md:grid md:grid-cols-2 xs:space-y-12 md:space-y-4 xs:h-[28.5rem] lg:h-[40rem] h-[28.5rem]">
                 <li 
                     v-for="game in gameStore.getGames"
                     :key="game.id"

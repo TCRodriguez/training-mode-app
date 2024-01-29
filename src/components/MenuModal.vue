@@ -33,16 +33,16 @@ const handleLogout = () => {
             <div class="xs:space-y-4 xl:space-y-8">
                 <div class="">
                     <div class="flex flex-row items-center space-x-2" @click="$emit('triggerToggleLoginModal')">
-                        <LoginOutlineIcon v-if="authStore.loggedInUser === null" class="xs:h-10 xs:w-10 lg:h-20 lg:w-20" />
+                        <LoginOutlineIcon v-if="authStore.loggedInUser === null" class="xs:h-10 xs:w-10 lg:h-20 lg:w-20 h-10 w-10" />
                         <p v-if="authStore.loggedInUser === null">Login</p>
                     </div>
                     <div class="flex flex-row items-center space-x-2" @click="handleLogout()">
-                        <ExitOutlineIcon v-if="authStore.loggedInUser !== null" class="xs:h-10 xs:w-10 lg:h-20 lg:w-20" />
+                        <ExitOutlineIcon v-if="authStore.loggedInUser !== null" class="xs:h-10 xs:w-10 lg:h-20 lg:w-20 h-10 w-10" />
                         <p v-if="authStore.loggedInUser !== null">Logout</p>
                     </div>
                 </div>
                 <div v-if="authStore.loggedInUser === undefined || authStore.loggedInUser === null" class="flex flex-row items-center space-x-2" @click="$emit('triggerOpenRegistrationForm', false)">
-                    <AddUserIcon class="xs:h-10 xs:w-10 lg:h-20 lg:w-20" />
+                    <AddUserIcon class="xs:h-10 xs:w-10 lg:h-20 lg:w-20 h-10 w-10" />
                     <p>Register</p>
                 </div>
                 <div class="flex flex-row items-center">

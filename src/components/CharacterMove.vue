@@ -63,7 +63,7 @@ export default {
                 {{ moveType }}
             </p>
         </div>
-        <div class="flex flex-row overflow-x-auto">
+        <div class="flex flex-row overflow-x-auto w-[20.5rem] xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-[67rem]">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col mt-2 shrink-0">
                 <DirectionalInput 
                     v-if="input.img_category === 'directional-inputs'" 
