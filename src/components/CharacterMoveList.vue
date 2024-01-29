@@ -318,7 +318,7 @@ export default {
             </div>
         </div>
         <div class="">
-            <ul class="xs:h-[18rem] lg:h-[24rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
+            <ul v-if="characterMoveStore.characterMoves.length !== 0" class="xs:h-[18rem] lg:h-[24rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
                     :key="index"

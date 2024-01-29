@@ -251,7 +251,7 @@ export default {
 </script>
 <template lang="">
     <div class="mt-8">
-        <div class="flex flex-col space-y-2 px-2 lg:px-80">
+        <div class="flex flex-col space-y-2 px-2 xl:px-[19rem]">
             <div v-if="comboList.length !== 0" class="flex flex-row items-center ml-5">
                 <SearchBar 
                     :placeholder="'Enter tag'" 
@@ -288,10 +288,10 @@ export default {
                     class="flex flex-col"
                 >
                     <div class="flex flex-col w-full">
-                        <div class="flex flex-row items-center space-x-2">
+                        <div class="flex flex-row items-center space-x-2 w-full">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
-                                class="border rounded p-2 overflow-x-auto w-full bg-white text-black"
+                                class="border rounded p-2 xs:w-[23.5rem] sm:w-full md:w-[61.75rem] lg:w-[67rem] overflow-x-auto bg-white text-black"
                                 @save-tag="addTagToCharacterCombo"
                                 @trigger-remove-tag="removeTagFromCharacterCombo"
                                 :inputs="combo.inputs"

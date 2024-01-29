@@ -20,7 +20,7 @@
      
         /* Handle */
         ::-webkit-scrollbar-thumb {
-            @apply bg-white;
+            @apply bg-gray;
             border-radius: 5px;
             /* @apply p-8; */
         }
