@@ -31,7 +31,7 @@ const props = defineProps({
         <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0"></div>
         <div class="absolute top-0 bottom-0 right-0 left-0 flex justify-center items-center">
             <div class="w-full h-full flex flex-col items-center">
-                <div class="p-2 w-[90%] bg-apex-blue flex flex-col justify-between rounded mt-5">
+                <div class="p-2 w-[90%] bg-apex-blue flex flex-col justify-between rounded xs:mt-1 lg:mt-16">
                     <div>
                         <div>
                             <CharacterMove
@@ -41,7 +41,7 @@ const props = defineProps({
                                 :moveId="moveId"
                             />
                         </div>
-                        <div class="mt-8 space-y-2">
+                        <div class="mt-4 space-y-2">
                             <h3 class="font-bold text-2xl">Notes</h3>
                             <NoteList :modelId="moveId" :modelName="'move'" class="mt-2" />
                         </div>

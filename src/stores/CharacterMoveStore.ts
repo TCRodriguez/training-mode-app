@@ -256,11 +256,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async fetchCharacterMoveNotes(gameId: string, characterId: string, moveId: number) {
             const authStore = useAuthStore();
             try {
-                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/moves/${moveId}/notes`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/moves/${moveId}/notes`)
                 .then(response => {
                     this.characterMoveNotes = [...response.data]
                     this.characterMoveNotes.forEach(note => {

@@ -188,11 +188,7 @@ export const useGameStore = defineStore('GameStore', {
         async fetchGameNotes(gameId: string) {
             const authStore = useAuthStore();
             try {
-                await trainingModeAPI.get(`/games/${gameId}/notes`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                await trainingModeAPI.get(`/games/${gameId}/notes`)
                 .then(response => {
                     this.gameNotes = [...response.data];
                     // this.gameNotesTags = [...this.gameNotes.]
