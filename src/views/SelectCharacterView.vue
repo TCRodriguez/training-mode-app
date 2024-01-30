@@ -16,6 +16,20 @@ export default {
 
         const currentTab = ref('Characters');
 
+        if(localStorage.getItem('currentGameViewPageTag') === undefined) {
+            currentTab.value = 'Moves';
+        } else {
+            currentTab.value = localStorage.getItem('currentGameViewPageTab');
+        }
+
+        const handleTabClick = (tab: string) => {
+            console.log('tab clicked');
+            console.log(tab);
+            localStorage.setItem('currentGameViewPageTab', tab);
+            currentTab.value = tab;
+
+        }
+
         const tabs = {
             Notes,
             Characters
@@ -39,7 +53,8 @@ export default {
             getGameAbbreviation,
             componentProps,
             getGameId,
-            gamesWithBiggerBanners
+            gamesWithBiggerBanners,
+            handleTabClick
         }
     },
     created() {
@@ -67,7 +82,7 @@ export default {
                     v-for="(_, tab) in tabs" 
                     :key="tab"
                     :class="{ 'border-b-2 border-b-apex-yellow': currentTab === tab }"
-                    @click="currentTab = tab"
+                    @click="currentTab = tab, handleTabClick(tab)"
                 >
                     {{ tab }}
                 </li>

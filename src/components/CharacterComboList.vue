@@ -88,9 +88,9 @@ export default {
         }
 
         const toggleEditComboMode = (comboId: number, comboInputs: object[] = []) => {
-            editCharacterComboId.value === comboId ?
-                editCharacterComboId.value = 0
-                : editCharacterComboId.value = comboId;
+            if(editCharacterComboId.value !== comboId) {
+                editCharacterComboId.value = comboId;
+            }
 
             editCharacterComboModeActive.value = !editCharacterComboModeActive.value;
             if(comboInputs.length !== 0) {
@@ -371,7 +371,7 @@ export default {
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
                     class="h-20 w-20 absolute bottom-[-3rem] xs:bottom-[-3rem] lg:bottom-4 right-4 fill-green"
-                    :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true }" 
+                    :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true || editCharacterComboModeActive === true}" 
                     @click="openCreateComboModal()" 
                 />
             </div>
