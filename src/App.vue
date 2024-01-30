@@ -79,9 +79,9 @@ export default {
           showToast('There was a problem with the email verification. ', 5000, 'error');
         }
       } else if (to.query.error) {
-        if (to.query.error?.includes('users.users_email_unique')) {
+        if (to.query.error?.includes('Email is already in use')) {
           // showToast('The email associated with your Discord is already in use. Please login with your email and password.', 5000, 'error');
-          toast.error("The email associated with your Discord is already in use. Please login with your email and password.", {
+          toast.error("That email is already in use. Please login with your email and password.", {
             autoClose: 10000,
             position: toast.POSITION.TOP_CENTER,
             onClose: () => {
