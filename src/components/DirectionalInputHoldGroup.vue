@@ -44,7 +44,7 @@ export default {
                 :iconFileName="getInputImgFilename(direction.direction)" 
                 :game="getGameAbbreviation()" 
                 :direction="direction" 
-                class="h-20 w-20"
+                class="xs:h-16 xs:w-16 h-20 w-20"
             />
         </div>
     </div>

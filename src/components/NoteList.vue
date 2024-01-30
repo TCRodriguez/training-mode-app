@@ -576,7 +576,7 @@ export default {
         <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
-                class="h-20 w-20 absolute xs:bottom-[1rem] lg:bottom-8 right-4 fill-green"
+                class="h-20 w-20 absolute xs:bottom-[-3rem] lg:bottom-8 right-4 fill-green"
                 :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
                 @click="openCreateNoteModal()" 
             />
