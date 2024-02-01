@@ -25,7 +25,7 @@ export default {
 
         const currentTab = ref('Moves');
         
-        if(localStorage.getItem('currentCharacterViewPageTag') === undefined) {
+        if(localStorage.getItem('currentCharacterViewPageTag') === undefined || localStorage.getItem('currentCharacterViewPageTag') === null ){
             currentTab.value = 'Moves';
         } else {
             currentTab.value = localStorage.getItem('currentCharacterViewPageTab');
