@@ -317,7 +317,7 @@ export default {
                 <p class="text-white text-xl px-2">If you'd like to help with adding move data, let us know on <a href="https://discord.gg/VBdTfJyddy" class="pointer text-apex-yellow" target="_blank">Discord</a>!. You can also send us an email at <a href="mailto:support@trainingmode.gg" class="text-apex-yellow">support@trainingmode.gg</a>.</p>
             </div>
         </div>
-        <div class="">
+        <div class="w-[25.8rem] xs:w-[25.8rem] sm:w-[43rem] md:w-[48.4rem] lg:w-full">
             <ul v-if="characterMoveStore.characterMoves.length !== 0" class="h-[18rem] xs:h-[18rem] lg:h-[24rem] overflow-y-auto overflow-x-hidden space-y-2 pb-8">
                 <li 
                     v-for="(move, index) in characterMoveStore.characterMoveListDisplay" 
