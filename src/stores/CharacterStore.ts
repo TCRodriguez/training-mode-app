@@ -30,7 +30,12 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         // getCharacterName(state) {
         //     return state.character.name;
-        // }
+        // },
+        getAlphabeticalCharacterListDisplay(state) {
+            return state.characterListDisplay.sort((a: any, b: any) => {
+                return a.name.localeCompare(b.name);
+            });
+        }
     },
     actions: {
         async fetchCharacters(gameId: any) {
