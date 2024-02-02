@@ -2,7 +2,7 @@
 import { useComboStore } from '@/stores/ComboStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import AttackButton from '@/components/AttackButton.vue';
 import DirectionalInput from './DirectionalInput.vue';
@@ -82,6 +82,17 @@ export default {
             inputComboDisplay?.requestFullscreen();
         }
 
+        const lastListItem = ref(null);
+        const { comboInputsDisplay } = storeToRefs(useComboStore());
+        watch(comboInputsDisplay, async () => {
+            // Wait for DOM updates after data change
+            await nextTick();
+            // Check if lastListItem is rendered and scroll into view
+            if (lastListItem.value) {
+                lastListItem.value.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, { deep: true }); // deep watch to catch nested data changes
+
         return {
             gameStore,
             comboStore,
@@ -94,7 +105,8 @@ export default {
             presentComboVertically,
             getInput,
             getGameAbbreviation,
-            getInputImgFilename
+            getInputImgFilename,
+            lastListItem
         }
     },
     props: {
@@ -150,6 +162,7 @@ export default {
                 :iconFileName="getInputImgFilename(comboInput.notation)"
             />
         </div>
+        <div ref="lastListItem" class="pr-8"></div>
     </div>
     <!-- Full screen display -->
     <div
