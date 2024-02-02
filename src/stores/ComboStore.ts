@@ -125,10 +125,6 @@ export const useComboStore = defineStore('ComboStore', {
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
                 })
                 .then(response => {
                     this.clearComboInputsDisplay();
