@@ -47,11 +47,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
 
             try {
-                const data = await trainingModeAPI.get(endpoint, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                });
+                const data = await trainingModeAPI.get(endpoint);
                 this.characterMoves = data.data;
                 
                 this.updateCharacterMovesListDisplay();
@@ -117,11 +113,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         async fetchCharacterMoveTags(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/tags`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                });
+                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/tags`);
             } catch (error) {
                 console.log(error);
             }
