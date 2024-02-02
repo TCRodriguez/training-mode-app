@@ -31,8 +31,8 @@ export default {
         }
 
         const tabs = {
+            Characters,
             Notes,
-            Characters
         }
 
         const componentProps = {

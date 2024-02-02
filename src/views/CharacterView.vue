@@ -25,7 +25,7 @@ export default {
 
         const currentTab = ref('Moves');
         
-        if(localStorage.getItem('currentCharacterViewPageTag') === undefined || localStorage.getItem('currentCharacterViewPageTag') === null ){
+        if(localStorage.getItem('currentCharacterViewPageTab') === undefined || localStorage.getItem('currentCharacterViewPageTab') === null ){
             currentTab.value = 'Moves';
         } else {
             currentTab.value = localStorage.getItem('currentCharacterViewPageTab');
@@ -40,9 +40,9 @@ export default {
         }
 
         const tabs = {
-            Notes,
             Moves,
             Combos,
+            Notes,
         };
 
         const componentProps = {
