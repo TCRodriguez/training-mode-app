@@ -2,6 +2,7 @@
 import AttackButtonSinglesGroup from './AttackButtonSinglesGroup.vue';
 import AttackButtonDoublesGroup from './AttackButtonDoublesGroup.vue';
 import AttackButtonTriplesGroup from './AttackButtonTriplesGroup.vue';
+import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed } from 'vue';
 export default {
@@ -25,6 +26,7 @@ export default {
         AttackButtonSinglesGroup,
         AttackButtonDoublesGroup,
         AttackButtonTriplesGroup,
+        HelpCircleOutlineIcon
     }    
 }
 </script>
@@ -35,6 +37,9 @@ export default {
                 <button v-if="attackButtonDoubles.length > 0 && attackButtonTriples.length > 0" class="p-2" :class="{ 'border rounded': attackButtonGroupSelection === 'singles'}" @click="attackButtonGroupSelection = 'singles'">1</button>
                 <button v-if="attackButtonDoubles.length > 0" class="p-2" :class="{ 'border rounded': attackButtonGroupSelection === 'doubles'}" @click="attackButtonGroupSelection = 'doubles'">2</button>
                 <button v-if="attackButtonTriples.length > 0" class="p-2" :class="{ 'border rounded': attackButtonGroupSelection === 'triples'}" @click="attackButtonGroupSelection = 'triples'">3</button>
+                <div class="flex justify-end w-full items-center">
+                    <HelpCircleOutlineIcon class="h-8 w-8 text-white fill-white" @click="$emit('triggerOpenAttackButtonLegendOverlay')" />
+                </div>
             </div>
             <div class="overflow-y-auto h-[20rem]">
                 <div v-if = "attackButtonGroupSelection === 'singles'">
