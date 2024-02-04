@@ -59,6 +59,26 @@ export default {
             return sortList(noteList, 'asc', 'title');
         });
 
+        const coreNoteList = computed(() => {
+            const retrieveNoteList = {
+                'game': function () {
+                    return gameStore.gameNotes;
+                },
+                'character': function () {
+                    return characterStore.characterNotes;
+                },
+                'move': function () {
+                    return characterMoveStore.characterMoveNotes;
+                },
+                'combo': function () {
+                    return comboStore.characterComboNotes;
+                }
+            };
+            const noteList = retrieveNoteList[props.modelName]();
+
+            return sortList(noteList, 'asc', 'title');
+        });
+
         const noteTagsListDisplay = computed(() => {
             const retrieveNoteTagsList = {
                 'game': function () {
@@ -75,6 +95,25 @@ export default {
                 }
             };
             return retrieveNoteTagsList[props.modelName]();
+        });
+
+        const newNoteTagLoading = computed(() => {
+            const retrieveNoteTagLoading = {
+                'game': function () {
+                    console.log(gameStore.newGameNoteTagLoading);
+                    return gameStore.newGameNoteTagLoading;
+                },
+                'character': function () {
+                    return characterStore.newCharacterNoteTagLoadingState;
+                },
+                'move': function () {
+                    return characterMoveStore.newCharacterMoveNoteTagLoading;
+                },
+                'combo': function () {
+                    return comboStore.newCharacterComboNoteTagLoading;
+                }
+            };
+            return retrieveNoteTagLoading[props.modelName]();
         });
 
         const searchNoteByTagsList = computed(() => {
@@ -356,7 +395,9 @@ export default {
             authStore,
             characterStore,
             gameStore,
+
             notes,
+            coreNoteList,
             noteTagsListDisplay,
             searchNoteByTagsList,
             searchNoteByTextInput,
@@ -400,7 +441,8 @@ export default {
             removeTagFromNote,
 
             updateSearchNoteByTextInput,
-            updateSearchNoteByTagsInput
+            updateSearchNoteByTagsInput,
+            newNoteTagLoading
             
         }
     },
@@ -423,9 +465,9 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-4 px-2 w-full lg:px-[20rem] xl:px-[30rem]">
+    <div class="px-2 w-full lg:px-[20rem] xl:px-[30rem]">
         <div class="">
-            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2 justify-between" :class="{ 'hidden': notes.length === 0 }">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2 justify-between">
                 <div class="flex flex-row items-center space-x-2 my-2">
                     <p>Search by:</p>
                     <button
@@ -445,13 +487,12 @@ export default {
                     </button>
                 </div>
             </div>
-            <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center my-2">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row w-full items-center">
                 <SearchBar
                     v-if="searchByOptionSelection === 'text'"
                     :placeholder="'Enter title'" 
                     :searchType="'title'"
                     @trigger-update-search-input="updateSearchNoteByTextInput"
-                    :class="{ 'hidden': notes.length === 0 }"
                 />
                 <SearchBar
                     v-if="searchByOptionSelection === 'tags'"
@@ -459,7 +500,6 @@ export default {
                     :searchType="'tags'"
                     @trigger-update-search-by-tags-input="updateSearchNoteByTagsInput" 
                     @trigger-add-tag-to-search-list="addNoteTagToSearchList" 
-                    :class="{ 'hidden': notes.length === 0 }"
                 
                 />
             </div>
@@ -491,7 +531,9 @@ export default {
                 <p class="font-bold text-xl text-center">Must be logged in to view {{modelName}} notes!</p>
             </div>
             <div v-if="authStore.loggedInUser !== null">
-                <p v-if="notes.length === 0" class="flex justify-center font-bold text-2xl">Add your notes!</p>
+                <p v-if="notes.length === 0 && coreNoteList.length === 0" class="flex justify-center font-bold text-2xl pt-[4rem]">Add your notes!</p>
+                <p v-else-if="coreNoteList.length !== 0 && notes.length === 0" class="flex justify-center font-bold text-2xl pt-[4rem]">No matching notes!</p>
+
             </div>
             <div class="h-[17rem] xs:h-[17rem] lg:h-[23rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
@@ -505,6 +547,7 @@ export default {
                                 :tags="note.tags" 
                                 :editTagsActive="editNoteTagsActive"
                                 :resourceId="note.id"
+                                :newTagLoadingProp="newNoteTagLoading"
                                 @trigger-add-tag-to-resource="addTagToNote"
                                 @trigger-remove-tag-from-resource="removeTagFromNote"
                             />
@@ -576,8 +619,11 @@ export default {
         <div v-if="authStore.loggedInUser !== null && showAddIcon === true">
             <AddIcon
                 v-if="createNoteActive !== true"
-                class="h-20 w-20 absolute xs:bottom-[-3rem] lg:bottom-8 right-4 fill-green"
-                :class="{ 'hidden': viewNoteActive === true || editNoteActive === true}"
+                class="h-20 w-20 absolute xs:bottom-[0.5rem] lg:bottom-[0.5rem] right-4 lg:right-[19rem] fill-green"
+                :class="{ 
+                    'hidden': viewNoteActive === true || editNoteActive === true,
+                    'xs:bottom-[6.5rem]': notes.length === 0
+                }"
                 @click="openCreateNoteModal()" 
             />
         </div>
