@@ -240,11 +240,7 @@ export const useGameStore = defineStore('GameStore', {
                 return;
             }
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/tags`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                const data = await trainingModeAPI.get(`/games/${gameId}/tags`)
                 this.tags = data.data;
             } catch (error) {
                 console.log(error);
@@ -366,7 +362,7 @@ export const useGameStore = defineStore('GameStore', {
                 return;
             }
             this.tagsListDisplay = this.tags.filter(tag => {
-                return tag.name.includes(this.tagSearchCriteria);
+                return tag.name.includes(this.tagSearchCriteria.toLowerCase());
             })
             
         },
