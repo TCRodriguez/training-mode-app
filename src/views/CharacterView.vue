@@ -32,8 +32,6 @@ export default {
         }
 
         const handleTabClick = (tab: string) => {
-            console.log('tab clicked');
-            console.log(tab);
             localStorage.setItem('currentCharacterViewPageTab', tab);
             currentTab.value = tab;
 

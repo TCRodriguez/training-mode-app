@@ -47,20 +47,13 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             const gameStore = useGameStore();
 
             const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves`;
-            console.log(endpoint);
             try {
                 await trainingModeAPI.get(endpoint)
                 .then(response => {
-                    console.log(response);
                     this.characterMoves = response.data;
                     this.updateCharacterMovesListDisplay();
                     gameStore.fetchTags(gameId);
                 })
-                // console.log('fetchCharacterMoves', data.data);
-                // this.characterMoves = data.data;
-                
-                // this.updateCharacterMovesListDisplay();
-                // gameStore.fetchTags(gameId);
             } catch (error) {
                 console.log(error);
             }

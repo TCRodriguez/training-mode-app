@@ -102,7 +102,6 @@ export const useAuthStore = defineStore('AuthStore', {
             trainingModeApi.get('/user')
             .then(response => {
                 this.loggedInUser = response.data;
-                console.log(this.loggedInUser === null);
                 return response;
             });
         },
