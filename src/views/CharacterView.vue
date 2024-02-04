@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useComboStore } from '@/stores/ComboStore';
-// import Notes from '@/components/CharacterNoteList.vue';
 import Notes from '@/components/NoteList.vue';
 import Moves from '@/components/CharacterMoveList.vue';
 import Combos from '@/components/CharacterComboList.vue';
