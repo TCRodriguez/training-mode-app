@@ -16,6 +16,7 @@ import OpenOutlineIcon from './icons/OpenOutlineIcon.vue';
 import SearchBar from './SearchBar.vue';
 
 import LegendOverlay from './LegendOverlay.vue';
+import { showToast, checkIfTagExists } from '@/common/helpers';
 
 export default {
     setup() {
@@ -46,6 +47,20 @@ export default {
         }
 
         const addTagToMove = (newTag, moveId) => {
+            if(newTag === '') {
+                showToast('Tag cannot be empty', 3000, 'error');
+                characterMoveStore.updateNewCharacterMoveTagLoadingState();
+                return;
+            }
+            const characterMove = characterMoveStore.characterMoves.find(move => move.id === moveId);
+            const tagExists = characterMove.tags.find(tag => tag.name === newTag);
+
+            if(tagExists) {
+                console.log('that tag exists on that move already');
+                showToast('That tag already exists on that move', 3000, 'error');
+                characterMoveStore.updateNewCharacterMoveTagLoadingState();
+                return;
+            }
             characterMoveStore.addTagToCharacterMove(route.params.game, route.params.character, moveId, newTag);
         }
 
@@ -64,6 +79,9 @@ export default {
         }
 
         const addTagToSearchList = (event) => {
+            if(!checkIfTagExists(searchByTagsInput.value)) {
+                return;
+            }
             if(event.target.tagName === 'SPAN' || event.target.tagName === 'DIV') {
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');
@@ -291,7 +309,7 @@ export default {
                 />
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
-                <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
+                <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1 mb-2">
                     <div class="" @click="addTagToSearchList($event)" @keydown.enter="addTagToSearchList($event)" tabindex="0">
                         <button>
                             <span>{{tag.name}}</span>
@@ -310,6 +328,9 @@ export default {
                     <p class="opacity-50">*Click tag to add*</p>
                 </div>
             </div>
+        </div>
+        <div v-if="characterMoveStore.searchByTagsList.length !== 0 && characterMoveStore.characterMoveListDisplay.length === 0" class="flex flex-row justify-center text-2xl mt-10">
+            <div>No moves with that tag!</div>
         </div>
         <div v-if="characterMoveStore.characterMoves.length === 0" class="mt-32">
             <div class="flex flex-col items-center justify-center space-y-8">

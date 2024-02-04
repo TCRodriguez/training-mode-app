@@ -9,8 +9,9 @@ import { useCharacterMoveStore } from '../stores/CharacterMoveStore';
 import CloseIcon from './icons/CloseIcon.vue';
 import { storeToRefs } from 'pinia';
 import { getInputImgFilename, getGameAbbreviation} from '@/common/helpers';
+import { NSpace, NSpin } from 'naive-ui';
 
-import { ref } from 'vue';
+import { ref, watch, computed } from 'vue';
 export default {
     setup(props) {
         const authStore = useAuthStore();
@@ -20,6 +21,11 @@ export default {
         const removedTagIds = ref([]);
 
         const { getCharacterMoveTags } = storeToRefs(characterMoveStore);
+        const newTagLoading = computed(() => characterMoveStore.newCharacterMoveTagLoading);
+
+        const handleAddTag = () => {
+            characterMoveStore.updateNewCharacterMoveTagLoadingState();
+        }
 
         return {
             authStore,
@@ -29,7 +35,9 @@ export default {
             addTagInput,
             removedTagIds,
             getGameAbbreviation,
-            getInputImgFilename
+            getInputImgFilename,
+            newTagLoading,
+            handleAddTag
         }
     },
     props: {
@@ -49,7 +57,9 @@ export default {
         AttackButton,
         AddIconOutline,
         CloseIcon,
-        GameNotation
+        GameNotation,
+        NSpace,
+        NSpin
     }
 }
 </script>
@@ -97,17 +107,23 @@ export default {
                     :class=" {'p-1 rounded': editTagsActive.includes(moveId)}"
                 >
                     <div class="flex flex-row">
+
                         <div>
                             <span>#{{tag.name}}</span>
                         </div>
                         <CloseIcon v-if="editTagsActive.includes(moveId)" class="h-6 w-6" @click="$emit('triggerRemoveTag', tag.id, moveId)" />
                     </div>
                 </div>
+                <div v-if="newTagLoading" class="pr-2">
+                    <n-space>
+                        <n-spin size="small" stroke="#E6C900" />
+                    </n-space>
+                </div>
                 <div class="">
                     <input 
                         v-if="editTagsActive.includes(moveId)"
                         ref="addTagInput"
-                        @keyup.enter="$emit('saveTag', addTagInput.value, moveId), addTagInput.value = ''"
+                        @keyup.enter="handleAddTag(), $emit('saveTag', addTagInput.value, moveId), addTagInput.value = ''"
                         type="text" 
                         placeholder="Enter Tag..."
                         class="border w-min bg-apex-blue text-white"
