@@ -1,5 +1,6 @@
 <script lang="ts">
 import { useGameStore } from '@/stores/GameStore';
+import { useCharacterStore } from '@/stores/CharacterStore';
 import { computed, ref } from 'vue';
 import GameNotation from './GameNotation.vue';
 import { renderNotationInput } from '@/common/helpers';
@@ -9,7 +10,9 @@ import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
 export default {
     setup() {
         const gameStore = useGameStore();
+        const characterStore = useCharacterStore();
         const gameNotations = computed(() => gameStore.gameNotations);
+        const characterNotations = computed(() => characterStore.character.notations);
 
         const showNotationLegendOverlay = ref(false);
         const openNotationLegendOverlay = () => {
@@ -26,7 +29,8 @@ export default {
             renderNotationInput,
             showNotationLegendOverlay,
             openNotationLegendOverlay,
-            closeNotationLegendOverlay
+            closeNotationLegendOverlay,
+            characterNotations
         }
     },
     components: {
@@ -46,12 +50,18 @@ export default {
                 :showAttackButtons="false"
                 :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
                 :descriptionsStyles="['text-white', 'text-lg']"
-                :descriptionsContainerStyles="['space-y-4', 'overflow-y-auto', 'xs:h-[49rem]']"
+                :descriptionsContainerStyles="['space-y-4', 'overflow-y-auto', 'xs:h-[42rem]', 'pb-[5rem]']"
                 @trigger-close-legend-overlay="closeNotationLegendOverlay()"
             />
             <HelpCircleOutlineIcon class="text-white fill-white h-8 w-8" @click="openNotationLegendOverlay()"/>
         </div>
         <div class="grid grid-rows-2 grid-cols-5 items-center justify-center">
+            <div v-for="characterNotation in characterNotations"
+                class="border bg-apex-blue p-1 text-center w-full h-full"
+                @click="renderNotationInput(characterNotation)"
+            >
+                <p>{{characterNotation.notation}}</p>
+            </div>
             <div
                 v-for="gameNotation in gameNotations"
                 :key="gameNotation.id"       

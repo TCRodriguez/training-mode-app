@@ -4,6 +4,8 @@ import { useAuthStore } from './AuthStore';
 import { useCharacterStore } from './CharacterStore';
 // import { addNotationToNotationDisplay } from '@/common/helpers';
 import trainingModeAPI from '../axios-http';
+import { directionalInputSets } from '@/common/utilities';
+import type { cannedDirectionalInputSetShorthand } from '@/common/utilities';
 
 export const useComboStore = defineStore('ComboStore', {
     state: () => ({
@@ -19,9 +21,11 @@ export const useComboStore = defineStore('ComboStore', {
 
         searchByTagsList: [],
 
+        characterComboSearchByTextValue: '',
+        characterComboSearchByTagsValue: '',
+
         characterComboNotes: [],
         characterComboNoteListDisplay: [],
-        // characterComboNoteSearchInputValue: '',
 
         characterComboNoteSearchByTextInputValue: '',
         characterComboNoteSearchByTagInputValue: '',
@@ -30,6 +34,8 @@ export const useComboStore = defineStore('ComboStore', {
         characterComboNotesTags: [],
         characterComboNotesFilteredByTagsList: [],
         characterComboNoteSearchByTagsList: [],
+        newCharacterComboTagLoading: false,
+        newCharacterComboNoteTagLoading: false,
     }),
     getters: {
         getCombos(state) {
@@ -60,6 +66,29 @@ export const useComboStore = defineStore('ComboStore', {
                 category: 'directional-inputs',
                 icon_file_name: directionalInput.icons[0].icon_file_name
             });
+        },
+        async addCannedDirectionalInputsToDisplay(set: cannedDirectionalInputSetShorthand) {
+            const gameStore = useGameStore();
+            const directionalInputs = gameStore.getDirectionalInputTaps;
+
+            // directionalInputSets[set].forEach(direction => {
+            //     let directionalInput = directionalInputs.find(input => input.direction === direction);
+            //     inputsToAdd.push(directionalInput);
+            // });
+            // console.log(inputsToAdd);
+            directionalInputSets[set].directions.forEach(direction => {
+                console.log(direction);
+                let directionalInput = directionalInputs.find(input => input.direction === direction);
+                directionalInput.category = 'directional-inputs';
+                console.log(directionalInput);
+                this.comboInputsDisplay.push(directionalInput);
+            });
+
+            // TODO: Do we need to add that `this.notationsDisplay` line here? Or is that some older code that we don't use anymore?
+            // TODO: I think it was meant to be part of the "toggle notations view" feature, but I'm not sure.
+            // TODO: THis is where you'd see it go from icoons to `d, df, f` or whatever.
+            // TODO: Did we end up accomplishing that in another way?
+
         },
         async addAttackButtonInputToDisplay(attackButtonInput: object) {
             attackButtonInput.category = 'attack-buttons';
@@ -99,17 +128,14 @@ export const useComboStore = defineStore('ComboStore', {
         async clearNotationSegments() {
             this.notationSegments = [];
         },
-        async saveCharacterCombo(gameId: string, characterId: string, comboInputs: object) {
+        async saveCharacterCombo(comboName:string, gameId: string, characterId: string, comboInputs: object) {
             const authStore = useAuthStore();
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/character-combos`, {
+                    name: comboName,
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
                 })
                 .then(response => {
                     this.fetchCharacterCombos(gameId, characterId);
@@ -118,17 +144,14 @@ export const useComboStore = defineStore('ComboStore', {
                 console.log(error);
             }
         },
-        async updateCharacterCombo(gameId: string, characterId: string, comboId: string, comboInputs: object) {
+        async updateCharacterCombo(comboName:string, gameId: string, characterId: string, comboId: string, comboInputs: object) {
             const authStore = useAuthStore();
             try {
                 await trainingModeAPI.put(`/games/${gameId}/characters/${characterId}/character-combos/${comboId}`, {
+                    name: comboName,
                     game_id: gameId,
                     character_id: characterId,
                     inputs: comboInputs
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
                 })
                 .then(response => {
                     this.clearComboInputsDisplay();
@@ -160,7 +183,7 @@ export const useComboStore = defineStore('ComboStore', {
             try {
                 const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/character-combos`);
                 this.combos = data.data;
-                this.updateCharacterComboListDisplay();
+                this.updateCharacterComboListDisplay('text');
 
                 for (let i = 0; i < this.combos.length; i++) {
                     const combo = this.combos[i];
@@ -229,12 +252,18 @@ export const useComboStore = defineStore('ComboStore', {
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
-                    this.fetchCharacterCombos(gameId, characterId);
+                    this.fetchCharacterCombos(gameId, characterId)
+                    .then(() => {
+                        this.newCharacterComboTagLoading = false;
+                    })
                 })
 
             } catch (error) {
                 console.log(error);
             }
+        },
+        async updateNewCharacterComboTagLoadingState() {
+            this.newCharacterComboTagLoading = !this.newCharacterComboTagLoading;
         },
         async removeTagFromCharacterCombo(gameId: string, characterId: string, comboId: string, tagId: string) {
             const authStore = useAuthStore();
@@ -257,6 +286,7 @@ export const useComboStore = defineStore('ComboStore', {
             const tagNamesArray = gameStore.tags.map(tag => tag.name);
             const tagExists = tagNamesArray.includes(tag);
 
+            // Tag only gets added if it exists.
             if(!this.searchByTagsList.includes(tag) && tagExists) {
                 this.searchByTagsList.push(tag);
             }
@@ -265,22 +295,44 @@ export const useComboStore = defineStore('ComboStore', {
         async removeCharacterComboTagFromSearchList(tag: string) {
             this.searchByTagsList.splice(this.searchByTagsList.indexOf(tag), 1);
         },
-        async updateCharacterComboListDisplay() {
-            let characterComboListFilteredByTags: object[] = [];
+        async clearCharacterComboTagSearchList() {
+            this.searchByTagsList = [];
+            this.characterComboListDisplay = [...this.combos];
+        },
+        async updateCharacterComboListDisplay(searchBy: 'text' | 'tags') {
 
-            if(this.searchByTagsList.length === 0) {
-                this.resetCharacterComboListDisplay();
-                return;
-            }
 
-            this.combos.forEach(combo => {
-                combo.tags.forEach(tag => {
-                    if(this.searchByTagsList.includes(tag.name)) {
-                        characterComboListFilteredByTags.push(combo);
+            if(searchBy === 'text') {
+                if(this.characterComboSearchByTextValue.length === 0) {
+                    this.resetCharacterComboListDisplay();
+                    return;
+                }
+                console.log(this.characterComboSearchByTextValue);
+                this.characterComboListDisplay = this.combos.filter(combo => {
+                    if(combo.name === null) {
+                        return;
                     }
+                    return combo.name.toLowerCase().includes(this.characterComboSearchByTextValue.toLowerCase());
                 })
-            })
-            this.characterComboListDisplay = [...characterComboListFilteredByTags];
+
+            } else if (searchBy === 'tags') {
+
+                let characterComboListFilteredByTags: object[] = [];
+    
+                if(this.searchByTagsList.length === 0) {
+                    this.resetCharacterComboListDisplay();
+                    return;
+                }
+    
+                this.combos.forEach(combo => {
+                    combo.tags.forEach(tag => {
+                        if(this.searchByTagsList.includes(tag.name)) {
+                            characterComboListFilteredByTags.push(combo);
+                        }
+                    })
+                })
+                this.characterComboListDisplay = [...characterComboListFilteredByTags];
+            }
         },
         async resetCharacterComboListDisplay() {
             this.characterComboListDisplay = [...this.combos];
@@ -450,15 +502,18 @@ export const useComboStore = defineStore('ComboStore', {
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
-                    this.fetchCharacterCombos(gameId, characterId)
-                    this.fetchCharacterComboNotes(gameId, characterId, this.combo.id);
+                    this.fetchCharacterCombos(gameId, characterId);
+                    this.fetchCharacterComboNotes(gameId, characterId, this.combo.id)
+                    
+                    .then(() => {
+                        this.updateNewComboNoteTagLoadingState();
+                    })
                 })
 
             } catch (error) {
                 console.log(error);
             }
         },
-
         async removeTagFromCharacterComboNote(gameId: string, characterComboNoteId: number, tagId: number) {
             const authStore = useAuthStore();
             const characterStore = useCharacterStore();
@@ -475,9 +530,15 @@ export const useComboStore = defineStore('ComboStore', {
                 console.log(error);
             }
         },
-
-
-
-
+        async updateCharacterComboSearchByTextCriteria(input: string) {
+            this.characterComboSearchByTextValue = input;
+        },
+        async updateCharacterComboSearchByTagsCriteria(input: string) {
+            this.characterComboSearchByTagsValue = input;
+        },
+        async updateNewComboNoteTagLoadingState() {
+            console.log('updateNewComboNoteTagLoadingState hit');
+            this.newCharacterComboNoteTagLoading = !this.newCharacterComboNoteTagLoading;
+        }
     }
 });

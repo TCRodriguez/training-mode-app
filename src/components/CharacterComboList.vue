@@ -22,6 +22,7 @@ import { useCharacterStore } from '@/stores/CharacterStore';
 import { useGameStore } from '@/stores/GameStore';
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { checkIfTagExists } from '@/common/helpers';
 
 export default {
     setup(params) {
@@ -31,9 +32,11 @@ export default {
         const comboStore = useComboStore();
         const characterStore = useCharacterStore();
         const gameStore = useGameStore();
-        const comboList = computed(() => comboStore.characterComboListDisplay)
+        const comboList = computed(() => comboStore.characterComboListDisplay);
 
         let createComboActive = ref(false);
+        const createComboName = ref('');
+        const editComboName = ref('');
         const editCharacterComboModeActive = ref(false);
         const editCharacterComboId = ref(0);
         const inputsForEditCharacterCombo = ref([]);
@@ -62,6 +65,13 @@ export default {
             comboStore.clearComboInputsDisplay();
         };
 
+        const handleCreateComboNameInputChange = (newComboName: string) => {
+            createComboName.value = newComboName;
+        };
+
+        const handleEditComboNameInputChange = (editComboNameValue: string) => {
+            editComboName.value = editComboNameValue;
+        };
         const saveCharacterCombo = () => {
             if(comboStore.comboInputsDisplay.length === 0 ) {
                 alert('Please input a combo.')
@@ -71,11 +81,11 @@ export default {
                 alert('Please select a character first.')
                 return;
             }
-
             const game = gameStore.getGame;
             const character = characterStore.getCharacter;
-            comboStore.saveCharacterCombo(gameStore.game.id, characterStore.character.id, comboStore.comboInputsDisplay)
+            comboStore.saveCharacterCombo(createComboName.value, gameStore.game.id, characterStore.character.id, comboStore.comboInputsDisplay)
             .then(() => {
+                createComboName.value = '';
                 comboStore.clearComboInputsDisplay();
                 closeCreateComboModal();
             });
@@ -83,8 +93,11 @@ export default {
 
         const editCharacterCombo = () => {
             const comboId = editCharacterComboId.value;
-            comboStore.updateCharacterCombo(gameStore.game.id, characterStore.character.id, comboId, comboStore.comboInputsDisplay)
-            .then(() => toggleEditComboMode(comboId));
+            comboStore.updateCharacterCombo(editComboName.value, gameStore.game.id, characterStore.character.id, comboId, comboStore.comboInputsDisplay)
+            .then(() => {
+                editComboName.value = '';
+                toggleEditComboMode(comboId);
+            });
         }
 
         const toggleEditComboMode = (comboId: number, comboInputs: object[] = []) => {
@@ -93,6 +106,7 @@ export default {
             }
 
             editCharacterComboModeActive.value = !editCharacterComboModeActive.value;
+            editComboName.value = comboStore.combos.find(combo => combo.id === comboId)?.name;
             if(comboInputs.length !== 0) {
                 comboStore.populateComboInputsDisplay(comboInputs);
             }
@@ -144,20 +158,24 @@ export default {
         }
 
         const addTagToSearchList = (event) => {
+            if(!checkIfTagExists(searchByTagsInput.value)) {
+                return;
+            }
             if(event.target.tagName === 'SPAN') {
                 comboStore.addCharacterComboTagToSearchList(event.target.textContent);
-                comboStore.updateCharacterComboListDisplay();
+                comboStore.updateCharacterComboListDisplay('tags');
                 searchByTagsInput.value = '';
                 return;
             }
+
             comboStore.addCharacterComboTagToSearchList(searchByTagsInput.value);
-            comboStore.updateCharacterComboListDisplay();
+            comboStore.updateCharacterComboListDisplay('tags');
             searchByTagsInput.value = '';
         }
 
         const removeTagFromSearchList = (tag) => {
             comboStore.removeCharacterComboTagFromSearchList(tag);
-            comboStore.updateCharacterComboListDisplay();
+            comboStore.updateCharacterComboListDisplay('tags');
         }
 
         const openCharacterComboModal = (comboId: number, comboInputs: object[]) => {
@@ -176,16 +194,29 @@ export default {
         const showCharacterComboModal = ref(false);
 
         const selectedCharacterComboId = ref(null);
-
+        const searchNoteByTagsInput = ref('');
+        const switchSearchByOption = (option: string) => {
+            comboStore.clearCharacterComboTagSearchList();
+            searchByOptionSelection.value = option;
+        }
+        const updateCharacterComboSearchByTextValue = (searchValue: string) => {
+            comboStore.updateCharacterComboSearchByTextCriteria(searchValue)
+            .then(() => {
+                comboStore.updateCharacterComboListDisplay('text');
+            });
+        }
         const updateSearchByTagsInput = (searchValue: string) => {
             searchByTagsInput.value = searchValue;
         }
+
         watch(searchByTagsInput, () => {
             gameStore.updateTagSearchCriteria(searchByTagsInput.value)
             .then(() => {
                 gameStore.updateTagsListDisplay();
             })
         });
+
+        const searchByOptionSelection = ref('text');
 
         return {
             route,
@@ -198,6 +229,10 @@ export default {
 
             comboList,
             createComboActive,
+            createComboName,
+            editComboName,
+            handleCreateComboNameInputChange,
+            handleEditComboNameInputChange,
             searchByTagsInput,
             openCreateComboModal,
             closeCreateComboModal,
@@ -227,7 +262,10 @@ export default {
             showCharacterComboModal,
             selectedCharacterComboId,
 
-            updateSearchByTagsInput
+            updateSearchByTagsInput,
+            searchByOptionSelection,
+            switchSearchByOption,
+            updateCharacterComboSearchByTextValue
         }
     },
     components: {
@@ -250,18 +288,47 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="mt-8">
-        <div class="flex flex-col space-y-2 px-2 xl:px-[19rem]">
-            <div v-if="comboList.length !== 0" class="flex flex-row items-center ml-5">
+    <div class="">
+        <div class="flex flex-col px-2 xl:px-[19rem]">
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center space-x-2 justify-between my-2" :class="{ 'hidden': comboStore.combos.length === 0 }">
+                <div class="flex flex-row items-center space-x-2">
+                    <p>Search by:</p>
+                    <button
+                        class="text-white p-1" 
+                        :class="{ 'border rounded': searchByOptionSelection === 'text'}"
+                        @click="switchSearchByOption('text')"
+                    >
+                        <span>Text</span>
+                    </button>
+                    <button
+    
+                        class="text-white p-1" 
+                        :class="{ 'border rounded': searchByOptionSelection === 'tags', 'opacity-50': authStore.loggedInUser === null}"
+                        @click="switchSearchByOption('tags')"
+                    >
+                        <span>Tags</span>
+                    </button>
+                </div>
+            </div>
+            <div v-if="authStore.loggedInUser !== null" class="flex flex-row items-center">
+                <SearchBar
+                    v-if="searchByOptionSelection === 'text'"
+                    :placeholder="'Enter title'" 
+                    :searchType="'title'"
+                    @trigger-update-search-input="updateCharacterComboSearchByTextValue"
+                    :class="{'hidden': comboStore.combos.length === 0}"
+                />
                 <SearchBar 
+                    v-if="searchByOptionSelection === 'tags'"
                     :placeholder="'Enter tag'" 
-                    :searchType="'tags'" 
+                    :searchType="'tags'"
+                    :value="searchByTagsInput"
                     @trigger-update-search-by-tags-input="updateSearchByTagsInput" 
                     @trigger-add-tag-to-search-list="addTagToSearchList" 
                 />
             </div>
             <div class="flex flex-row space-x-2 flex-wrap">
-                <div v-if="searchByTagsInput.length !== 0" v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
+                <div v-for="(tag, index) in gameStore.tagsListDisplay" class="border rounded p-1">
                     <div class="" @click="addTagToSearchList($event)">
                         <span>{{tag.name}}</span>
                     </div>
@@ -276,13 +343,19 @@ export default {
                     </div>
                 </div>
             </div>
-            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center">
+            <div v-if="comboStore.searchByTagsList.length !== 0 && comboStore.characterComboListDisplay.length === 0" class="flex flex-row justify-center text-2xl mt-10">
+                <div>No combos have that tag!</div>
+            </div>
+            <div v-if="comboStore.characterComboSearchByTextValue !== '' && comboStore.characterComboListDisplay.length === 0" class="flex flex-row justify-center text-2xl mt-10">
+                <div>None of your combos have that title!</div>
+            </div>
+            <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center mt-[8rem]">
                 <p class="font-bold text-xl text-center">Must be logged in to view character combos!</p>
             </div>
-            <div v-if="authStore.loggedInUser !== null">
-                <p v-if="comboStore.combos.length === 0" class="flex justify-center font-bold text-2xl">Add your combos!</p>
+            <div v-if="comboStore.combos.length === 0 && authStore.loggedInUser !== null && authStore.loggedInUser !== undefined">
+                <p class="flex justify-center font-bold text-2xl pt-[4rem]">Add your combos!</p>
             </div>
-            <ul class="space-y-2 overflow-y-auto h-[14rem] xs:h-[14rem] lg:h-96 pb-[3rem]">
+            <ul class="overflow-y-auto h-[14rem] xs:h-[14rem] lg:h-96 xs:pb-[3rem] lg:pb-[7rem]">
                 <li v-for="(combo, index) in comboList" 
                     :key="combo.id"
                     class="flex flex-col"
@@ -294,6 +367,7 @@ export default {
                                 class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-[67rem] overflow-x-auto bg-white text-black"
                                 @save-tag="addTagToCharacterCombo"
                                 @trigger-remove-tag="removeTagFromCharacterCombo"
+                                :name="combo.name"
                                 :inputs="combo.inputs"
                                 :comboId="combo.id"
                                 :editTagsActive="characterComboEditTagsActive"
@@ -321,6 +395,7 @@ export default {
                     <div v-if="selectedCharacterComboId === combo.id">
                         <CharacterComboShowModal
                             @trigger-close-character-combo-modal="closeCharacterComboModal(combo.id)"
+                            :name="combo.name"
                             :comboId="combo.id" 
                             :inputs="combo.inputs" 
                             :comboNotes="combo.notes"
@@ -335,33 +410,33 @@ export default {
         <div class="bg-black opacity-[.99] fixed h-screen w-full top-0 left-0 right-0 bottom-0" :class="{ 'hidden': editCharacterComboModeActive === false }"></div>
         <!-- Create Combo -->
         <div>
-            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
+            <div class="absolute h-screen top-0 bottom-0 right-0 left-0 flex flex-col justify-between" :class="{'hidden': createComboActive === false }">
                 <div class="fixed top-0 right-0 w-full">
+                    <div class="bg-black">
+                        <input type="text" class="p-1 bg-black border-none" @input="handleCreateComboNameInputChange($event.target.value)" placeholder="Enter combo name...">
+                    </div>
                     <ComboInputDisplay />
                 </div>
-                <div class="px-2 mt-20 sm:mb-4">
+                <div class="xs:px-2 md:px-[20rem] mt-[8rem] sm:mb-4">
                     <GameNotationGroup />
                 </div>
                 <div class="flex flex-col items-center justify-center sm:justify-between">
-                    <div class="flex justify-end w-full">
-                        <HelpCircleOutlineIcon class="h-8 w-8 text-white fill-white" @click="openAttackButtonLegendOverlay()" />
-                    </div>
                     <LegendOverlay
                         :showLegendOverlay="showAttackButtonLegendOverlay === true"
                         :showGameNotations="false"
                         :showAttackButtons="true"
                         :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
                         :descriptionsStyles="['text-yellow', 'text-xl']"
-                        :descriptionsContainerStyles="['space-y-4', 'xs:h-[49rem]']"
+                        :descriptionsContainerStyles="['space-y-4', 'overflow-y-auto', 'xs:h-[42rem]', 'pb-[5rem]']"
                         @trigger-close-legend-overlay="closeAttackButtonLegendOverlay()"
                     />
-                    <div class="flex flex-row">
+                    <div class="flex flex-row h-[16rem] xs:h-[16rem]">
                         <DirectionalInputSwitcher class=""/>
-                        <div class="w-0.5 h-full border rounded border-gray"></div>
-                        <AttackButtonSwitcher class="" />
+                        <div class="w-0.5 h-full border rounded border-gray mx-2"></div>
+                        <AttackButtonSwitcher @trigger-open-attack-button-legend-overlay="openAttackButtonLegendOverlay()" />
                     </div>
                 </div>
-                <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
+                <div class="flex flex-row justify-between xs:justify-between lg:justify-center lg:space-x-4 lg:text-3xl text-xl mb-2 w-full px-2">
                     <button class="bg-red p-2 rounded text-white" @click="closeCreateComboModal()">Cancel</button>
                     <button class="bg-green p-2 rounded text-white" @click="saveCharacterCombo()">Save</button>
                     <button class="bg-red text-white p-2 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
@@ -370,8 +445,11 @@ export default {
             </div>
             <div v-if="authStore.loggedInUser !== null">
                 <AddIcon
-                    class="h-20 w-20 absolute bottom-[-3rem] xs:bottom-[-3rem] lg:bottom-4 right-4 fill-green"
-                    :class="{ 'hidden': createComboActive === true || showCharacterComboModal === true || editCharacterComboModeActive === true}" 
+                    class="h-20 w-20 absolute xs:bottom-[-3rem] lg:bottom-4 right-4 md:right-[1rem] lg:right-[1rem] xl:right-[19rem] fill-green"
+                    :class="{ 
+                        'hidden': createComboActive === true || showCharacterComboModal === true || editCharacterComboModeActive === true,
+                        'xs:bottom-[1.5rem] bottom-[1.5rem]': comboStore.characterComboSearchByTextValue !== ''
+                    }" 
                     @click="openCreateComboModal()" 
                 />
             </div>
@@ -380,20 +458,35 @@ export default {
         <!-- Edit Combo -->
         <div>
             <div class="absolute h-screen top-0 bottom-0 right-0 left-0 pt-2" :class="{'hidden': editCharacterComboModeActive === false }">
-                <div class="my-2">
+                <div class="fixed top-0 right-0 w-full">
+                    <div class="bg-black">
+                        <input type="text" :value="editComboName" class="p-1 bg-black border-none" @input="handleEditComboNameInputChange($event.target.value)" placeholder="Enter combo name...">
+                    </div>
                     <ComboInputDisplay
                         :inputs="inputsForEditCharacterCombo"
                     />
                 </div>
-                <div class="px-2">
+                <div class="xs:px-2 md:px-[20rem] mt-[8rem] sm:mb-4">
                     <GameNotationGroup />
                 </div>
-                <div class="flex flex-row items-center justify-center">
-                    <DirectionalInputSwitcher class=""/>
-                    <div class="w-0.5 h-full border rounded border-gray"></div>
-                    <AttackButtonSwitcher class="" />
+
+                <div class="flex flex-col items-center justify-center">
+                    <LegendOverlay
+                        :showLegendOverlay="showAttackButtonLegendOverlay === true"
+                        :showGameNotations="false"
+                        :showAttackButtons="true"
+                        :closeIconStyles="['text-white', 'h-20', 'w-20', 'fill-white']"
+                        :descriptionsStyles="['text-yellow', 'text-xl']"
+                        :descriptionsContainerStyles="['space-y-4', 'overflow-y-auto', 'xs:h-[42rem]', 'pb-[5rem]']"
+                        @trigger-close-legend-overlay="closeAttackButtonLegendOverlay()"
+                    />
+                    <div class="flex flex-row items-start justify-center h-[16rem] xs:h-[16rem]">
+                        <DirectionalInputSwitcher />
+                        <div class="w-0.5 h-full border rounded border-gray"></div>
+                        <AttackButtonSwitcher @trigger-open-attack-button-legend-overlay="openAttackButtonLegendOverlay()" />
+                    </div>
                 </div>
-                <div class="flex flex-row justify-between text-xl mb-2 w-full px-2">
+                <div class="flex flex-row justify-between xs:justify-between lg:justify-center lg:space-x-4 lg:text-3xl text-xl mb-2 w-full px-2">
                     <button class="bg-red p-2 rounded text-white" @click="closeEditCharacterComboModal()">Cancel</button>
                     <button class="bg-green p-2 rounded text-white" @click="editCharacterCombo()">Save</button>
                     <button class="bg-red text-white p-2 rounded" @click="comboStore.clearComboInputsDisplay">Clear</button>
@@ -403,8 +496,3 @@ export default {
         </div>
     </div>
 </template>
-<style scoped>
-    button > span {
-        @apply text-sm;
-    }
-</style>

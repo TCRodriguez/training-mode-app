@@ -33,6 +33,7 @@ export const useGameStore = defineStore('GameStore', {
         tags: [], // Entire list of tags for game
         tagsListDisplay: [],
         tagSearchCriteria: '',
+        newGameNoteTagLoading: false,
 
     }),
     getters: {
@@ -240,11 +241,7 @@ export const useGameStore = defineStore('GameStore', {
                 return;
             }
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/tags`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                })
+                const data = await trainingModeAPI.get(`/games/${gameId}/tags`)
                 this.tags = data.data;
             } catch (error) {
                 console.log(error);
@@ -342,9 +339,7 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 
                 this.gameNoteListDisplay = [...gameNoteListFilteredByTags];
-            }
-
-            
+            }    
         },
 
         async addGameNoteTagToSearchList(tag: string) {
@@ -366,7 +361,7 @@ export const useGameStore = defineStore('GameStore', {
                 return;
             }
             this.tagsListDisplay = this.tags.filter(tag => {
-                return tag.name.includes(this.tagSearchCriteria);
+                return tag.name.includes(this.tagSearchCriteria.toLowerCase());
             })
             
         },
@@ -393,6 +388,7 @@ export const useGameStore = defineStore('GameStore', {
             })
         },
         async addTagToGameNote(gameId: number, gameNoteId: string, newTag: string) {
+            console.log('addTagToGameNote hit');
             const authStore = useAuthStore();
             const gameStore = useGameStore();
             try {
@@ -405,7 +401,10 @@ export const useGameStore = defineStore('GameStore', {
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
-                    this.fetchGameNotes(gameId);
+                    this.fetchGameNotes(gameId)
+                    .then(() => {
+                        this.updateNewGameNoteTagLoadingState();
+                    })
                 })
 
             } catch (error) {
@@ -427,5 +426,10 @@ export const useGameStore = defineStore('GameStore', {
                 console.log(error);
             }
         },
+        async updateNewGameNoteTagLoadingState() {
+            console.log('updateNewGameNoteTagLoadingState hit');
+            this.newGameNoteTagLoading = !this.newGameNoteTagLoading;
+            console.log(this.newGameNoteTagLoading);
+        }
     }
 });

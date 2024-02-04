@@ -17,6 +17,7 @@ const closeNoteModal = () => {
 }
 
 const props = defineProps({
+    name: String,
     comboId: Number,
     inputs: Array,
     comboNotes: Array,
@@ -34,17 +35,14 @@ const props = defineProps({
                         <div>
                             <CharacterCombo
                                 class="border rounded p-2 overflow-x-auto w-full bg-white text-black"
+                                :name="name"
                                 :inputs="inputs"
                                 :comboId="comboId"
                             />
                         </div>
                         <div class="mt-4 space-y-2">
                             <h3 class="font-bold text-2xl">Notes</h3>
-                            <!-- <CharacterComboNoteList :comboId="comboId" :comboNotes="comboNotes" class="mt-2" /> -->
                             <NoteList :modelId="comboId" :modelName="'combo'" class="mt-2" />
-                            <!-- <div class="flex justify-center">
-                                <button class="rounded p-2 w-full bg-blue text-white" @click="openNoteModal()">Add Note</button>
-                            </div> -->
                         </div>
                     </div>
                     <div class="flex flex-row justify-end space-x-4">
@@ -60,12 +58,6 @@ const props = defineProps({
                     </div>
                 </div>
             </div>
-            <!-- <div>
-                <NoteModal 
-                    :viewCondition="showNoteModal" 
-                    :mode="'show'" 
-                    @trigger-close-note-modal="closeNoteModal()" />
-            </div> -->
             <div v-if="showNoteModal === true">
                 <NoteModal 
                     :mode="'create'"
@@ -77,10 +69,6 @@ const props = defineProps({
                     @update-create-note-title="updateCreateNoteTitle"
                     @update-create-note-body="updateCreateNoteBody"
                 />
-                <!-- <NoteModal 
-                    :viewCondition="showNoteModal" 
-                    :mode="noteModalMode" 
-                    @trigger-close-note-modal="closeNoteModal()" /> -->
             </div>
         </div>
     </div>

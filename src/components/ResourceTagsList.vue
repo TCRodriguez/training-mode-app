@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import CloseIcon from './icons/CloseIcon.vue';
 import { ref } from 'vue';
+import { NSpace, NSpin } from 'naive-ui';
 
 
 const addTagInput = ref(null);
@@ -9,18 +10,14 @@ const addTagInput = ref(null);
 const authStore = useAuthStore();
 
 const props = defineProps({
-    // comboId: Number,
-    // inputs: Array,
-    // comboNotes: Array,
-    // showCharacterComboActive: Boolean,
-    // characterComboEditTagsActive: Boolean
     tags: Array,
     addTagInputActive: Boolean,
     editTagsActive: {
         type: Array,
         default: () => []   
     },
-    resourceId: Number
+    resourceId: Number,
+    newTagLoadingProp: Boolean
 })
 
 </script>
@@ -41,6 +38,11 @@ const props = defineProps({
                         </div>
                         <CloseIcon v-if="editTagsActive.includes(resourceId)" class="h-6 w-6" @click="$emit('triggerRemoveTagFromResource', tag.id, resourceId)" />
                     </div>
+                </div>
+                <div v-if="newTagLoadingProp" class="pr-2">
+                    <n-space>
+                        <n-spin size="small" stroke="#E6C900" />
+                    </n-space>
                 </div>
                 <div class="">
                     <input 

@@ -19,6 +19,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
         characterNotesTags: [],
         characterNotesFilteredByTagsList: [],
         characterNoteSearchByTagsList: [],
+        newCharacterNoteTagLoadingState: false,
 
         characterSearchInputValue: '',
 
@@ -30,7 +31,12 @@ export const useCharacterStore = defineStore('CharacterStore', {
         },
         // getCharacterName(state) {
         //     return state.character.name;
-        // }
+        // },
+        getAlphabeticalCharacterListDisplay(state) {
+            return state.characterListDisplay.sort((a: any, b: any) => {
+                return a.name.localeCompare(b.name);
+            });
+        }
     },
     actions: {
         async fetchCharacters(gameId: any) {
@@ -203,7 +209,7 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 return;
             }
             this.characterNoteTagsListDisplay = this.characterNotesTags.filter(tag => {
-                return tag.name.includes(this.characterNoteSearchByTagInputValue);
+                return tag.name.includes(this.characterNoteSearchByTagInputValue.toLowerCase());
             })
         },
         async addCharacterNoteTagToSearchList(tag: string) {
@@ -231,7 +237,10 @@ export const useCharacterStore = defineStore('CharacterStore', {
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
-                    this.fetchCharacterNotes(gameId, characterId);
+                    this.fetchCharacterNotes(gameId, characterId)
+                    .then(() => {
+                        this.updateNewCharacterNoteTagLoadingState();
+                    })
                 })
 
             } catch (error) {
@@ -255,9 +264,8 @@ export const useCharacterStore = defineStore('CharacterStore', {
             }
         },
 
-
-
-
-        
+        async updateNewCharacterNoteTagLoadingState() {
+            this.newCharacterNoteTagLoadingState = !this.newCharacterNoteTagLoadingState;
+        }
     }
 })

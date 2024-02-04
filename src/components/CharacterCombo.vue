@@ -6,7 +6,8 @@ import CloseIcon from './icons/CloseIcon.vue';
 import { useGameStore } from '@/stores/GameStore';
 import { useComboStore } from '@/stores/ComboStore';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { NSpace, NSpin } from 'naive-ui';
 import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
 export default {
     setup() {
@@ -15,16 +16,24 @@ export default {
         const { getCharacterComboTags } = storeToRefs(comboStore);
         const addTagInput = ref(null);
 
+        const newTagLoading = computed(() => comboStore.newCharacterComboTagLoading);
+        const handleAddTag = () => {
+            comboStore.updateNewCharacterComboTagLoadingState();
+        }
+
         return {
             gameStore,
             comboStore,
             getCharacterComboTags,
             addTagInput,
             getGameAbbreviation,
-            getInputImgFilename
+            getInputImgFilename,
+            newTagLoading,
+            handleAddTag
         }
     },
     props: {
+        name: String,
         comboId: Number,
         iconFileName: String,
         inputs: Array,
@@ -37,12 +46,17 @@ export default {
         DirectionalInput, 
         AttackButton,
         GameNotation,
-        CloseIcon
+        CloseIcon,
+        NSpace,
+        NSpin
     }
 }
 </script>
 <template lang="">
     <div>
+        <div class="my-2">
+            <p class="font-bold">{{ name }}</p>
+        </div>
         <div class="flex flex-row overflow-x-auto space-x-2">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col shrink-0">
                 <DirectionalInput 
@@ -83,11 +97,16 @@ export default {
                         <CloseIcon v-if="editTagsActive.includes(comboId)" class="h-6 w-6" @click="$emit('triggerRemoveTag', tag.id, comboId)" />
                     </div>
                 </div>
+                <div v-if="newTagLoading" class="pr-2">
+                    <n-space>
+                        <n-spin size="small" stroke="#E6C900" />
+                    </n-space>
+                </div>
                 <div class="">
                     <input 
                         v-if="editTagsActive.includes(comboId)"
                         ref="addTagInput"
-                        @keyup.enter="$emit('saveTag', addTagInput.value, comboId), addTagInput.value = ''"
+                        @keyup.enter="handleAddTag(), $emit('saveTag', addTagInput.value, comboId), addTagInput.value = ''"
                         type="text" 
                         placeholder="Enter Tag..."
                         class="border w-min bg-apex-blue text-white rounded p-2"
