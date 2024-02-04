@@ -19,8 +19,9 @@ const router = createRouter({
     // },
     {
       path: "/",
-      name: "dashboard",
-      component: () => import("../views/DashboardView.vue"),
+      redirect: "/games",
+      // name: "dashboard",
+      // component: () => import("../views/DashboardView.vue"),
     },
     // {
     //   path: "/about",

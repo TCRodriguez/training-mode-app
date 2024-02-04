@@ -16,8 +16,8 @@ export default {
 
         const currentTab = ref('Characters');
 
-        if(localStorage.getItem('currentGameViewPageTag') === undefined) {
-            currentTab.value = 'Moves';
+        if(localStorage.getItem('currentGameViewPageTag') === undefined || localStorage.getItem('currentGameViewPageTag') === null ) {
+            currentTab.value = 'Characters';
         } else {
             currentTab.value = localStorage.getItem('currentGameViewPageTab');
         }
@@ -31,8 +31,8 @@ export default {
         }
 
         const tabs = {
+            Characters,
             Notes,
-            Characters
         }
 
         const componentProps = {

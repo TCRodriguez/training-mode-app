@@ -90,7 +90,7 @@
         <div class="h-[20rem] xs:h-[20rem] lg:h-[23rem] overflow-y-auto">
             <ul class="space-y-4">
                 <li
-                    v-for="character in characterStore.characterListDisplay"
+                    v-for="character in characterStore.getAlphabeticalCharacterListDisplay"
                     :key="character.id"
                     @mousedown="loadCharacterData(character.id)"
                 >

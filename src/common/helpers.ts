@@ -145,15 +145,19 @@ export const callAddTagToNote = (modelName: 'game' | 'character' | 'move' | 'com
     const addNoteTag = () => {
         const addNoteTagActions = {
             'game': function () {
+                gameStore.updateNewGameNoteTagLoadingState();
                 return gameStore.addTagToGameNote(resourceId, noteId, newTag)
             },
             'character': function () {
+                characterStore.updateNewCharacterNoteTagLoadingState();
                 return characterStore.addTagToCharacterNote(gameStore.game.id, resourceId, noteId, newTag)
             },
             'move': function () {
-                return characterMoveStore.addTagToCharacterMoveNote(gameStore.game.id, resourceId, noteId, newTag)
+                characterMoveStore.updateNewCharacterMoveNoteTagLoadingState();
+                return characterMoveStore.addTagToCharacterMoveNote(gameStore.game.id, noteId, newTag)
             },
             'combo': function () {
+                comboStore.updateNewComboNoteTagLoadingState();
                 return comboStore.addTagToCharacterComboNote(gameId, characterId, noteId, newTag)
             }
         };
@@ -260,3 +264,10 @@ export const sortList = (list: any[], sortType: 'asc' | 'desc', sortProperty: st
     };
     return sortList[sortType]();
 };
+
+export const checkIfTagExists = (tagToCheck: string) => {
+    const gameStore = useGameStore();
+    const tagExists = gameStore.tags.some(tag => tag.name === tagToCheck);
+
+    return tagExists;
+}

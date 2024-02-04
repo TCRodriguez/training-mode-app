@@ -120,7 +120,6 @@ export const useAuthStore = defineStore('AuthStore', {
                 gameStore.fetchGames(true);
                 characterStore.fetchCharacters(gameId);
                 characterMoveStore.fetchCharacterMoves(gameId, characterId);
-                comboStore.fetchCharacterCombos(gameId, characterId);
 
                 return response;
             });
@@ -130,6 +129,16 @@ export const useAuthStore = defineStore('AuthStore', {
             window.location.href = `${import.meta.env.VITE_API_BASE_URL}/oauth/login/${provider}?redirectURL=${redirectURL}`;
         },
         async handleOAuthCallback(access_token: string, token_type: string) {
+            const gameStore = useGameStore();
+            const characterStore = useCharacterStore();
+            const characterMoveStore = useCharacterMoveStore();
+            const comboStore = useComboStore();
+
+            const gameId = getGameId();
+            const characterId = characterStore.character.id === undefined ? getCharacterId() : characterStore.character.id;
+            const characterMoveId = getCharacterMoveId();
+            const characterComboId = getCharacterComboId();
+    
             if(token_type === 'Bearer') {
                 trainingModeApi.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
                 localStorage.setItem('authToken', access_token);
@@ -137,6 +146,14 @@ export const useAuthStore = defineStore('AuthStore', {
             }
 
             this.fetchUser()
+            .then(() => {
+                gameStore.fetchGameNotes(gameId);
+                characterStore.fetchCharacterNotes(gameId, characterId);
+                console.log('am I before fetchCharacterMoves?');
+                characterMoveStore.fetchCharacterMoveNotes(gameId, characterId, characterMoveId);
+                comboStore.fetchCharacterCombos(gameId, characterId);
+                comboStore.fetchCharacterComboNotes(gameId, characterId, characterComboId);
+            });
         },
         async updateLoginFailedMessage(message: string) {
             this.loginFailedMessage = message;

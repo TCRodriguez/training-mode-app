@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/AuthStore';
 import { useGameStore } from '@/stores/GameStore';
 import { useCharacterStore } from '@/stores/CharacterStore';
 import { useComboStore } from '@/stores/ComboStore';
-// import Notes from '@/components/CharacterNoteList.vue';
 import Notes from '@/components/NoteList.vue';
 import Moves from '@/components/CharacterMoveList.vue';
 import Combos from '@/components/CharacterComboList.vue';
@@ -25,24 +24,22 @@ export default {
 
         const currentTab = ref('Moves');
         
-        if(localStorage.getItem('currentCharacterViewPageTag') === undefined) {
+        if(localStorage.getItem('currentCharacterViewPageTab') === undefined || localStorage.getItem('currentCharacterViewPageTab') === null ){
             currentTab.value = 'Moves';
         } else {
             currentTab.value = localStorage.getItem('currentCharacterViewPageTab');
         }
 
         const handleTabClick = (tab: string) => {
-            console.log('tab clicked');
-            console.log(tab);
             localStorage.setItem('currentCharacterViewPageTab', tab);
             currentTab.value = tab;
 
         }
 
         const tabs = {
-            Notes,
             Moves,
             Combos,
+            Notes,
         };
 
         const componentProps = {
@@ -69,8 +66,8 @@ export default {
     },
     created() {
         this.characterMoveStore.fetchCharacterMoves(this.route.params.game, this.route.params.character);
-        this.comboStore.fetchCharacterCombos(this.route.params.game, this.route.params.character);
         if(this.authStore.loggedInUser !== null){
+            this.comboStore.fetchCharacterCombos(this.route.params.game, this.route.params.character);
             this.characterStore.fetchCharacterNotes(getGameId(), getCharacterId());
         }
     },

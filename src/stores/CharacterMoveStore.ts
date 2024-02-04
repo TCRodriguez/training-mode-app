@@ -25,6 +25,8 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
         characterMoveListByTagDisplay: [],
         characterMoveNameSearchInputValue: '',
         searchByTagsList: [],
+        newCharacterMoveTagLoading: false,
+        newCharacterMoveNoteTagLoading: false,
     }),
     getters: {
         getCharacterMoveTags(state) {
@@ -44,18 +46,14 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
 
-            const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves/`;
-
+            const endpoint = authStore.loggedInUser === null ? `/games/${gameId}/characters/${characterId}/moves/guest` : `/games/${gameId}/characters/${characterId}/moves`;
             try {
-                const data = await trainingModeAPI.get(endpoint, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                });
-                this.characterMoves = data.data;
-                
-                this.updateCharacterMovesListDisplay();
-                gameStore.fetchTags(gameId);
+                await trainingModeAPI.get(endpoint)
+                .then(response => {
+                    this.characterMoves = response.data;
+                    this.updateCharacterMovesListDisplay();
+                    gameStore.fetchTags(gameId);
+                })
             } catch (error) {
                 console.log(error);
             }
@@ -114,14 +112,11 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 move.inputs = [...moveInputsSorted];
             }
         },
+        // TODO: Should we remove this?
         async fetchCharacterMoveTags(gameId: string, characterId: string) {
             const authStore = useAuthStore();
             try {
-                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/tags`, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
-                });
+                const data = await trainingModeAPI.get(`/games/${gameId}/characters/${characterId}/tags`);
             } catch (error) {
                 console.log(error);
             }
@@ -139,12 +134,18 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
-                    this.fetchCharacterMoves(gameId, characterId);
+                    this.fetchCharacterMoves(gameId, characterId)
+                    .then(() => {
+                        this.newCharacterMoveTagLoading = false;
+                    });
                 })
 
             } catch (error) {
                 console.log(error);
             }
+        },
+        async updateNewCharacterMoveTagLoadingState() {
+            this.newCharacterMoveTagLoading = !this.newCharacterMoveTagLoading;
         },
         async updateCharacterMoveSearchCriteria(input: string) {
             this.characterMoveNameSearchInputValue = input;
@@ -153,7 +154,7 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
 
         async updateCharacterMovesListDisplay(criteria: string = ''): Promise<void> {
             let characterMoveListFilteredByTags: object[] = [];
- 
+
             if(this.characterMoveNameSearchInputValue.length === 0) {
                 this.characterMoveListDisplay = [...this.characterMoves];
             } else {
@@ -367,9 +368,12 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             }
         },
 
-        async addTagToCharacterMoveNote(gameId: number, characterId: number, characterMoveNoteId: string, newTag: string) {
+        async addTagToCharacterMoveNote(gameId: number, characterMoveNoteId: string, newTag: string) {
             const authStore = useAuthStore();
             const gameStore = useGameStore();
+            const characterStore = useCharacterStore();
+            const characterId = characterStore.character.id;
+
             try {
                 await trainingModeAPI.post(`/games/${gameId}/notes/${characterMoveNoteId}/tags`, {
                     tags: [newTag]
@@ -381,7 +385,11 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 .then(response => {
                     gameStore.fetchTags(gameId);
                     this.fetchCharacterMoves(gameId, characterId);
-                    this.fetchCharacterMoveNotes(gameId, characterId, this.characterMove.id);
+                    console.log(characterId);
+                    this.fetchCharacterMoveNotes(gameId, characterId, this.characterMove.id)
+                    .then(() => {
+                        this.updateNewCharacterMoveNoteTagLoadingState();
+                    });
                 })
 
             } catch (error) {
@@ -405,5 +413,8 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
                 console.log(error);
             }
         },
+        async updateNewCharacterMoveNoteTagLoadingState() {
+            this.newCharacterMoveNoteTagLoading = !this.newCharacterMoveNoteTagLoading;
+        }
     }
 });
