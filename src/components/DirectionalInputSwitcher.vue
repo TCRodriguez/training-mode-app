@@ -19,7 +19,7 @@ export default {
 }
 </script>
 <template lang="">
-    <div class="flex flex-col" :class="{'xs:w-1/2' : directionalInputGroupSelection === 'group'}">
+    <div class="flex flex-col" :class="{'xs:w-1/2 w-1/2' : directionalInputGroupSelection === 'group'}">
         <div 
             class="flex flex-row text-yellow space-x-2" 
             :class="{
@@ -39,7 +39,7 @@ export default {
             <div v-if="directionalInputGroupSelection === 'hold'">
                 <DirectionalInputHoldGroup />
             </div>
-            <div v-if="directionalInputGroupSelection === 'group'" class="overflow-y-auto xs:h-[10rem] lg:h-[13rem]">
+            <div v-if="directionalInputGroupSelection === 'group'" class="overflow-y-auto h-[10rem] xs:h-[10rem] lg:h-[13rem]">
                 <DirectionalInputCanned  />
             </div>
         </div>

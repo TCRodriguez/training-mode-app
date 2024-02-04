@@ -125,7 +125,7 @@ export default {
 </script>
 <template lang="">
     <div
-        class="space-x-2 flex flex-row overflow-x-scroll pt-1 overflow-y-auto items-center h-20 bg-blue" 
+        class="space-x-2 flex flex-row overflow-x-scroll overflow-y-auto items-center h-20 bg-blue" 
         id="horizontal-combo-display"
     >
         <div
@@ -156,7 +156,7 @@ export default {
             <GameNotation 
                 v-else :notation="comboInput.notation"
                 :class="{ 'text-9xl': fullScreenActiveHorizontalBool}"
-                class="text-white p-2 h-10 w-10"
+                class="text-white h-10 w-10"
                 :isFullScreen="fullScreenActiveHorizontalBool"
 
                 :iconFileName="getInputImgFilename(comboInput.notation)"
