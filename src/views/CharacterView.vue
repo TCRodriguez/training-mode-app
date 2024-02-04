@@ -69,8 +69,8 @@ export default {
     },
     created() {
         this.characterMoveStore.fetchCharacterMoves(this.route.params.game, this.route.params.character);
-        this.comboStore.fetchCharacterCombos(this.route.params.game, this.route.params.character);
         if(this.authStore.loggedInUser !== null){
+            this.comboStore.fetchCharacterCombos(this.route.params.game, this.route.params.character);
             this.characterStore.fetchCharacterNotes(getGameId(), getCharacterId());
         }
     },
