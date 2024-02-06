@@ -267,7 +267,7 @@ export const sortList = (list: any[], sortType: 'asc' | 'desc', sortProperty: st
 
 export const checkIfTagExists = (tagToCheck: string) => {
     const gameStore = useGameStore();
-    const tagExists = gameStore.tags.some(tag => tag.name === tagToCheck);
+    const tagExists = gameStore.tags.some(tag => tag.name.toLowerCase() === tagToCheck.toLowerCase());
 
     return tagExists;
 }
