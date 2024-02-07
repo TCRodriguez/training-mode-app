@@ -79,9 +79,13 @@ export default {
         }
 
         const addTagToSearchList = (event) => {
-            if(!checkIfTagExists(searchByTagsInput.value)) {
-                return;
+            if(event.type === 'keyup') {
+                if(!checkIfTagExists(searchByTagsInput.value)) {
+                    showToast(`The tag "${searchByTagsInput.value}" does not exist`, 3000, 'error')
+                    return;
+                }
             }
+
             if(event.target.tagName === 'SPAN' || event.target.tagName === 'DIV') {
                 characterMoveStore.addCharacterMoveTagToSearchList(event.target.textContent);
                 characterMoveStore.updateCharacterMovesListDisplay('tags');

@@ -97,7 +97,7 @@ export default {
                         <CloseIcon v-if="editTagsActive.includes(comboId)" class="h-6 w-6" @click="$emit('triggerRemoveTag', tag.id, comboId)" />
                     </div>
                 </div>
-                <div v-if="newTagLoading" class="pr-2">
+                <div v-if="newTagLoading && editTagsActive.includes(comboId)" class="pr-2">
                     <n-space>
                         <n-spin size="small" stroke="#E6C900" />
                     </n-space>

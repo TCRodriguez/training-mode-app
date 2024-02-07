@@ -12,7 +12,7 @@ import CloseIcon from './icons/CloseIcon.vue';
 import EditNoteIcon from './icons/EditNoteIcon.vue';
 import DOMPurify from 'dompurify';
 import { ref, computed } from 'vue';
-import { getGameId, getCharacterId } from '@/common/helpers';
+import { getGameId, getCharacterId, showToast } from '@/common/helpers';
 
 const props = defineProps({
     model: String,
@@ -22,8 +22,7 @@ const props = defineProps({
     noteId: Number,
     mode: String
 });
-
-const emit = defineEmits(['triggerNoteWasUpdated']);
+const emit = defineEmits(['triggerNoteWasUpdated', 'triggerCloseNoteModal']);
 
 
 const authStore = useAuthStore();
@@ -76,6 +75,14 @@ const saveNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
         'body': createNoteBody.value
     }
 
+    if(
+        note['title']?.length === 0 || note['body']?.length === 0
+        || note['title'] === null || note['body'] === null
+    ) {
+        showToast('Please enter a title and body for your note.', 3000, 'error');
+        return
+    }
+
     const createNoteStoreActions = {
         'game': function () {
             return gameStore.saveGameNote(gameId, note);
@@ -95,6 +102,7 @@ const saveNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
         createNoteActive.value = !createNoteActive.value
         createNoteTitle.value = null;
         createNoteBody.value = null;
+        emit('triggerCloseNoteModal');
     });
 };
 const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
@@ -109,6 +117,14 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
         'title': editNoteTitle.value === null ? props.noteTitle : editNoteTitle.value,
         'body': editNoteBody.value === null ? props.noteBody : editNoteBody.value,
         'id': props.noteId
+    }
+
+    if(
+        note['title']?.length === 0 || note['body']?.length === 0
+        || note['title'] === null || note['body'] === null
+    ) {
+        showToast('Please enter a title and body for your note.', 3000, 'error');
+        return
     }
 
     const updateNoteStoreActions = {
@@ -131,6 +147,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
         editNoteActive.value = !editNoteActive.value
         editNoteTitle.value = null;
         editNoteBody.value = null;
+        emit('triggerCloseNoteModal');
     });
 };
 
@@ -167,7 +184,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                         <CheckmarkIcon 
                             class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
-                            @click="saveNote(props.model), $emit('triggerCloseNoteModal')"
+                            @click="saveNote(props.model)"
                         />
                         <p>Save</p>
                     </div>
@@ -175,7 +192,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                         <CheckmarkIcon
                             class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
-                            @click="updateNote(props.model), $emit('triggerCloseNoteModal')"
+                            @click="updateNote(props.model)"
                         />
                         <p>Save</p>
                     </div>
