@@ -39,7 +39,7 @@ const props = defineProps({
                         <CloseIcon v-if="editTagsActive.includes(resourceId)" class="h-6 w-6" @click="$emit('triggerRemoveTagFromResource', tag.id, resourceId)" />
                     </div>
                 </div>
-                <div v-if="newTagLoadingProp" class="pr-2">
+                <div v-if="newTagLoadingProp && editTagsActive.includes(resourceId)" class="pr-2">
                     <n-space>
                         <n-spin size="small" stroke="#E6C900" />
                     </n-space>
