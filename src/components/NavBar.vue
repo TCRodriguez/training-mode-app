@@ -132,7 +132,7 @@ import { closeMenu } from "@/common/helpers";
                     <div class="flex flex-row">
                         <router-link to="/" class="font-bold text-xl flex flex-col justify-center items-center" @click="clearBreadCrumbs()">
                             <div class="flex flex-row justify-center">
-                                <img src="/src/assets/Training_Mode_Logo_White.png" alt="" class="xs:w-5/6 lg:w-1/3">
+                                <img src="/src/assets/Training_Mode_Logo_White.png" alt="" class="xs:w-5/6 lg:w-1/6">
                                 <p class="text-[.50rem] font-bold">TM</p>
                             </div>
                             <div>

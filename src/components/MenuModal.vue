@@ -51,6 +51,16 @@ const handleLogout = () => {
                         <p>Join us on Discord!</p>
                     </a>
                 </div>
+                <div class="flex flex-row items-center">
+                    <a href="https://twitter.com/trainingmodeapp" target="_blank" class="flex flex-row items-center space-x-2">
+                        <p class="xs:text-sm lg:text-3xl">Follow us on </p>
+                        <img
+                            src="https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/branding-stuff/tm-twitter-badge(no-background).png" 
+                            class="xs:w-1/2"
+                            alt="Twitter link"
+                        >
+                    </a>
+                </div>
                 <div class="space-y-4">
                     <p class="xs:text-sm lg:text-xl text-center">Support the development of TrainingMode through any of these platforms:</p>
                     <div class="flex flex-row space-x-4 justify-center items-center">

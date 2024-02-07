@@ -149,7 +149,6 @@ export const useAuthStore = defineStore('AuthStore', {
             .then(() => {
                 gameStore.fetchGameNotes(gameId);
                 characterStore.fetchCharacterNotes(gameId, characterId);
-                console.log('am I before fetchCharacterMoves?');
                 characterMoveStore.fetchCharacterMoveNotes(gameId, characterId, characterMoveId);
                 comboStore.fetchCharacterCombos(gameId, characterId);
                 comboStore.fetchCharacterComboNotes(gameId, characterId, characterComboId);
