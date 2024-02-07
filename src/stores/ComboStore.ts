@@ -106,7 +106,7 @@ export const useComboStore = defineStore('ComboStore', {
             } else {
                 notation.category = 'notations'
             }
-
+            
             this.comboInputsDisplay.push(notation);
             this.notationsDisplay.push({
                 notation: notation.notation,
@@ -222,6 +222,17 @@ export const useComboStore = defineStore('ComboStore', {
                     });
     
                     combo.notations.forEach(input => {
+                        const notationModel = gameStore.gameNotations.find(notation => {
+                            return notation.notation === input.notation;
+                        });
+
+                        if(notationModel?.character_id !== null) {
+                            input.category = "character-notations";
+                        } else {
+                            input.category = "notations";
+                        }
+
+
                         input.input_category = "notations";
                         input.img_category = "notations"
                         comboInputs.push(input);
