@@ -55,8 +55,7 @@ export default {
                 }
             };
             const noteList = retrieveNoteList[props.modelName]();
-
-            return sortList(noteList, 'asc', 'title');
+            return sortList(noteList, 'desc', 'updated_at');
         });
 
         const coreNoteList = computed(() => {

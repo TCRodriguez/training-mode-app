@@ -237,7 +237,13 @@ export const getQueryParam = (param: string) => {
     return urlParams.get(param);
 };
 
-export const sortList = (list: any[], sortType: 'asc' | 'desc', sortProperty: string) => {
+export const sortList = (list: any[], sortType: 'asc' | 'desc', sortProperty: 'title' | 'updated_at') => {
+    if(sortProperty === 'updated_at') {
+        list.forEach(item => {
+            item.updated_at = new Date(item.updated_at);
+        });
+    }
+    
     const sortList = {
         'desc': function () {
             return list.sort((a, b) => {
