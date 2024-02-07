@@ -93,6 +93,7 @@ export default {
 
         const editCharacterCombo = () => {
             const comboId = editCharacterComboId.value;
+            
             comboStore.updateCharacterCombo(editComboName.value, gameStore.game.id, characterStore.character.id, comboId, comboStore.comboInputsDisplay)
             .then(() => {
                 editComboName.value = '';
@@ -364,7 +365,7 @@ export default {
                         <div class="flex flex-row items-center space-x-2 w-full">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
-                                class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-[67rem] overflow-x-auto bg-white text-black"
+                                class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-full overflow-x-auto bg-white text-black"
                                 @save-tag="addTagToCharacterCombo"
                                 @trigger-remove-tag="removeTagFromCharacterCombo"
                                 :name="combo.name"
