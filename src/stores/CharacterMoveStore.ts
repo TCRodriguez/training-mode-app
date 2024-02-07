@@ -127,10 +127,6 @@ export const useCharacterMoveStore =  defineStore('CharacterMoveStore', {
             try {
                 await trainingModeAPI.post(`/games/${gameId}/characters/${characterId}/moves/${characterMoveId}/tags`, {
                     tags: [newTag]
-                }, {
-                    headers: {
-                        'Authorization': `Bearer ${authStore.token}`
-                    }
                 })
                 .then(response => {
                     gameStore.fetchTags(gameId);
