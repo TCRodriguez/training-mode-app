@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { storeToRefs } from 'pinia';
     import { useGameStore } from '../stores/GameStore';
     import { useCharacterStore } from '@/stores/CharacterStore';
     import { useNavigationStore } from '@/stores/NavigationStore';
@@ -7,12 +6,14 @@
     import GameBanner from './GameBanner.vue';
     import MagnifyingGlass from './icons/MagnifyingGlass.vue';
     import SearchBar from './SearchBar.vue';
+    import { computed } from 'vue';
     export default {
         setup() {
             const gameStore = useGameStore();
             const navigationStore = useNavigationStore();
             const characterStore = useCharacterStore();
             const router = useRouter();
+            const gameListLoading = computed(() => gameStore.gameListLoading);
             const goToCharacterSelect = (gameId: string) => {
                 const game = gameStore.findGame(gameId);
                 if(gameStore.comingSoonList.includes(game?.title)) {
@@ -49,7 +50,8 @@
                 navigationStore,
                 router,
                 goToCharacterSelect,
-                updateGameSearchInput
+                updateGameSearchInput,
+                gameListLoading
             }
         },
         created() {
@@ -88,6 +90,7 @@
                     @click="goToCharacterSelect(game.id)"
                     class="flex flex-col justify-center"
                 >
+                    <div v-if="gameListLoading" class="skeleton-loading rounded h-[5rem] lg:w-4/6 flex w-full self-center"></div>
                     <div class="flex flex-col items-center">
                         <GameBanner class="flex justify-center lg:w-4/6" :class="{ 'opacity-25': gameStore.comingSoonList.includes(game.title)}" :game="`${game.abbreviation}`"/>
                         <div class="w-full h-full flex justify-center items-center font-bold sm:text-5xl lg:text-2xl z-10">
@@ -100,6 +103,6 @@
     </div>
 </template>
 
-<style lang="">
-    
+<style scoped>
+
 </style>
