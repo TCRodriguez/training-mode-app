@@ -6,6 +6,7 @@ import trainingModeAPI from '../axios-http';
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
         characters: [],
+        characterListLoading: true,
         character: {},
 
         characterListDisplay: [],
@@ -49,8 +50,11 @@ export const useCharacterStore = defineStore('CharacterStore', {
                         'Authorization': `Bearer ${authStore.token}`
                     }
                 })
-                this.characters = data.data;
-                this.characterListDisplay = data.data;
+                .then(response => {
+                    this.characters = response.data;
+                    this.characterListDisplay = response.data;
+                    this.characterListLoading = false;
+                })
             }
             catch(error) {
                 console.log(error);
@@ -266,6 +270,6 @@ export const useCharacterStore = defineStore('CharacterStore', {
 
         async updateNewCharacterNoteTagLoadingState() {
             this.newCharacterNoteTagLoadingState = !this.newCharacterNoteTagLoadingState;
-        }
+        },
     }
 })

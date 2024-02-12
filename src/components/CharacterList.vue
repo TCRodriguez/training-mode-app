@@ -34,6 +34,10 @@
 
                 localStorage.setItem('characterId', characterId);
             }
+            const characterListLoading = computed({
+                get: () => characterStore.characterListLoading,
+                set: (value) => characterStore.characterListLoading = value
+            });
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);
             const characterSearchInput = ref('');
@@ -67,7 +71,8 @@
                 inputHasFocusBool,
                 showCharacterList,
                 hideCharacterList,
-                updateCharacterSearchInput
+                updateCharacterSearchInput,
+                characterListLoading
             }
         },
         components: {
@@ -94,6 +99,7 @@
                     :key="character.id"
                     @mousedown="loadCharacterData(character.id)"
                 >
+                    <div v-if="characterListLoading" class="skeleton-loading rounded h-[7rem] lg:w-4/6 flex w-full self-center"></div>
                     <CharacterCard :game="game" :characterName="character.name" class="font-bold text-xl"/>     
                 </li>
             </ul>
