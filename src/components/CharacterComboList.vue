@@ -98,6 +98,7 @@ export default {
             .then(() => {
                 editComboName.value = '';
                 toggleEditComboMode(comboId);
+                toggleComboOptions(comboId, undefined);
             });
         }
 
@@ -124,6 +125,13 @@ export default {
         let comboOptionsActive = ref(0);
 
         const toggleComboOptions = (comboId: number, event) => {
+            if(event === undefined) {
+                characterComboOptionsActive.value.splice(characterComboOptionsActive.value.indexOf(comboId), 1);
+                if(characterComboEditTagsActive.value.includes(comboId)) {
+                    toggleEditTagsMode(comboId);
+                }
+                return;
+            }
             if(event.target.__vueParentComponent !== undefined) {
                 if(event.target.__vueParentComponent.attrs['aria-labelledby'] === 'Close move options') {
                     characterComboOptionsActive.value.splice(characterComboOptionsActive.value.indexOf(comboId), 1);
