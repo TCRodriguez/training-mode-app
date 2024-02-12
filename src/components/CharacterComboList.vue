@@ -370,7 +370,7 @@ export default {
                     class="flex flex-col"
                 >
                     <div class="flex flex-col w-full">
-                        <div class="flex flex-row items-center space-x-2 w-full">
+                        <div class="flex flex-row items-center space-x-2 w-full" @click="openCharacterComboModal(combo.id, combo.inputs)">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
                                 class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-full overflow-x-auto bg-white text-black"
@@ -382,6 +382,9 @@ export default {
                                 :editTagsActive="characterComboEditTagsActive"
                             />
                         </div>
+
+                        <!-- Resource options -->
+                        <!-- TODO: Extract this out into ResourceOptions.vue -->
                         <div class="flex flex-row justify-end space-x-2">
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="deleteCharacterCombo(combo.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>
