@@ -2,11 +2,13 @@ import { defineStore } from 'pinia';
 import { useAuthStore } from './AuthStore';
 import { useGameStore } from './GameStore';
 import trainingModeAPI from '../axios-http';
+import { getPinnedResources } from '../common/helpers';
 
 export const useCharacterStore = defineStore('CharacterStore', {
     state: () => ({
         characters: [],
         characterListLoading: true,
+        pinnedCharacters: getPinnedResources('characters'),
         character: {},
 
         characterListDisplay: [],
@@ -33,11 +35,26 @@ export const useCharacterStore = defineStore('CharacterStore', {
         // getCharacterName(state) {
         //     return state.character.name;
         // },
+        // getAlphabeticalCharacterListDisplay(state) {
+        //     return state.characterListDisplay.sort((a: any, b: any) => {
+        //         return a.name.localeCompare(b.name);
+        //     });
+        // }
         getAlphabeticalCharacterListDisplay(state) {
-            return state.characterListDisplay.sort((a: any, b: any) => {
-                return a.name.localeCompare(b.name);
-            });
-        }
+            // Assuming getPinnedResources returns an array of pinned character names for simplicity
+            // const pinnedCharacterIds = getPinnedResources('characters');
+          
+            // Split the character list into pinned and unpinned arrays
+            const pinnedCharacters = state.characterListDisplay.filter(character => this.pinnedCharacters?.includes(character.id));
+            const unpinnedCharacters = state.characterListDisplay.filter(character => !this.pinnedCharacters?.includes(character.id));
+          
+            // Sort both arrays alphabetically
+            const sortedPinnedCharacters = pinnedCharacters.sort((a, b) => a.name.localeCompare(b.name));
+            const sortedUnpinnedCharacters = unpinnedCharacters.sort((a, b) => a.name.localeCompare(b.name));
+          
+            // Concatenate the sorted pinned characters with the sorted unpinned characters
+            return [...sortedPinnedCharacters, ...sortedUnpinnedCharacters];
+          }
     },
     actions: {
         async fetchCharacters(gameId: any) {
@@ -271,5 +288,8 @@ export const useCharacterStore = defineStore('CharacterStore', {
         async updateNewCharacterNoteTagLoadingState() {
             this.newCharacterNoteTagLoadingState = !this.newCharacterNoteTagLoadingState;
         },
+        async updatePinnedCharacters(pinnedCharacters) {
+            this.pinnedCharacters = pinnedCharacters;
+        }
     }
 })
