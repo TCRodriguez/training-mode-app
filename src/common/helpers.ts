@@ -321,6 +321,7 @@ export const pinResource = (resource: 'characters', resourceId: number) => {
 }
 
 export const unPinResource = (resource: 'characters', resourceId: number) => {
+    const characterStore = useCharacterStore();
     const unPinSpecifiedResource = () => {
         const unPinSpecifiedResourceAction = {
             'characters': function () {
@@ -329,6 +330,7 @@ export const unPinResource = (resource: 'characters', resourceId: number) => {
                 if (index > -1) {
                     pinnedCharacters?.splice(index, 1);
                     localStorage.setItem('pinnedCharacters', JSON.stringify(pinnedCharacters));
+                    characterStore.updatePinnedCharacters(pinnedCharacters);
                 }
             },
         };
