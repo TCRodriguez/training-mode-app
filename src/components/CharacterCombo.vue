@@ -9,12 +9,15 @@ import { storeToRefs } from 'pinia';
 import { ref, computed } from 'vue';
 import { NSpace, NSpin } from 'naive-ui';
 import { getGameAbbreviation, getInputImgFilename } from '@/common/helpers';
+import NoteCount from './icons/NoteCount.vue';
 export default {
-    setup() {
+    setup(props) {
         const gameStore = useGameStore();
         const comboStore = useComboStore();
         const { getCharacterComboTags } = storeToRefs(comboStore);
         const addTagInput = ref(null);
+        const characterCombo = computed(() => comboStore.combos.find(combo => combo.id === props.comboId));
+        const comboNoteCount = ref(characterCombo.value?.notes.length);
 
         const newTagLoading = computed(() => comboStore.newCharacterComboTagLoading);
         const handleAddTag = () => {
@@ -29,7 +32,8 @@ export default {
             getGameAbbreviation,
             getInputImgFilename,
             newTagLoading,
-            handleAddTag
+            handleAddTag,
+            comboNoteCount
         }
     },
     props: {
@@ -48,14 +52,20 @@ export default {
         GameNotation,
         CloseIcon,
         NSpace,
-        NSpin
+        NSpin,
+        NoteCount
     }
 }
 </script>
 <template lang="">
     <div>
-        <div class="my-2">
-            <p class="font-bold">{{ name }}</p>
+        <div class="flex flex-row items-center justify-between">
+            <div class="my-2">
+                <p class="font-bold">{{ name }}</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <NoteCount class="h-6 w-6" :count="comboNoteCount" />
+            </div>
         </div>
         <div class="flex flex-row overflow-x-auto space-x-2">
             <div v-for="(input, index) in inputs" :key="index" class="flex flex-col shrink-0">
