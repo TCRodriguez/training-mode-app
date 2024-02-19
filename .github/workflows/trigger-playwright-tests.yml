@@ -12,5 +12,5 @@ jobs:
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.PAT }}
-        repository: TCRodriguez/training-mode-playwright-automation-repo
+        repository: TCRodriguez/training-mode-playwright-automation
         event-type: trigger-playwright-tests
