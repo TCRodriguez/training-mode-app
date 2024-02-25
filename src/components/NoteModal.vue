@@ -172,7 +172,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                     </div>
                 </div>
                 <div class="flex flex-row justify-end">
-                    <div class="flex flex-col items-center" v-if="mode === 'view'">
+                    <div class="flex flex-col items-center cursor-pointer" v-if="mode === 'view'">
                         <EditNoteIcon 
                             class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
@@ -180,7 +180,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                         />
                         <p class="">Edit</p>
                     </div>
-                    <div class="flex flex-col items-center" v-if="mode === 'create'">
+                    <div class="flex flex-col items-center cursor-pointer" v-if="mode === 'create'">
                         <CheckmarkIcon 
                             class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
@@ -188,7 +188,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                         />
                         <p>Save</p>
                     </div>
-                    <div class="flex flex-col items-center" v-if="mode === 'edit'">
+                    <div class="flex flex-col items-center cursor-pointer" v-if="mode === 'edit'">
                         <CheckmarkIcon
                             class="h-12 w-12 fill-green"
                             :class="{ 'hidden': viewCondition === false }"
@@ -196,7 +196,7 @@ const updateNote = (modelName: 'game' | 'character' | 'move' | 'combo') => {
                         />
                         <p>Save</p>
                     </div>
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center cursor-pointer">
                         <CloseIcon
                             class="h-12 w-12 text-red"
                             :class="{ 'hidden': viewCondition === false }"

@@ -97,6 +97,8 @@
                 <li
                     v-for="character in characterStore.getAlphabeticalCharacterListDisplay"
                     :key="character.id"
+                    class="cursor-pointer"
+                    @click="loadCharacterData(character.id)"
                 >
                     <div v-if="characterListLoading" class="skeleton-loading rounded h-[7rem] lg:w-4/6 flex w-full self-center"></div>
                     <CharacterCard 

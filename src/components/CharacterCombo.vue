@@ -74,14 +74,14 @@ export default {
                     :iconFileName="getInputImgFilename(input.direction)"
                     :direction="input"
                     :game="getGameAbbreviation()"
-                    class="h-12 w-12"
+                    class="h-12 w-12 cursor-default"
                 />               
                 <AttackButton 
                     v-if="input.img_category === 'attack-buttons'"
                     :iconFileName="getInputImgFilename(input.name)"
                     :game="getGameAbbreviation()"
                     :attack="input"
-                    class="h-12 w-12"
+                    class="h-12 w-12 cursor-default"
                 />
                 <GameNotation
                     v-if="input.img_category === 'notations'"
