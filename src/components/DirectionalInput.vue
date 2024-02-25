@@ -35,7 +35,7 @@ export default {
         :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${iconFileName}`" 
         alt=""
     > -->
-    <button>
+    <button class="cursor-default">
         <img
             :src="`https://training-mode-assets.sfo3.cdn.digitaloceanspaces.com/directional-inputs%2F${game}%2F${game}-${directionalInputFileName }.svg`" 
             :alt="direction.direction"

@@ -2,34 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    /* font-family: 'Inter', sans-serif; */
+    font-family: 'Play', sans-serif;
+    @apply bg-apex-blue;
+}
+
 ::-webkit-scrollbar {
     position: absolute;
-    /* padding-left: 20px;
-    margin-left: 20px; */
     left: 0;
     @apply w-2;
     @apply h-2;
- }
+}
 
-        /* Track */
-        /* ::-webkit-scrollbar-track { */
-            /* background: gainsboro; */
-            /* border-radius: 5px; */
-            /* margin-left: 2rem; */
-        /* } */
-     
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            @apply bg-gray;
-            border-radius: 5px;
-            /* @apply p-8; */
-        }
-     
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+/* Handle */
+::-webkit-scrollbar-thumb {
+    @apply bg-gray;
+    border-radius: 5px;
+}
 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 input {
     @apply p-8;
@@ -45,8 +40,17 @@ input {
     @apply my-2;
 }
 
-body {
-    /* font-family: 'Inter', sans-serif; */
-    font-family: 'Play', sans-serif;
-    @apply bg-apex-blue;
+.skeleton-loading {
+    background: linear-gradient(90deg, rgba(168, 168, 168, 0.5) 25%, rgba(144, 144, 144, 0.5) 50%, rgba(168, 168, 168, 0.5) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite ease-in-out;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }

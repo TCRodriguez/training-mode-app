@@ -34,6 +34,10 @@
 
                 localStorage.setItem('characterId', characterId);
             }
+            const characterListLoading = computed({
+                get: () => characterStore.characterListLoading,
+                set: (value) => characterStore.characterListLoading = value
+            });
 
             const searchCharacterInputValue = computed(() => characterStore.characterSearchInputValue);
             const characterSearchInput = ref('');
@@ -67,7 +71,8 @@
                 inputHasFocusBool,
                 showCharacterList,
                 hideCharacterList,
-                updateCharacterSearchInput
+                updateCharacterSearchInput,
+                characterListLoading
             }
         },
         components: {
@@ -92,9 +97,16 @@
                 <li
                     v-for="character in characterStore.getAlphabeticalCharacterListDisplay"
                     :key="character.id"
-                    @mousedown="loadCharacterData(character.id)"
+                    class="cursor-pointer"
+                    @click="loadCharacterData(character.id)"
                 >
-                    <CharacterCard :game="game" :characterName="character.name" class="font-bold text-xl"/>     
+                    <div v-if="characterListLoading" class="skeleton-loading rounded h-[7rem] lg:w-4/6 flex w-full self-center"></div>
+                    <CharacterCard 
+                        :game="game" 
+                        :characterName="character.name" 
+                        class="font-bold text-xl"
+                        @trigger-load-character-data="loadCharacterData(character.id)"
+                    />     
                 </li>
             </ul>
         </div>

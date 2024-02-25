@@ -125,16 +125,18 @@ import { closeMenu } from "@/common/helpers";
     <div class="p-2">
         <nav>
             <div class="flex flex-row justify-between items-center">
-                <div class="flex flex-row items-center">
-                    <ChevronBackOutlineIcon :class="{ 'invisible': route.name === 'dashboard'}" class="w-10 h-10" @click="goBack()"/>
+                <div class="flex flex-row items-center cursor-pointer">
+                    <ChevronBackOutlineIcon :class="{ 'invisible': route.name === 'dashboard' || route.name === 'games'}" class="w-10 h-10" @click="goBack()"/>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="flex flex-row">
+                    <div class="flex flex-col">
                         <router-link to="/" class="font-bold text-xl flex flex-col justify-center items-center" @click="clearBreadCrumbs()">
                             <div class="flex flex-row justify-center">
                                 <img src="/src/assets/Training_Mode_Logo_White.png" alt="" class="xs:w-5/6 lg:w-1/6">
                                 <p class="text-[.50rem] font-bold">TM</p>
                             </div>
+                        </router-link>
+                        <div class="flex flex-col justify-center items-center">
                             <div>
                                 <p class="text-sm">( Beta v{{ appVersion }} )</p>
                             </div>
@@ -143,7 +145,7 @@ import { closeMenu } from "@/common/helpers";
                                     <p class="text-xs">{{ env }}</p>
                                 </div>
                             </div>
-                        </router-link>
+                        </div>
                     </div>
                     <div class="flex justify-center items-center space-x-1 mt-2 text-lg">
                         <PersonOutlineIcon class="h-5 w-5" />
@@ -152,7 +154,7 @@ import { closeMenu } from "@/common/helpers";
                     </div>
 
                 </div>
-                <div class="">
+                <div class="cursor-pointer">
                     <MenuIcon class="h-10 w-10" @click="toggleMenuModal(), toggleMenuModalItems()" />
                     <!-- <MenuModal :class="{ 'hidden': navigationStore.menuModalActive === false }" /> -->
                     <!-- <CloseIcon class="h-10 w-10" /> -->

@@ -1,0 +1,16 @@
+name: Trigger Playwright Tests
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.PAT }}
+        repository: TCRodriguez/training-mode-playwright-automation
+        event-type: trigger-playwright-tests
