@@ -98,6 +98,7 @@ export default {
             .then(() => {
                 editComboName.value = '';
                 toggleEditComboMode(comboId);
+                toggleComboOptions(comboId, undefined);
             });
         }
 
@@ -124,6 +125,13 @@ export default {
         let comboOptionsActive = ref(0);
 
         const toggleComboOptions = (comboId: number, event) => {
+            if(event === undefined) {
+                characterComboOptionsActive.value.splice(characterComboOptionsActive.value.indexOf(comboId), 1);
+                if(characterComboEditTagsActive.value.includes(comboId)) {
+                    toggleEditTagsMode(comboId);
+                }
+                return;
+            }
             if(event.target.__vueParentComponent !== undefined) {
                 if(event.target.__vueParentComponent.attrs['aria-labelledby'] === 'Close move options') {
                     characterComboOptionsActive.value.splice(characterComboOptionsActive.value.indexOf(comboId), 1);
@@ -351,7 +359,7 @@ export default {
                 <div>None of your combos have that title!</div>
             </div>
             <div v-if="authStore.loggedInUser === null" class="flex flex-row justify-center mt-[8rem]">
-                <p class="font-bold text-xl text-center">Must be logged in to view character combos!</p>
+                <p class="font-bold text-xl text-center">Must be logged in to create and view character combos!</p>
             </div>
             <div v-if="comboStore.combos.length === 0 && authStore.loggedInUser !== null && authStore.loggedInUser !== undefined">
                 <p class="flex justify-center font-bold text-2xl pt-[4rem]">Add your combos!</p>
@@ -359,10 +367,10 @@ export default {
             <ul class="overflow-y-auto h-[14rem] xs:h-[14rem] lg:h-96 xs:pb-[3rem] lg:pb-[7rem]">
                 <li v-for="(combo, index) in comboList" 
                     :key="combo.id"
-                    class="flex flex-col"
+                    class="flex flex-col cursor-pointer"
                 >
                     <div class="flex flex-col w-full">
-                        <div class="flex flex-row items-center space-x-2 w-full">
+                        <div class="flex flex-row items-center space-x-2 w-full" @click="openCharacterComboModal(combo.id, combo.inputs)">
                             <p class="font-bold text-xl">{{ index + 1 }}</p>
                             <CharacterCombo
                                 class="border rounded p-2 xs:w-[22.5rem] w-[20rem] md:w-[61.75rem] lg:w-full overflow-x-auto bg-white text-black"
@@ -374,6 +382,9 @@ export default {
                                 :editTagsActive="characterComboEditTagsActive"
                             />
                         </div>
+
+                        <!-- Resource options -->
+                        <!-- TODO: Extract this out into ResourceOptions.vue -->
                         <div class="flex flex-row justify-end space-x-2">
                             <button v-if="characterComboOptionsActive.includes(combo.id)" @click="deleteCharacterCombo(combo.id)">
                                 <span class="border border-red rounded p-2 bg-red font-bold text-white">Delete</span>

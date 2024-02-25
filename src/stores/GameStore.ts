@@ -5,6 +5,7 @@ import trainingModeAPI from '../axios-http';
 export const useGameStore = defineStore('GameStore', {
     state: () => ({
         games: [],
+        gameListLoading: true,
         game: {},
 
         gameNotes: [],
@@ -176,11 +177,16 @@ export const useGameStore = defineStore('GameStore', {
         async fetchGames(guest?: boolean) {
             const authStore = useAuthStore();
             const endpoint = guest ? `/games/guest` : `/games`;
+
             try {
                 const data = await trainingModeAPI.get(endpoint)
+                .then(response => {
+                    console.log(response);
+                    this.games = [...response.data];
+                    this.games = this.games.filter(game => game.abbreviation !== 't7');
+                    this.gameListLoading = false;
+                })
                 
-                this.games = [...data.data];
-                this.games = this.games.filter(game => game.abbreviation !== 't7');
             }
             catch(error) {
                 console.log(error);
@@ -430,6 +436,9 @@ export const useGameStore = defineStore('GameStore', {
             console.log('updateNewGameNoteTagLoadingState hit');
             this.newGameNoteTagLoading = !this.newGameNoteTagLoading;
             console.log(this.newGameNoteTagLoading);
+        },
+        async updateGameListLoadingState() {
+            this.gameListLoading = !this.gameListLoading;
         }
     }
 });

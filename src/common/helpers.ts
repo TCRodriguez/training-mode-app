@@ -277,3 +277,69 @@ export const checkIfTagExists = (tagToCheck: string) => {
 
     return tagExists;
 }
+
+export const getPinnedResources = (resource: 'characters') => {
+    let pinnedResourcesArray;
+    const pinnedResources = () => {
+        const getPinnedResourcesActions = {
+            'characters': function () {
+                const pinned = localStorage.getItem('pinnedCharacters');
+                if(pinned === null) {
+                    pinnedResourcesArray = [];
+                } else {
+                    pinnedResourcesArray = JSON.parse(pinned);
+                }
+            },
+        };
+        getPinnedResourcesActions[resource]();
+
+    }
+    pinnedResources();
+
+    return pinnedResourcesArray;
+}
+
+export const pinResource = (resource: 'characters', resourceId: number) => {
+    const gameStore = useGameStore();
+    const characterStore = useCharacterStore();
+
+    const pinSpecifiedResource = () => {
+        const pinSpecifiedResourceAction = {
+            'characters': function () {
+                const pinnedCharacters = getPinnedResources(resource);
+                console.log(pinnedCharacters);
+                if (!pinnedCharacters.includes(resourceId)) {
+                    pinnedCharacters.push(resourceId);
+                    localStorage.setItem('pinnedCharacters', JSON.stringify(pinnedCharacters));
+                    characterStore.updatePinnedCharacters(pinnedCharacters);
+                }
+            },
+        };
+        pinSpecifiedResourceAction[resource]();
+    }
+    return pinSpecifiedResource();
+}
+
+export const unPinResource = (resource: 'characters', resourceId: number) => {
+    const characterStore = useCharacterStore();
+    const unPinSpecifiedResource = () => {
+        const unPinSpecifiedResourceAction = {
+            'characters': function () {
+                const pinnedCharacters = getPinnedResources(resource);
+                const index = pinnedCharacters?.indexOf(resourceId);
+                if (index > -1) {
+                    pinnedCharacters?.splice(index, 1);
+                    localStorage.setItem('pinnedCharacters', JSON.stringify(pinnedCharacters));
+                    characterStore.updatePinnedCharacters(pinnedCharacters);
+                }
+            },
+        };
+        unPinSpecifiedResourceAction[resource]();
+    }
+    return unPinSpecifiedResource();
+}
+
+export const isResourcePinned = (resource: 'characters', resourceId: number) => {
+    const pinnedResources = getPinnedResources(resource);
+    return pinnedResources !== undefined ? pinnedResources.includes(resourceId) : false;
+}

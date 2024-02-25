@@ -536,11 +536,10 @@ export default {
             </div>
             <div class="h-[17rem] xs:h-[17rem] lg:h-[23rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
-                    <li v-for="note in notes" :key="note.id">
+                    <li v-for="note in notes" :key="note.id" @click="toggleViewNote(note)" class="cursor-pointer">
                         <div class="border rounded p-2">
                             <Note 
                                 :note="note"
-                                @click="toggleViewNote(note)"
                             />
                             <ResourceTagsList
                                 :tags="note.tags" 

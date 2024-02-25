@@ -27,10 +27,10 @@ const props = defineProps({
 </script>
 <template lang="">
     <div>
-        <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0"></div>
-        <div class="absolute top-0 bottom-[-4rem] right-0 left-0 flex justify-center items-center">
+        <div class="bg-black opacity-[.85] fixed h-screen w-full top-0 left-0 right-0 bottom-0 cursor-default"></div>
+        <div class="absolute top-0 bottom-[-4rem] right-0 left-0 flex justify-center items-center cursor-default">
             <div class="w-full h-full flex flex-col justify-center items-center">
-                <div class="p-2 w-[90%] bg-apex-blue flex flex-col justify-between rounded">
+                <div class="p-2 w-[90%] bg-apex-blue flex flex-col justify-between rounded cursor-default">
                     <div>
                         <div>
                             <CharacterCombo
@@ -46,12 +46,12 @@ const props = defineProps({
                         </div>
                     </div>
                     <div class="flex flex-row justify-end space-x-4">
-                        <div class="flex flex-col items-center" @click="openNoteModal('create')">
+                        <div class="flex flex-col items-center cursor-pointer" @click="openNoteModal('create')">
                             <DocumentTextOutlineIcon class="h-12 w-12" />
                             <p class="text-sm">Add Note</p>
                         </div>
-                        <div class="flex flex-col items-center">
-                            <CloseIcon class="h-12 w-12" @click="$emit('triggerCloseCharacterComboModal')" />
+                        <div class="flex flex-col items-center cursor-pointer" @click="$emit('triggerCloseCharacterComboModal')" >
+                            <CloseIcon class="h-12 w-12" />
                             <p class="text-sm">Close</p>
                         </div>
 

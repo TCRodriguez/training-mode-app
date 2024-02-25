@@ -88,6 +88,7 @@ export default {
                 <li 
                     v-for="(_, tab) in tabs" 
                     :key="tab"
+                    class="cursor-pointer"
                     :class="{ 'border-b-2 border-b-apex-yellow': currentTab === tab }"
                     @click="currentTab = tab, handleTabClick(tab)"
                 >

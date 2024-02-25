@@ -6,6 +6,8 @@ import GameNotation from './GameNotation.vue';
 import { renderNotationInput } from '@/common/helpers';
 import LegendOverlay from './LegendOverlay.vue';
 import HelpCircleOutlineIcon from './icons/HelpCircleOutlineIcon.vue';
+import ChevronBackOutlineIcon from './icons/ChevronBackOutlineIcon.vue';
+import ChevronForwardOutlineIcon from './icons/ChevronForwardOutlineIcon.vue';
 
 export default {
     setup() {
@@ -14,14 +16,43 @@ export default {
         const gameNotations = computed(() => gameStore.gameNotations);
         const characterNotations = computed(() => characterStore.character.notations);
 
+        const currentPage = ref(1);
+        const itemsPerPage = 25;
+
+        const totalNotations = computed(() => {
+            return [...characterStore.character.notations, ...gameStore.gameNotations];
+        });
+
+        const paginatedNotations = computed(() => {
+            const start = (currentPage.value - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            return totalNotations.value.slice(start,end);
+        });
+
+        const totalPages = computed(() => {
+            return Math.ceil(totalNotations.value.length / itemsPerPage);
+        });
+
+        const goToNextPage = () => {
+            if(currentPage.value < totalPages.value) {
+                currentPage.value++;
+            }
+        };
+
+        const goToPreviousPage = () => {
+            if(currentPage.value > 1) {
+                currentPage.value--;
+            }
+        };
+
         const showNotationLegendOverlay = ref(false);
         const openNotationLegendOverlay = () => {
             showNotationLegendOverlay.value = true;
-        }
+        };
 
         const closeNotationLegendOverlay = () => {
             showNotationLegendOverlay.value = false;
-        }
+        };
 
         return {
             gameStore,
@@ -30,13 +61,20 @@ export default {
             showNotationLegendOverlay,
             openNotationLegendOverlay,
             closeNotationLegendOverlay,
-            characterNotations
+            characterNotations,
+            currentPage,
+            totalPages,
+            goToNextPage,
+            goToPreviousPage,
+            paginatedNotations
         }
     },
     components: {
         GameNotation,
         LegendOverlay,
-        HelpCircleOutlineIcon
+        HelpCircleOutlineIcon,
+        ChevronBackOutlineIcon,
+        ChevronForwardOutlineIcon
     }
 }
 </script>
@@ -55,22 +93,29 @@ export default {
             />
             <HelpCircleOutlineIcon class="text-white fill-white h-8 w-8" @click="openNotationLegendOverlay()"/>
         </div>
+        <div class="flex flex-row space-x-2 justify-center items-center">
+            <button @click="goToPreviousPage" :disabled="currentPage <= 1" >
+                <ChevronBackOutlineIcon class="h-8 w-8 text-white fill-white" :class="{'text-dark-gray': currentPage <= 1}"/>
+            </button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            <button @click="goToNextPage" :disabled="currentPage >= totalPages">
+                <ChevronForwardOutlineIcon class="h-8 w-8 text-white fill-white" :class="{'text-dark-gray': currentPage >= totalPages}"/>
+            </button>
+        </div>
         <div class="grid grid-rows-2 grid-cols-5 items-center justify-center">
-            <div v-for="characterNotation in characterNotations"
-                class="border bg-apex-blue p-1 text-center w-full h-full"
-                @click="renderNotationInput(characterNotation)"
-            >
-                <p>{{characterNotation.notation}}</p>
-            </div>
             <div
-                v-for="gameNotation in gameNotations"
-                :key="gameNotation.id"       
-                class="border bg-green p-1 text-center w-full h-full"
-                @click="renderNotationInput(gameNotation)"
+                v-for="notation in paginatedNotations"
+                :key="notation.id"       
+                class="border p-1 text-center w-full h-full"
+                :class="{ 
+                    'bg-apex-blue' : notation.notations_group === 'character', 
+                    'bg-green' : notation.notations_group === 'other'
+                }"
+                @click="renderNotationInput(notation)"
             >
                 <GameNotation
-                    :notation="gameNotation.notation"
-                    :iconFileName="gameNotation.icon_file_name"
+                    :notation="notation.notation"
+                    :iconFileName="notation.icon_file_name"
                     class="fill-white text-white"
                 />
             </div>
