@@ -2,7 +2,7 @@ name: Trigger Playwright Tests
 
 on:
   push:
-    branches: [ develop, task/tcr/7.2-work]
+    branches: [ develop ]
 
 jobs:
   trigger:
