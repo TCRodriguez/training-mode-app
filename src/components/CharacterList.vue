@@ -105,7 +105,6 @@
                         :game="game" 
                         :characterName="character.name" 
                         class="font-bold text-xl"
-                        @trigger-load-character-data="loadCharacterData(character.id)"
                     />     
                 </li>
             </ul>
