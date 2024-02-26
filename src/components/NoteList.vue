@@ -149,7 +149,8 @@ export default {
 
         const noteOptionsActive = ref([]);
         const noteEditActive = ref(0);
-        const toggleNoteOptions = (noteId: string) => {
+        const toggleNoteOptions = (noteId: string, event) => {
+            event.stopPropagation();
             if(editNoteTagsActive.value.includes(noteId)) {
                 toggleEditNoteTagsMode(noteId);
             }
@@ -536,8 +537,8 @@ export default {
             </div>
             <div class="h-[17rem] xs:h-[17rem] lg:h-[23rem] overflow-y-auto space-y-2 ">
                 <ul class="space-y-2 pb-24">
-                    <li v-for="note in notes" :key="note.id" @click="toggleViewNote(note)" class="cursor-pointer">
-                        <div class="border rounded p-2">
+                    <li v-for="note in notes" :key="note.id">
+                        <div class="border rounded p-2 cursor-pointer" @click="toggleViewNote(note)">
                             <Note 
                                 :note="note"
                             />
